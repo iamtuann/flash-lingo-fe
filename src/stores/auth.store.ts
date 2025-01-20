@@ -13,14 +13,14 @@ export const useAuthStore = defineStore('auth', {
     username: '',
   } as authStore),
   actions: {
-    async login(username: string, password: string) {
-      const res = await ApiService.post('/login', {
-        username,
-        password
+    async register(email: string, password: string, firstName: string, lastName: string) {
+      const res = await ApiService.post('/auth/register', {
+        email,
+        password,
+        firstName,
+        lastName
       })
-      if (res.status === 200) {
-        
-      }
+      return res;
     },
     setToken(token: string) {
       try {
