@@ -3,7 +3,7 @@
     class="container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0"
   >
     <RouterLink
-      to=""
+      :to="{name: 'Login'}"
       :class="
         cn(
           buttonVariants({ variant: 'ghost' }),
@@ -11,7 +11,7 @@
         )
       "
     >
-      Login
+      Log in
     </RouterLink>
     <div
       class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex"

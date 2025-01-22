@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
 import Cookies from "js-cookie";
+import type { AxiosResponse } from "axios";
+import type { AuthResponse } from "@/types/auth";
 
 type authStore = {
   token: string,
@@ -22,9 +24,29 @@ export const useAuthStore = defineStore('auth', {
       })
       return res;
     },
+    async login(email: string, password: string) {
+      const res: AxiosResponse<AuthResponse> = await ApiService.post('/auth/login', {
+        email,
+        password
+      })
+      if (res.status == 200) {
+        this.setToken(res.data.token);
+      }
+      return res.data;
+    },
+    async googleLogin(code: string) {
+      const res: AxiosResponse<AuthResponse> = await ApiService.post('/oauth2/google-login', {
+        code
+      })
+      if (res.status == 200) {
+        this.setToken(res.data.token);
+      }
+      return res.data;
+    },
     setToken(token: string) {
       try {
         this.token = token
+        Cookies.remove('token')
         Cookies.set('token', token, {secure: true, sameSite: 'strict', expires: 30})
         const payload = JSON.parse(atob(token.split('.')[1]))
         this.username = payload.sub

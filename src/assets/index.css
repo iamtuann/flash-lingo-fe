@@ -76,5 +76,5 @@
 }
 
 .error-msg {
-  @apply text-sm font-medium text-destructive
+  @apply text-sm font-medium text-red-500
 }
