@@ -1,3 +1,4 @@
+import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -5,7 +6,8 @@ const routes = [
     path: "",
     alias: "/",
     name: 'Home',
-    component: () => import('@/views/Home.vue')
+    component: () => import('@/views/Home.vue'),
+    meta: { layout: DefaultLayout }
   },
   {
     path: "/signup",

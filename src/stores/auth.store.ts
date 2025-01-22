@@ -6,13 +6,15 @@ import type { AuthResponse } from "@/types/auth";
 
 type authStore = {
   token: string,
-  username: string
+  username: string,
+  isAuthenticated: boolean
 }
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: '',
     username: '',
+    isAuthenticated: false,
   } as authStore),
   actions: {
     async register(email: string, password: string, firstName: string, lastName: string) {
@@ -30,7 +32,9 @@ export const useAuthStore = defineStore('auth', {
         password
       })
       if (res.status == 200) {
-        this.setToken(res.data.token);
+        const {token, ...user} = res.data;
+        this.setToken(token);
+        localStorage.setItem("user", JSON.stringify(user))
       }
       return res.data;
     },
@@ -39,7 +43,9 @@ export const useAuthStore = defineStore('auth', {
         code
       })
       if (res.status == 200) {
-        this.setToken(res.data.token);
+        const {token, ...user} = res.data;
+        this.setToken(token);
+        localStorage.setItem("user", JSON.stringify(user))
       }
       return res.data;
     },
@@ -50,6 +56,7 @@ export const useAuthStore = defineStore('auth', {
         Cookies.set('token', token, {secure: true, sameSite: 'strict', expires: 30})
         const payload = JSON.parse(atob(token.split('.')[1]))
         this.username = payload.sub
+        this.isAuthenticated = true;
       } catch (e) {
         console.error(e);
       }
@@ -60,7 +67,7 @@ export const useAuthStore = defineStore('auth', {
       Cookies.remove('token')
     },
     isTokenExpired(token:string) {
-      !!token ? token : this.token;
+      // !!token ? token : this.token;
       if (!token) {
         return true;
       } else {
@@ -72,6 +79,9 @@ export const useAuthStore = defineStore('auth', {
           return true;
         }
       }
+    },
+    checkToken() {
+
     },
     loadTokenFromCookies() {
       const token = Cookies.get('token') || ''
