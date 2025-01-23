@@ -1,19 +1,14 @@
 <template>
-  <header class="p-2 -m-2 h-16 bg-transparent relative flex items-center justify-between">
-    <div>
+  <header class="p-2 -m-2 h-16 bg-transparent relative flex items-center justify-between gap-2">
+    <div class="relative z-[1]">
       <RouterLink to="" class="text-xl font-bold px-3 py-2">
         Flash Lingo
       </RouterLink>
     </div>
-    <div class="flex flex-1 absolute inset-x-0 items-center justify-center">
-      <div class="relative w-full max-w-sm items-center">
-        <Input v-model="search" type="text" placeholder="Search..." class="pl-10 rounded-full text-base" />
-        <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-          <Search class="size-6 text-muted-foreground" />
-        </span>
-      </div>
+    <div class="flex flex-1 md:absolute inset-x-0 items-center justify-center">
+      <Search />
     </div>
-    <div class="flex items-center gap-2 px-3">
+    <div class="relative z-[1] flex items-center gap-2 px-3">
       <template v-if="!authStore.isAuthenticated">
         <RouterLink
           :to="{name: 'Signup'}"
@@ -30,7 +25,7 @@
       </template>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Avatar v-if="authStore.isAuthenticated" class="inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer">
+          <Avatar v-if="authStore.isAuthenticated" class="size-9 md:size-10 inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer">
             <AvatarImage :src="user.avatarUrl" :alt="user.firstName+' '+user.lastName" />
             <AvatarFallback
               class="text-primary flex h-full w-full items-center justify-center bg-white font-bold" :delay-ms="600"
@@ -53,7 +48,7 @@
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem @click="handleLogout">
             <LogOut class="mr-2 h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>
@@ -80,17 +75,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LogOut, Search, Settings, User } from 'lucide-vue-next';
-import Input from './ui/input/Input.vue';
-import { ref } from 'vue';
+import { LogOut, Settings, User } from 'lucide-vue-next';
+import Search from '@/components/Search.vue';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore()
+const router = useRouter()
 let user:AuthResponse
 if (authStore.isAuthenticated) {
   user = JSON.parse(localStorage.getItem('user') || '')
 }
 
-const search = ref("")
+function handleLogout() {
+  authStore.removeToken();
+  router.push({name: 'Login'})
+}
 
 </script>
 

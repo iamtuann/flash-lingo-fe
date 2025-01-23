@@ -32,7 +32,7 @@
             d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"
           />
         </svg>
-        Flash Lingo
+        <RouterLink to="/">Flash Lingo</RouterLink>
       </div>
       <div class="relative z-20 mt-auto">
         <blockquote class="space-y-2">
@@ -47,7 +47,7 @@
     </div>
     <div class="lg:p-8">
       <div
-        class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[360px]"
+        class="mx-auto flex py-12 w-full flex-col justify-center space-y-6 sm:w-[360px]"
       >
         <div class="flex flex-col space-y-2 text-center">
           <h1 class="text-2xl font-semibold tracking-tight">
