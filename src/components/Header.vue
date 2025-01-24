@@ -1,5 +1,5 @@
 <template>
-  <header class="p-2 -m-2 h-16 bg-transparent relative flex items-center justify-between gap-2">
+  <header class="p-2 -mx-2 h-16 bg-transparent relative flex items-center justify-between gap-2">
     <div class="relative z-[1]">
       <RouterLink to="" class="text-xl font-bold px-3 py-2">
         Flash Lingo
