@@ -19,6 +19,12 @@ const routes = [
     name: 'Login',
     component: () => import('@/views/Login.vue')
   },
+  {
+    path: "/flashcards/:id/:slug",
+    name: 'FlashcardTopic',
+    component: () => import('@/views/FlashcardTopic.vue'),
+    meta: { layout: DefaultLayout }
+  },
 ]
 
 const router = createRouter({

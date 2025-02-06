@@ -7,7 +7,6 @@ import {
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { type LucideIcon } from 'lucide-vue-next'
-import { watch } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 
 export interface LinkProp {
@@ -20,12 +19,8 @@ interface NavProps {
   links: LinkProp[]
 }
 
-const props = defineProps<NavProps>()
+defineProps<NavProps>()
 
-watch(() => props.isCollapsed, (newVal) => {
-  console.log(newVal);
-  
-})
 </script>
 
 <template>
@@ -42,7 +37,7 @@ watch(() => props.isCollapsed, (newVal) => {
               :class="cn(buttonVariants({ variant: 'ghost' }), 'size-10')"
               active-class="bg-primary shadow hover:bg-primary/90"
             >
-            <component :is="link.icon" class="size-6" />
+            <component :is="link.icon" class="!size-5" />
           </RouterLink>
           </TooltipTrigger>
           <TooltipContent side="right" class="flex items-center">
