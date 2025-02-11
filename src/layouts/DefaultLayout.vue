@@ -16,11 +16,11 @@
         <Sidebar :is-collapsed="isCollapsed" @click:menu="panelRef?.isCollapsed ? panelRef.expand() : panelRef?.collapse()" />
       </ResizablePanel>
       <ResizableHandle class="mx-1 my-2" />
-      <ResizablePanel>
-        <slot />
+      <ResizablePanel class="!overflow-y-auto main-panel flex flex-col">
+        <div class="flex-1"><slot /></div>
+        <Footer />
       </ResizablePanel>
     </ResizablePanelGroup>
-    <Footer />
   </main>
 </template>
 
@@ -49,5 +49,13 @@ function onExpand() {
 </script>
 
 <style scoped>
+.main-panel::-webkit-scrollbar {
+  background-color: transparent;
+  width: 4px;
+}
 
+.main-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 99px;
+}
 </style>

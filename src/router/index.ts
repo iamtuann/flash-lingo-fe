@@ -21,8 +21,8 @@ const routes = [
   },
   {
     path: "/flashcards/:id/:slug",
-    name: 'FlashcardTopic',
-    component: () => import('@/views/FlashcardTopic.vue'),
+    name: 'EditFlashcardTopic',
+    component: () => import('@/views/EditFlashcardTopic.vue'),
     meta: { layout: DefaultLayout }
   },
 ]

@@ -118,7 +118,7 @@ const dialogSaveTopic = ref(false)
 
 function onCreateTopicSuccess(data: Topic) {
   dialogSaveTopic.value = false;
-  router.push({name: 'FlashcardTopic', params: {id: data.id, slug: data.slug}})
+  router.push({name: 'EditFlashcardTopic', params: {id: data.id, slug: data.slug}})
 }
 
 function handleLogout() {

@@ -18,7 +18,7 @@
         <!-- <Button variant="ghost" :disabled="isLoading"> Cancel </Button> -->
         <Button :disabled="isLoading">
           <LoaderCircle v-if="isLoading" class="mr-1 h-4 w-4 animate-spin" />
-          Create
+          Save
         </Button>
       </div>
     </div>
@@ -34,16 +34,25 @@ import { LoaderCircle } from "lucide-vue-next";
 import { useTopicStore } from "@/stores/topic.store";
 import type { Topic, TopicRequest } from "@/types/topic";
 import { hasValues, getMessage } from "@/utils";
+import { useRoute } from "vue-router";
 
 export type SaveTopicEmits = {
   'success': [payload: Topic];
 };
+export type SaveTopicProps = {
+  role?: 'Create' | 'Update'
+}
 const emit = defineEmits<SaveTopicEmits>()
+const props = withDefaults(defineProps<SaveTopicProps>() , {
+  role: 'Create'
+})
 
+const route = useRoute();
 const topicStore = useTopicStore()
 const isLoading = ref(false)
 const errMsg = ref("")
 const formData = reactive<TopicRequest>({
+  id: "",
   name: "",
   description: "",
   termLang: "",
@@ -59,13 +68,32 @@ async function onSubmit() {
       errMsg.value = "Topic name cannot be blank."
       return;
     }
-    const res = await topicStore.create(formData);
+    const res = await topicStore.save(formData);
     emit('success', res)
   } catch (e) {
     errMsg.value = getMessage(e)
   } finally {
     isLoading.value = false
   }
+}
+
+async function getTopicById() {
+  try {
+    const topicId = route.params.id as string;
+    const res = await topicStore.getById(topicId);
+    const { id, name, description, termLang, defLang } = res
+    formData.id = id
+    formData.name = name;
+    formData.description = description
+    formData.termLang = termLang
+    formData.defLang = defLang
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+if (props.role == 'Update') {
+  getTopicById();
 }
 </script>
 

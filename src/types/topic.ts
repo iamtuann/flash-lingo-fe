@@ -1,7 +1,7 @@
 import type { User } from "./auth";
 
 export interface TopicRequest {
-  id?: number,
+  id?: number | string,
   name: string,
   description: string,
   termLang: string,
@@ -9,7 +9,7 @@ export interface TopicRequest {
 }
 
 export interface Topic {
-  id: string,
+  id: number | string,
   name: string,
   description: string,
   createdBy: User,

@@ -3,9 +3,7 @@ import ApiService from '@/plugins/axios';
 import type { Topic, TopicRequest } from "@/types/topic";
 
 type topicStore = {
-  token: string,
-  username: string,
-  isAuthenticated: boolean
+  
 }
 
 export const useTopicStore = defineStore('topic', {
@@ -13,9 +11,13 @@ export const useTopicStore = defineStore('topic', {
     
   } as topicStore),
   actions: {
-    async create(request: TopicRequest): Promise<Topic> {
+    async save(request: TopicRequest): Promise<Topic> {
       const res = await ApiService.post('/topics', request)
       return res.data;
+    },
+    async getById(id: number | string): Promise<Topic> {
+      const res = await ApiService.get('/topics/' + id)
+      return res.data
     }
   }
 })
