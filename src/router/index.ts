@@ -20,9 +20,15 @@ const routes = [
     component: () => import('@/views/Login.vue')
   },
   {
+    path: "/flashcards/:id/edit",
+    name: 'EditFlashcards',
+    component: () => import('@/views/flashcard/EditFlashcards.vue'),
+    meta: { layout: DefaultLayout }
+  },
+  {
     path: "/flashcards/:id/:slug",
-    name: 'EditFlashcardTopic',
-    component: () => import('@/views/EditFlashcardTopic.vue'),
+    name: 'FlashcardsHome',
+    component: () => import('@/views/flashcard/FlashcardsHome.vue'),
     meta: { layout: DefaultLayout }
   },
 ]

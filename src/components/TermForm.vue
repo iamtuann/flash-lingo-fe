@@ -1,5 +1,14 @@
 <template>
-  <div class="bg-secondary rounded-lg" @focusin="onFocusIn" @focusout="onFocusOut" tabindex="0"
+  <div v-if="readonly" class="bg-secondary p-5 rounded-lg flex gap-4 font-semibold">
+    <div class="w-1/4 min-w-24" :class="hideTerm && 'blur-md'">
+      <span>{{ props.term }}</span>
+    </div>
+    <div class="h-auto border-l-2 border-secondary-foreground"></div>
+    <div class="flex-1 ml-3 relative" :class="hideDefinition && 'blur-md'">
+      <span>{{ props.definition }}</span>
+    </div>
+  </div>
+  <div v-else class="bg-secondary rounded-lg" @focusin="onFocusIn" @focusout="onFocusOut" tabindex="0"
   :class="{'border border-red-500': errMsg}">
     <div class="flex items-center justify-between px-5 py-3 border-b-2 border-background">
       <span>{{ props.index + 1 }}</span>
@@ -51,9 +60,14 @@ type TermFormEmits = {
   'update': [payload: Term]
 }
 const emits = defineEmits<TermFormEmits>()
-const props = defineProps<Term & {index: number}>()
-const termStore = useTermStore()
+const props = defineProps<Term & {
+  index: number,
+  readonly?: boolean,
+  hideTerm?: boolean,
+  hideDefinition?: boolean
+}>()
 
+const termStore = useTermStore()
 let { index, ...rest } = props
 let defaultData = rest as Term
 const formData = ref<Term>({...defaultData})
