@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
-      <RouterLink :to="'/'" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
+      <RouterLink :to="{name: 'FlashcardsLearn', params: {id: topicId}}" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
         <span class="text-lg font-semibold">Flashcards</span>
         <img src="@/assets/images/flash-card.png" width="50px" alt="">
       </RouterLink>

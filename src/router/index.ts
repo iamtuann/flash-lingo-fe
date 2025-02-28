@@ -1,4 +1,5 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
+import LearnLayout from "@/layouts/LearnLayout.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -26,10 +27,16 @@ const routes = [
     meta: { layout: DefaultLayout }
   },
   {
-    path: "/flashcards/:id/:slug",
+    path: "/flashcards-home/:id/:slug",
     name: 'FlashcardsHome',
     component: () => import('@/views/flashcard/FlashcardsHome.vue'),
     meta: { layout: DefaultLayout }
+  },
+  {
+    path: "/learn/:id/flashcards",
+    name: 'FlashcardsLearn',
+    component: () => import('@/views/flashcard/FlashcardsLearn.vue'),
+    meta: { layout: LearnLayout }
   },
 ]
 
