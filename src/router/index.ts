@@ -27,7 +27,7 @@ const routes = [
     meta: { layout: DefaultLayout }
   },
   {
-    path: "/flashcards-home/:id/:slug",
+    path: "/flashcards-home/:id/:slug?",
     name: 'FlashcardsHome',
     component: () => import('@/views/flashcard/FlashcardsHome.vue'),
     meta: { layout: DefaultLayout }

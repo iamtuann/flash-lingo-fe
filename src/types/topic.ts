@@ -22,3 +22,8 @@ export interface Topic {
   terms: any[],
   termsNumber: number,
 }
+
+export interface TopicLearning {
+  topicId: string | number,
+  termLearningIds: number[]
+}

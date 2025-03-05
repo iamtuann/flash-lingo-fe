@@ -66,7 +66,8 @@ export interface FlipCardListProps {
   terms: Term[]
 }
 export type FlipCardListEmits = {
-  'update:current-index': [payload: number];
+  'update:current-index': [payload: number],
+  'end': [knowTerms: number[], unknowTerms: number[]]
 }
 const props = defineProps<FlipCardListProps>()
 const emits = defineEmits<FlipCardListEmits>()
@@ -104,23 +105,25 @@ const borderColor = computed(() => {
 
 function handleRejectTerm() {
   console.log('reject');
-  unknowTerms.value.push(currentIndex.value)
+  unknowTerms.value.push(props.terms[currentIndex.value].id as number)
   nextTerm()
 }
 
 function handleResolveTerm() {
   console.log('resolve')
-  knowTerms.value.push(currentIndex.value)
+  knowTerms.value.push(props.terms[currentIndex.value].id as number)
   nextTerm()
 }
 
 function nextTerm() {
   if (currentIndex.value == props.terms.length - 1) {
     // currentIndex.value = 0
+    emits('update:current-index', currentIndex.value + 1)
+    emits('end', knowTerms.value, unknowTerms.value)
   } else {
     currentIndex.value++;
+    emits('update:current-index', currentIndex.value)
   }
-  emits('update:current-index', currentIndex.value)
 }
 
 function startDrag(event: MouseEvent) {
