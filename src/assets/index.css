@@ -2,9 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Geist";
+  src: url("./fonts/Geist[wght].ttf");
+}
+@font-face {
+  font-family: "GeistMono";
+  src: url("./fonts/GeistMono[wght].ttf");
+}
 
 @layer base {
   :root {
+    --font-geist-sans: "Geist";
+		--font-geist-mono: "GeistMono";
+    
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
   
@@ -55,13 +66,13 @@
     --muted:217.2 32.6% 17.5%;
     --muted-foreground:215 20.2% 65.1%;
   
-    --accent:217.2 32.6% 17.5%;
+    --accent:225deg 30.3% 25.88%;
     --accent-foreground:210 40% 98%;
   
     --destructive:0 62.8% 30.6%;
     --destructive-foreground:210 40% 98%;
   
-    --border:217.2 32.6% 17.5%;
+    --border:215.38deg 16.32% 46.86%;
     --input:217.2 32.6% 17.5%;
     --ring:224.3 76.3% 48%;
   }

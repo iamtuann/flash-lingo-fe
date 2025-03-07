@@ -38,6 +38,18 @@ const routes = [
     component: () => import('@/views/flashcard/FlashcardsLearn.vue'),
     meta: { layout: LearnLayout }
   },
+  {
+    path: "/library",
+    component: () => import('@/views/library/LibraryHome.vue'),
+    children: [
+      {
+        path: "",
+        name: 'LibraryFlashcards',
+        component: () => import('@/views/library/LibraryTopics.vue')
+      },
+    ],
+    meta: { layout: DefaultLayout }
+  },
 ]
 
 const router = createRouter({

@@ -49,7 +49,7 @@ defineProps<NavProps>()
           v-else
           :key="`2-${index}`"
           :to="link.to"
-          :class="cn(buttonVariants({ variant: 'ghost' }), 'justify-start h-10 text-base')"
+          :class="cn(buttonVariants({ variant: 'ghost' }), 'justify-start h-10')"
           active-class="bg-primary shadow hover:bg-primary/90"
         >
           <component :is="link.icon" class="mr-2" />

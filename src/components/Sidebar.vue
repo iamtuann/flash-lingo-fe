@@ -29,7 +29,7 @@ defineEmits<SidebarEmits>()
 
 const links: LinkProp[] = [
   {title: 'Home', icon: Home, to: {name: 'Home'}},
-  {title: 'Your library', icon: LibraryBig, to: {name: 'Signup'}},
+  {title: 'Your Library', icon: LibraryBig, to: {name: 'LibraryFlashcards'}},
   {title: 'Login', icon: Home, to: {name: 'Login'}},
 ]
 </script>

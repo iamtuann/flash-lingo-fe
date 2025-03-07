@@ -1,3 +1,5 @@
 export * from "./auth.store"
 export * from "./topic.store"
 export * from "./term.store"
+export * from "./topic-learning.store"
+export * from "./user.store"
