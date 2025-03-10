@@ -56,6 +56,12 @@ const routes = [
     ],
     meta: { layout: DefaultLayout }
   },
+  {
+    path: "/folders/:id/:slug?",
+    name: "FolderTopics",
+    component: () => import('@/views/folder/FolderTopics.vue'),
+    meta: { layout: DefaultLayout },
+  },
 ]
 
 const router = createRouter({

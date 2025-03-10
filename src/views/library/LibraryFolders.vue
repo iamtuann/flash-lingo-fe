@@ -1,9 +1,11 @@
 <template>
   <div class="mt-4">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <template v-for="item in pageFolder.content">
-        <FolderItem :item="item" />
-      </template>
+      <RouterLink v-for="item in pageFolder.content" :key="item.id"
+        :to="{name: 'FolderTopics', params: {id: item.id, slug: item.slug}}"
+      >
+      <FolderItem :item="item" />
+    </RouterLink>
     </div>
     <div class="mt-7" v-if="pageFolder.totalElements > 0">
       <Pagination v-slot="{ page }" :items-per-page="pageParams.pageSize" :total="pageFolder.totalElements" :sibling-count="1" show-edges :default-page="1">
