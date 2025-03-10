@@ -7,12 +7,12 @@
           <RouterLink
             :to="{name: 'LibraryFlashcards'}"
             :class="cn(buttonVariants({ variant: 'outline' }), 'h-8')"
-            active-class="bg-primary text-primary-foreground shadow hover:bg-primary/90"
-          > Flashcards </RouterLink>
+            exact-active-class="bg-primary text-primary-foreground shadow hover:bg-primary/90"
+          > Topics </RouterLink>
         </li>
         <li>
           <RouterLink
-            :to="{name: 'Home'}"
+            :to="{name: 'LibraryFolders'}"
             :class="cn(buttonVariants({ variant: 'outline' }), 'h-8')"
             active-class="bg-primary text-primary-foreground shadow hover:bg-primary/90"
           > Folders </RouterLink>

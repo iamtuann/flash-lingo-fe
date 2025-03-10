@@ -44,8 +44,14 @@ const routes = [
     children: [
       {
         path: "",
+        alias: "topics",
         name: 'LibraryFlashcards',
         component: () => import('@/views/library/LibraryTopics.vue')
+      },
+      {
+        path: "folders",
+        name: 'LibraryFolders',
+        component: () => import('@/views/library/LibraryFolders.vue')
       },
     ],
     meta: { layout: DefaultLayout }
