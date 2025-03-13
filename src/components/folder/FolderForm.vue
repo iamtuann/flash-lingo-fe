@@ -60,7 +60,6 @@ const request = reactive({
   status: props.status ?? 0
 })
 
-console.log(request)
 const isLoading = ref(false)
 const errMsg = ref("")
 

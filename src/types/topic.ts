@@ -1,11 +1,12 @@
 import type { User } from "./auth";
+import type { EStatus } from "./common";
 
 export interface TopicRequest {
   id?: number | string,
   name: string,
   description: string,
-  termLang: string,
-  defLang: string,
+  termLang?: string,
+  defLang?: string,
 }
 
 export interface Topic {
@@ -18,7 +19,7 @@ export interface Topic {
   slug: string,
   termLang: string,
   defLang: string,
-  status: number,
+  status: EStatus,
   terms: any[],
   termsNumber: number,
 }

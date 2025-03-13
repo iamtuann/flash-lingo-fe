@@ -15,7 +15,9 @@
       </div>
       <p v-show="errMsg" role="alert" class="error-msg -mt-2">{{ errMsg }}</p>
       <div class="flex justify-end gap-3">
-        <!-- <Button variant="ghost" :disabled="isLoading"> Cancel </Button> -->
+        <Button v-if="cancelable" variant="ghost" :disabled="isLoading" @click="emit('cancel')">
+          Cancel
+        </Button>
         <Button :disabled="isLoading">
           <LoaderCircle v-if="isLoading" class="mr-1 h-4 w-4 animate-spin" />
           Save
@@ -37,14 +39,16 @@ import { hasValues, getMessage } from "@/utils";
 import { useRoute } from "vue-router";
 
 export type SaveTopicEmits = {
-  'success': [payload: Topic];
+  'success': [payload: Topic],
+  'cancel': []
 };
 export type SaveTopicProps = {
-  role?: 'Create' | 'Update'
+  role?: 'create' | 'update',
+  cancelable?: boolean
 }
 const emit = defineEmits<SaveTopicEmits>()
 const props = withDefaults(defineProps<SaveTopicProps>() , {
-  role: 'Create'
+  role: 'create'
 })
 
 const route = useRoute();
@@ -92,7 +96,7 @@ async function getTopicById() {
   }
 }
 
-if (props.role == 'Update') {
+if (props.role == 'update') {
   getTopicById();
 }
 </script>

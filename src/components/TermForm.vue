@@ -1,14 +1,14 @@
 <template>
-  <div v-if="readonly" class="bg-secondary p-5 rounded-lg flex gap-4 font-semibold">
+  <div v-if="readonly" class="bg-accent p-5 rounded-lg flex gap-4 font-semibold">
     <div class="w-1/4 min-w-24" :class="hideTerm && 'blur-md'">
-      <span>{{ props.term }}</span>
+      <span>{{ props.term || '- -' }}</span>
     </div>
-    <div class="h-auto border-l-2 border-secondary-foreground"></div>
+    <div class="h-auto border-l-2 border-accent-foreground"></div>
     <div class="flex-1 ml-3 relative" :class="hideDefinition && 'blur-md'">
-      <span>{{ props.definition }}</span>
+      <span>{{ props.definition || '' }}</span>
     </div>
   </div>
-  <div v-else class="bg-secondary rounded-lg" @focusin="onFocusIn" @focusout="onFocusOut" tabindex="0"
+  <div v-else class="bg-accent rounded-lg" @focusin="onFocusIn" @focusout="onFocusOut" tabindex="0"
   :class="{'border border-red-500': errMsg}">
     <div class="flex items-center justify-between px-5 py-3 border-b-2 border-background">
       <span>{{ props.index + 1 }}</span>
@@ -16,7 +16,7 @@
         <Button variant="ghost" size="icon" class="rounded-full hover:cursor-move hover:bg-primary">
           <GripHorizontal />
         </Button>
-        <Button @mousedown.stop="onDelete" size="icon" variant="ghost" class="rounded-full hover:bg-background bg-opacity-50">
+        <Button :disabled="disableDelete" @mousedown.stop="onDelete" size="icon" variant="ghost" class="rounded-full hover:bg-background bg-opacity-50">
           <Trash />
         </Button>
       </div>
@@ -25,7 +25,7 @@
       <div class="grid gap-1">
         <Label> Term </Label>
         <Input
-          class="bg-secondary rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:border-b-2"
+          class="bg-accent rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:border-b-2"
           v-model="formData.term"
           placeholder="Enter term"
           type="text"
@@ -34,7 +34,7 @@
       <div class="grid gap-1">
         <Label> Definition </Label>
         <Input
-          class="bg-secondary rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary"
+          class="bg-accent rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary"
           v-model="formData.definition"
           placeholder="Enter definition"
           type="text"/>
@@ -57,14 +57,16 @@ import { deepCompare, getMessage } from "@/utils";
 
 type TermFormEmits = {
   'delete': [index: number],
-  'update': [payload: Term]
+  'update': [payload: Term],
+  'saving': [index: number, isLoading: boolean],
 }
 const emits = defineEmits<TermFormEmits>()
 const props = defineProps<Term & {
   index: number,
   readonly?: boolean,
   hideTerm?: boolean,
-  hideDefinition?: boolean
+  hideDefinition?: boolean,
+  disableDelete?: boolean
 }>()
 
 const termStore = useTermStore()
@@ -75,6 +77,7 @@ const formData = ref<Term>({...defaultData})
 const isFocused = ref(false);
 let focusOutTimeout:number | null = null;
 const errMsg = ref("")
+const isSaving = ref(false)
 
 const onFocusIn = () => {
   if (focusOutTimeout) {
@@ -103,6 +106,8 @@ watchDebounced(
 )
 
 async function saveTerm() {
+  isSaving.value = true
+  emits('saving', props.index, true)
   errMsg.value = ''
   try {
     const res = await termStore.save(formData.value)
@@ -111,6 +116,9 @@ async function saveTerm() {
     emits('update', res)
   } catch (e) {
     errMsg.value = getMessage(e)
+  } finally {
+    isSaving.value = false
+    emits('saving', props.index, false)
   }
 }
 
