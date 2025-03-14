@@ -50,8 +50,8 @@
         <span class="text-lg font-semibold">Flashcards</span>
         <img src="@/assets/images/flash-card.png" width="50px" alt="">
       </RouterLink>
-      <RouterLink :to="{name: 'TopicLearn', params: {id: topicId}}" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
-        <span class="text-lg font-semibold">Learn</span>
+      <RouterLink :to="{name: 'QuizConfig', params: {id: topicId}}" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
+        <span class="text-lg font-semibold">Quiz</span>
         <img src="@/assets/images/flash-card.png" width="50px" alt="">
       </RouterLink>
       <RouterLink :to="'/'" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">

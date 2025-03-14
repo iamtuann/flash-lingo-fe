@@ -47,15 +47,16 @@ const routes = [
         meta: { layout: LearnLayout }
       },
       {
-        path: "learn",
-        name: 'TopicLearn',
-        component: () => import('@/views/topic/TopicLearn.vue'),
+        path: "quiz/config",
+        name: 'QuizConfig',
+        component: () => import('@/views/quiz/QuizConfig.vue'),
         meta: { layout: LearnLayout }
       },
       {
-        path: "test",
-        name: 'TopicTest',
-        component: () => import('@/views/topic/TopicLearn.vue'),
+        path: "quiz/session",
+        alias: 'quiz',
+        name: 'QuizSession',
+        component: () => import('@/views/quiz/QuizSession.vue'),
         meta: { layout: LearnLayout }
       },
     ]
