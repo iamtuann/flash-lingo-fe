@@ -30,7 +30,7 @@
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-48" :sideOffset="12" align="end">
-          <Dialog v-model:open="dialogSaveTopic">
+          <Dialog v-model:open="dialogTopicForm">
             <DialogTrigger class="w-full">
               <DropdownMenuItem @select="(e) => e.preventDefault()" >
                 <Shapes class="mr-2 h-4 w-4" />
@@ -41,7 +41,7 @@
               <DialogHeader>
                 <DialogTitle>Create a new Flashcard Topic</DialogTitle>
               </DialogHeader>
-              <SaveTopic @success="onCreateTopicSuccess" />
+              <TopicForm @success="onCreateTopicSuccess" />
             </DialogContent>
           </Dialog>
           <Dialog v-model:open="dialogFolderForm">
@@ -117,7 +117,7 @@ import { FolderIcon, LogOut, Plus, Settings, Shapes, User } from 'lucide-vue-nex
 import Search from '@/components/Search.vue';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useRouter } from 'vue-router';
-import SaveTopic from './SaveTopic.vue';
+import TopicForm from '@/components/topic/TopicForm.vue';
 import { FolderForm } from "@/components/folder";
 import { ref } from 'vue';
 import type { Folder } from '@/types';
@@ -128,16 +128,16 @@ let user:AuthResponse
 if (authStore.isAuthenticated) {
   user = JSON.parse(localStorage.getItem('user') || '')
 }
-const dialogSaveTopic = ref(false)
+const dialogTopicForm = ref(false)
 const dialogFolderForm = ref(false)
 
 function onCreateTopicSuccess(data: Topic) {
-  dialogSaveTopic.value = false;
-  router.push({name: 'EditFlashcards', params: {id: data.id}})
+  dialogTopicForm.value = false;
+  router.push({name: 'TopicEdit', params: {id: data.id}})
 }
 function onCreateFolderSuccess(data: Folder) {
   dialogFolderForm.value = false;
-  // router.push({name: 'EditFlashcards', params: {id: data.id}})
+  router.push({name: 'FolderTopics', params: {id: data.id, slug: data.slug}})
 }
 
 function handleLogout() {

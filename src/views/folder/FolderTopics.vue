@@ -55,7 +55,7 @@
     <template v-else-if="pageTopic.totalElements > 0">
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
         <RouterLink v-for="item in pageTopic.content" :key="item.id"
-          :to="{name: 'FlashcardsHome', params: {id: item.id, slug: item.slug}}"
+          :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}"
         >
           <TopicItem :topic="item" layout="grid" />
         </RouterLink>
@@ -89,7 +89,7 @@
 import { useFolderStore } from '@/stores';
 import { useRoute, useRouter } from 'vue-router';
 import type { Topic, Folder, Page } from "@/types";
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { Badge } from '@/components/ui/badge'
 import { EllipsisVertical, PencilIcon, TrashIcon } from 'lucide-vue-next';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -114,7 +114,7 @@ const router = useRouter()
 
 const isLoading = ref(false)
 const isDeleting = ref(false)
-const folderId = ref(route.params.id as string) 
+const folderId = computed(() => route.params.id as string)
 const folder = ref<Folder | null>(null)
 const pageTopic = reactive<Page<Topic>>({
   content: [],

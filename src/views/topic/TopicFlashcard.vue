@@ -43,9 +43,9 @@
 import { computed, ref } from "vue";
 import { useTermStore } from "@/stores";
 import { useRoute } from "vue-router";
-import FlipCardList from "@/components/FlipCardList.vue";
+import FlipCardList from "@/components/flip-card/FlipCardList.vue";
 import type { Term } from "@/types";
-import TermStatistic from "@/components/TermStatistic.vue";
+import TermStatistic from "@/components/term/TermStatistic.vue";
 import { Button } from "@/components/ui/button";
 import { useTopicLearningStore } from "@/stores/topic-learning.store";
 import { Skeleton } from "@/components/ui/skeleton";

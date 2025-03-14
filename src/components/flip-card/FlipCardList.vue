@@ -57,9 +57,9 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
-import FlipCard from "@/components/FlipCard.vue";
+import FlipCard from "@/components/flip-card/FlipCard.vue";
 import type { Term } from "@/types";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { CheckIcon, XIcon } from "lucide-vue-next";
 
 export interface FlipCardListProps {

@@ -15,14 +15,30 @@
           </DropdownMenuTrigger>
           <DropdownMenuContent class="w-44" :sideOffset="12" align="end">
             <DropdownMenuGroup>
-              <DropdownMenuItem class="cursor-pointer" :as="RouterLink" :to="{name: 'EditFlashcards', params: {id: topicId}}">
+              <DropdownMenuItem class="cursor-pointer" :as="RouterLink" :to="{name: 'TopicEdit', params: {id: topicId}}">
                 <Pencil class="mr-2 h-4 w-4" />
                 <span>Edit</span>
               </DropdownMenuItem>
-              <DropdownMenuItem class="text-red-500 cursor-pointer focus:text-red-500">
-                <Trash :strokeWidth="3" class="mr-2 h-4 w-4" />
-                <span>Delete</span>
-              </DropdownMenuItem>
+              <Dialog v-model:open="dialogDeleteTopic">
+                <DialogTrigger class="w-full">
+                  <DropdownMenuItem class="text-red-500 cursor-pointer focus:text-red-500" @select="(e) => e.preventDefault()">
+                    <TrashIcon :strokeWidth="3" class="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent @interactOutside="(e) => {e.preventDefault()}">
+                  <DialogHeader>
+                    <DialogTitle>Delete this topic?</DialogTitle>
+                    <DialogDescription>
+                      The topic will be permanently deleted! Are you sure?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter class="mt-4">
+                    <Button variant="outline" @click="dialogDeleteTopic = false">Cancel</Button>
+                    <Button variant="destructive" @click="deleteTopic">Delete</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -30,11 +46,11 @@
     </div>
     <p class="opacity-60">{{ topicStore.topic?.description }}</p>
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
-      <RouterLink :to="{name: 'FlashcardsLearn', params: {id: topicId}}" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
+      <RouterLink :to="{name: 'TopicFlashcards', params: {id: topicId}}" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
         <span class="text-lg font-semibold">Flashcards</span>
         <img src="@/assets/images/flash-card.png" width="50px" alt="">
       </RouterLink>
-      <RouterLink :to="'/'" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
+      <RouterLink :to="{name: 'TopicLearn', params: {id: topicId}}" class=" py-4 px-6 rounded-lg bg-[#316cdd] text-white flex items-center justify-between">
         <span class="text-lg font-semibold">Learn</span>
         <img src="@/assets/images/flash-card.png" width="50px" alt="">
       </RouterLink>
@@ -77,11 +93,12 @@
 import { ref } from "vue";
 import { useTermStore, useTopicStore } from "@/stores";
 import { RouterLink, useRoute, useRouter } from "vue-router";
-import { EStatus, type Term } from "@/types";
+import { EStatus, type Topic, type Term } from "@/types";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, Pencil, Trash } from "lucide-vue-next";
-import TermForm from "@/components/TermForm.vue";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { EllipsisVertical, Pencil, TrashIcon } from "lucide-vue-next";
+import TermForm from "@/components/term/TermForm.vue";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -93,10 +110,13 @@ const termStore = useTermStore()
 const topicStore = useTopicStore();
 
 const topicId = ref(route.params.id as string)
+const topic = ref<Topic>()
 const terms = ref<Term[]>([] as Term[])
 const hideTerm = ref(false);
 const hideDefinition = ref(false);
 const isLoading = ref(false)
+const dialogDeleteTopic = ref(false)
+const isDeleting = ref(false)
 
 function toggleHideTerm() {
   hideTerm.value = !hideTerm.value
@@ -115,6 +135,18 @@ async function updateStatus(data: boolean) {
     console.error(e)
   }
 }
+async function deleteTopic() {
+  isDeleting.value = true;
+  try {
+    await topicStore.delete(topicId.value)
+    dialogDeleteTopic.value = false;
+  } catch (e) {
+    console.log(e)
+  } finally {
+    isDeleting.value = false
+    router.replace({name: 'Home'})
+  }
+}
 
 async function getData() {
   isLoading.value = true
@@ -123,9 +155,12 @@ async function getData() {
       topicStore.getById(topicId.value),
       termStore.getAllByTopicId(topicId.value)
     ])
+    topic.value = res[0]
     terms.value = res[1]
-    if (topicStore.topic?.status == EStatus.DRAFT) {
-      router.replace({name: 'EditFlashcards', params: {id: topicId.value}})
+    if (topic.value.status == EStatus.DRAFT) {
+      router.replace({name: 'TopicEdit', params: {id: topicId.value}})
+    } else if (!route.params.slug || topic.value.slug != route.params.slug) {
+      router.replace({name: 'TopicHome', params: {id: topic.value.id, slug: topic.value.slug}})
     }
   } catch (e) {
     console.error(e);

@@ -1,6 +1,7 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import LearnLayout from "@/layouts/LearnLayout.vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { h } from "vue";
+import { createRouter, createWebHistory, RouterView } from "vue-router";
 
 const routes = [
   {
@@ -21,22 +22,43 @@ const routes = [
     component: () => import('@/views/Login.vue')
   },
   {
-    path: "/flashcards/:id/edit",
-    name: 'EditFlashcards',
-    component: () => import('@/views/flashcard/EditFlashcards.vue'),
+    path: "/topic-home/:id(\\d+)/:slug?",
+    name: 'TopicHome',
+    component: () => import('@/views/topic/TopicHome.vue'),
     meta: { layout: DefaultLayout }
   },
   {
-    path: "/flashcards-home/:id/:slug?",
-    name: 'FlashcardsHome',
-    component: () => import('@/views/flashcard/FlashcardsHome.vue'),
-    meta: { layout: DefaultLayout }
-  },
-  {
-    path: "/learn/:id/flashcards",
-    name: 'FlashcardsLearn',
-    component: () => import('@/views/flashcard/FlashcardsLearn.vue'),
-    meta: { layout: LearnLayout }
+    path: "/topic/:id(\\d+)",
+    redirect: (to: any) => {
+      return {name: 'TopicHome', params: {id: to.params.id}}
+    },
+    component: {render: () => h(RouterView)},
+    children: [
+      {
+        path: "edit",
+        name: 'TopicEdit',
+        component: () => import('@/views/topic/TopicEdit.vue'),
+        meta: { layout: DefaultLayout }
+      },
+      {
+        path: "flashcards",
+        name: 'TopicFlashcards',
+        component: () => import('@/views/topic/TopicFlashcard.vue'),
+        meta: { layout: LearnLayout }
+      },
+      {
+        path: "learn",
+        name: 'TopicLearn',
+        component: () => import('@/views/topic/TopicLearn.vue'),
+        meta: { layout: LearnLayout }
+      },
+      {
+        path: "test",
+        name: 'TopicTest',
+        component: () => import('@/views/topic/TopicLearn.vue'),
+        meta: { layout: LearnLayout }
+      },
+    ]
   },
   {
     path: "/library",
@@ -57,7 +79,7 @@ const routes = [
     meta: { layout: DefaultLayout }
   },
   {
-    path: "/folders/:id/:slug?",
+    path: "/folders/:id(\\d+)/:slug?",
     name: "FolderTopics",
     component: () => import('@/views/folder/FolderTopics.vue'),
     meta: { layout: DefaultLayout },

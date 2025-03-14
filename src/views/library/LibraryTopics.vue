@@ -5,7 +5,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
         <template v-for="item in pageTopic.content" :key="item.id">
           <RouterLink
-            :to="item.status != EStatus.DRAFT ? {name: 'FlashcardsHome', params: {id: item.id, slug: item.slug}} : {name: 'EditFlashcards', params: {id: item.id}}"
+            :to="item.status != EStatus.DRAFT ? {name: 'TopicHome', params: {id: item.id, slug: item.slug}} : {name: 'TopicEdit', params: {id: item.id}}"
           >
             <TopicItem :topic="item" layout="grid" />
           </RouterLink>
@@ -31,7 +31,7 @@
       </div>
     </template>
     <div v-else class="mt-5 text-center">
-      This folder has no topics
+      You have not created the topic yet
     </div>
   </div>
 </template>

@@ -36,12 +36,18 @@ export const useTopicStore = defineStore('topic', {
       const res = await ApiService.put(`/topics/${topicId}/status`, null, {
         params: {status}
       })
-      if (res.status == 200) {
+      if (res.status == 200 && this.topic?.id == topicId) {
         this.topic = res.data
       } else {
         this.topic = null
       }
       return res.data
+    },
+    async delete(topicId: string | number) {
+      await ApiService.delete(`/topics/${topicId}`)
+      if (this.topic?.id == topicId) {
+        this.topic = null
+      }
     }
   }
 })

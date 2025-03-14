@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Term } from "@/types";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Repeat } from "lucide-vue-next";
 
 withDefaults(defineProps<Term & {

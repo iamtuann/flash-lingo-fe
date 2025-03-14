@@ -46,11 +46,11 @@
 
 <script setup lang="ts">
 import type { Term } from '@/types';
-import Button from './ui/button/Button.vue';
+import { Button } from '@/components/ui/button';
 import { GripHorizontal, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
-import Label from './ui/label/Label.vue';
-import Input from './ui/input/Input.vue';
+import Label from '@/components/ui/label/Label.vue';
+import Input from '@/components/ui/input/Input.vue';
 import { useTermStore } from "@/stores";
 import { watchDebounced } from '@vueuse/core';
 import { deepCompare, getMessage } from "@/utils";
@@ -128,7 +128,7 @@ function onDelete() {
     return;
   }
   try {
-    const res = termStore.delete(formData.value.topicId, formData.value.id)
+    termStore.delete(formData.value.topicId, formData.value.id)
     emits('delete', index)
   } catch (e) {
     console.error(e)

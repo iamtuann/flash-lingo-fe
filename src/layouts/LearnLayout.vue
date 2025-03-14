@@ -3,7 +3,7 @@
     <div class="px-6 md:px-8 py-3 flex justify-between items-center border-b border-border">
       <div>
         <Button 
-          :as="RouterLink" :to="{'name': 'FlashcardsHome', params: {id: topicId, slug: topic?.slug || ''}}"
+          :as="RouterLink" :to="{'name': 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}}"
           variant="ghost" class="rounded-full w-10 h-10 border-2 border-border"
       >
           <ChevronLeft class="!size-6" />

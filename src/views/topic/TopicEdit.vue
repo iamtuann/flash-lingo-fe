@@ -4,7 +4,7 @@
       <div class="flex items-center gap-4">
         <Button 
           v-if="topic?.status != EStatus.DRAFT"
-          :as="RouterLink" :to="{'name': 'FlashcardsHome', params: {id: topicId, slug: topic?.slug || ''}}"
+          :as="RouterLink" :to="{'name': 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}}"
           variant="ghost" class="rounded-full w-10 h-10 border-2 border-border"
         >
           <ChevronLeft class="!size-6" />
@@ -18,7 +18,7 @@
           Create Flashcards
           <LoaderCircle v-if="isLoading.saveTopic" class="mr-2 h-4 w-4 animate-spin" />
         </Button>
-        <Button v-else :disabled="isSaving" @click="router.push({name: 'FlashcardsHome', params: {id: topicId, slug: topic?.slug || ''}})">
+        <Button v-else :disabled="isSaving" @click="router.push({name: 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}})">
           Done
         </Button>
       </div>
@@ -32,7 +32,7 @@
       </h2>
       <p class="opacity-60">{{ topic?.description }}</p>
     </div>
-    <SaveTopic v-else
+    <TopicForm v-else
       role="update" cancelable
       @cancel="isEditingTopic = false"
       @success="onUpdateSuccess"
@@ -81,12 +81,12 @@ import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useTermStore, useTopicStore } from "@/stores";
 import { computed, reactive, ref, watch } from 'vue';
 import { type Topic, type Term, EStatus } from '@/types';
-import TermForm from '@/components/TermForm.vue';
+import TermForm from '@/components/term/TermForm.vue';
 import draggable from 'vuedraggable'
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, LoaderCircle, PencilIcon } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
-import SaveTopic from "@/components/SaveTopic.vue";
+import TopicForm from "@/components/topic/TopicForm.vue";
 
 const route = useRoute();
 const router = useRouter()
@@ -123,7 +123,7 @@ async function createTopic() {
   isLoading.saveTopic = true
   try {
     const res = await topicStore.changeStatus(topicId.value, EStatus.PRIVATE)
-    router.push({name: 'FlashcardsHome', params: {id: res.id, slug: res.slug}})
+    router.push({name: 'TopicHome', params: {id: res.id, slug: res.slug}})
   } catch (e) {
     console.error(e)
   } finally {

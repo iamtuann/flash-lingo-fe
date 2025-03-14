@@ -29,25 +29,25 @@
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-vue-next";
 import { useTopicStore } from "@/stores/topic.store";
 import type { Topic, TopicRequest } from "@/types/topic";
 import { hasValues, getMessage } from "@/utils";
 import { useRoute } from "vue-router";
 
-export type SaveTopicEmits = {
+export type TopicFormEmits = {
   'success': [payload: Topic],
   'cancel': []
 };
-export type SaveTopicProps = {
+export type TopicFormProps = {
   role?: 'create' | 'update',
   cancelable?: boolean
 }
-const emit = defineEmits<SaveTopicEmits>()
-const props = withDefaults(defineProps<SaveTopicProps>() , {
+const emit = defineEmits<TopicFormEmits>()
+const props = withDefaults(defineProps<TopicFormProps>() , {
   role: 'create'
 })
 
