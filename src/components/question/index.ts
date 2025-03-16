@@ -4,6 +4,7 @@ export interface QuestionComponentProps {
   question: Question;
   userAnswer: string | string[];
   isAnswered: boolean;
+  isCorrect?: boolean;
 }
 
 export interface QuestionComponentEmits {

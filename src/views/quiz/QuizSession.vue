@@ -1,20 +1,51 @@
 <template>
-  <div class="container py-10 px-4">
+  <QuizSessionSkeleton v-if="isLoading" />
+  <div v-else-if="quizState.quizCompleted" class="container mx-auto py-10 px-4">
+    <div class="max-w-2xl mx-auto">
+      <Card class="text-center">
+        <CardHeader>
+          <CardTitle class="text-2xl">Quiz Completed!</CardTitle>
+        </CardHeader>
+        <CardContent class="space-y-4">
+          <div class="text-6xl font-bold">
+            {{quizState.score}} / {{questions.length}}
+          </div>
+          <p class="text-xl">
+            {{quizState.score === questions.length
+              ? "Perfect score! Excellent work!"
+              : quizState.score > questions.length / 2
+                ? "Good job! Keep practicing to improve."
+                : "Keep studying and try again to improve your score."}}
+          </p>
+          <Progress :model-value="(quizState.score / questions.length) * 100" />
+        </CardContent>
+        <CardFooter class="flex flex-col gap-4">
+          <div class="grid grid-cols-2 gap-4 w-full">
+            <Button @click="restartQuiz" class="flex items-center gap-2">
+              <RefreshCw class="h-4 w-4" />
+              Restart Quiz
+            </Button>
+            <Button @click="reconfigureQuiz" variant="outline" class="flex items-center gap-2">
+              <Settings class="h-4 w-4" />
+              Reconfigure Quiz
+            </Button>
+          </div>
+          <Button variant="outline" @click="router.push({name: 'TopicHome', params: {id: topicId, slug: ''}})" class="flex items-center gap-2">
+            <HomeIcon class="h-4 w-4" />
+            Return to Topic
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  </div>
+  <div v-else class="container py-10 px-4">
     <div class="max-w-3xl mx-auto">
       <div class="mb-6">
         <div class="flex justify-between items-center mb-2">
-          <div>Question {{quizState.currentQuestionIndex + 1}} of {{questions.length}}</div>
+          <div>Question {{quizState.currentQuestionIndex + 1}} / {{questions.length}}</div>
           <div>Score: {{quizState.score}}</div>
         </div>
-        <ProgressRoot
-          :model-value="progressValue"
-          class="w-full rounded-full relative h-4 overflow-hidden bg-accent border border-accent"
-        >
-          <ProgressIndicator
-            class="indicator rounded-full block relative w-full h-full bg-primary transition-transform overflow-hidden duration-[660ms] ease-[cubic-bezier(0.65, 0, 0.35, 1)] after:animate-progress after:content-[''] after:absolute after:inset-0"
-            :style="`transform: translateX(-${100 - progressValue}%)`"
-          />
-        </ProgressRoot>
+        <Progress :model-value="progressValue" />
       </div>
       <Tabs defaultValue="question" class="mb-6">
         <TabsList class="grid w-full grid-cols-2">
@@ -24,15 +55,17 @@
         <TabsContent value="question">
           <Card>
             <CardHeader>
-              <CardTitle>{{getQuestionTitle(currentQuestion)}}</CardTitle>
+              <CardTitle>{{getQuestionTitle(currentQuestion.type)}}</CardTitle>
             </CardHeader>
             <CardContent>
-              <QuestionRenderer
-                :question="currentQuestion"
-                :userAnswer="userAnswer"
-                :isAnswered="quizState.isAnswered"
-                @answerChange="handleUserAnswer"
-              />
+              <form @keydown.enter="checkAnswer" >
+                <QuestionRenderer
+                  :question="currentQuestion"
+                  :userAnswer="userAnswer"
+                  :isAnswered="quizState.isAnswered"
+                  @answerChange="handleUserAnswer"
+                />
+              </form>
             </CardContent>
             <CardFooter class="flex justify-between">
               <Button
@@ -55,6 +88,45 @@
             </CardFooter>
           </Card>
         </TabsContent>
+        <TabsContent value="info">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quiz Information</CardTitle>
+            </CardHeader>
+            <CardContent class="space-y-4">
+              <div>
+                <h3 class="font-medium">Quiz Configuration</h3>
+                <ul class="mt-2 space-y-1 text-sm">
+                  <li>Total Questions: {{questions.length}}</li>
+                  <li>Question Types: {{config.selectedTypes.map(getQuestionTypeLabel).join(", ")}}</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 class="font-medium">Question Type Distribution</h3>
+                <div class="mt-2 space-y-2">
+                  <div v-for="type in config.selectedTypes" :key="type" class="space-y-1">
+                    <div class="flex justify-between text-sm">
+                      <span>{{getQuestionTypeLabel(type)}}</span>
+                      <span>
+                        {{questions.filter((q) => q.type === type).length}} questions
+                      </span>
+                    </div>
+                    <!-- <ProgressRoot class="h-2">
+                      <ProgressIndicator />
+                    </ProgressRoot> -->
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" @click="reconfigureQuiz" class="w-full flex items-center gap-2">
+                <Settings class="h-4 w-4" />
+                Reconfigure Quiz
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   </div>
@@ -68,13 +140,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QuestionService } from '@/services/question-service';
 import { useTermStore } from '@/stores';
 import type { QuizState, Question, QuestionType, Term } from '@/types';
-import { ArrowLeft, ArrowRight } from 'lucide-vue-next';
-import { ProgressIndicator, ProgressRoot } from 'reka-ui';
+import { ArrowLeft, ArrowRight, HomeIcon, RefreshCw, Settings } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { questionTypes } from "@/constants";
+import { Progress } from '@/components/ui/progress';
+import QuizSessionSkeleton from './QuizSessionSkeleton.vue';
 
 const route = useRoute()
+const router = useRouter()
 const topicId = ref(route.params.id as string)
 const termStore = useTermStore()
 
@@ -86,7 +160,7 @@ const quizState = reactive<QuizState>({
   score: 0,
   userAnswers: {},
   isAnswered: false,
-  isCorrect: false,
+  isCorrect: null,
   quizCompleted: false,
 })
 const config = reactive<{
@@ -145,22 +219,29 @@ const nextQuestion = () => {
 const prevQuestion = () => {
   if (quizState.currentQuestionIndex > 0) {
     quizState.currentQuestionIndex = quizState.currentQuestionIndex - 1
-    // quizState.isAnswered = !!quizState.userAnswers[questions.value[quizState.currentQuestionIndex - 1].id]
     quizState.isAnswered = !!userAnswer.value
   }
 }
 
-function getQuestionTitle(question: Question): string {
-  switch (question.type) {
-    case "multipleChoice":
-      return "Which term matches this definition?"
-    case "termInput":
-      return "Enter the term for this definition"
-    case "trueFalse":
-      return "Is this definition correct for the term?"
-    default:
-      return "Answer the question"
-  }
+const restartQuiz = () => {
+  questions.value = [...questions.value].sort(() => Math.random() - 0.5)
+  Object.assign(quizState, {
+    currentQuestionIndex: 0,
+    score: 0,
+    userAnswers: {},
+    isAnswered: false,
+    isCorrect: null,
+    quizCompleted: false,
+  })
+}
+
+const reconfigureQuiz = () => {
+  router.push({name: 'QuizConfig', params: {id: topicId.value}})
+}
+
+function getQuestionTitle(type: string): string {
+  const question = questionTypes.find(q => q.type === type)
+  return question?.questionTitle || "Answer the question";
 }
 
 function getQuestionTypeLabel(type: string): string {
@@ -188,11 +269,11 @@ async function getData() {
   try {
     const res = await termStore.getAllByTopicId(topicId.value)
     terms.value = res
-    isLoading.value = false;
     if (!storedConfig) {
       config.questionCount = terms.value.length
     }
     generateQuestions(terms.value, config.questionCount, config.selectedTypes)
+    isLoading.value = false;
   } catch (e) {
     console.error(e);
     isLoading.value = false

@@ -8,7 +8,7 @@
       <div
         v-for="(option, idx) in question.options"
         :key="idx"
-        :class='`flex items-center space-x-2 p-3 rounded-md border ${
+        :class='`flex items-center space-x-2 px-3 rounded-md border ${
           isAnswered
             ? option === question.correctAnswer
               ? "border-green-500 bg-green-300 bg-opacity-10"
@@ -19,7 +19,7 @@
         }`'
       >
         <RadioGroupItem :value="option" :id="`option-${idx}`" :disabled="isAnswered" />
-        <Label :for="`option-${idx}`" class="w-full cursor-pointer">
+        <Label :for="`option-${idx}`" class="w-full cursor-pointer py-3">
           {{option}}
         </Label>
         <CheckCircle v-if="isAnswered && option === question.correctAnswer" class="h-5 w-5 text-green-500" />

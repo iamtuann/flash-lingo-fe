@@ -24,6 +24,6 @@ export interface QuizState {
   score: number,
   userAnswers: Record<string, string | string[]>,
   isAnswered: boolean,
-  isCorrect: boolean,
+  isCorrect: boolean | null,
   quizCompleted: boolean,
 }
