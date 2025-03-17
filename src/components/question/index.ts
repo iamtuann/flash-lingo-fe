@@ -3,8 +3,9 @@ import type { Question } from "@/types"
 export interface QuestionComponentProps {
   question: Question;
   userAnswer: string | string[];
-  isAnswered: boolean;
+  isAnswered?: boolean;
   isCorrect?: boolean;
+  showResult?: boolean;
 }
 
 export interface QuestionComponentEmits {

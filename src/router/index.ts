@@ -59,6 +59,12 @@ const routes = [
         component: () => import('@/views/quiz/QuizSession.vue'),
         meta: { layout: LearnLayout }
       },
+      {
+        path: "test",
+        name: 'TopicTest',
+        component: () => import('@/views/test/Test.vue'),
+        meta: { layout: LearnLayout }
+      },
     ]
   },
   {
