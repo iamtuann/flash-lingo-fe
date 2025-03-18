@@ -39,6 +39,12 @@
   
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
+    --success: 142.09deg 70.56% 45.29%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 45.4deg 93.39% 47.45%;
+    --warning-foreground: 210 40% 98%;
   
     --border:214.3 31.8% 91.4%;
     --input:214.3 31.8% 91.4%;
@@ -71,6 +77,12 @@
   
     --destructive:0 84.2% 60.2%;
     --destructive-foreground:210 40% 98%;
+
+    --success: 142.09deg 70.56% 45.29%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 45.4deg 93.39% 47.45%;
+    --warning-foreground: 210 40% 98%;
   
     --border:215.38deg 16.32% 46.86%;
     --input:217.2 32.6% 17.5%;

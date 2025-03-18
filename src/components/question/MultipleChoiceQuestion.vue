@@ -18,8 +18,8 @@
             : "hover:bg-accent"
         }`'
       >
-        <RadioGroupItem :value="option" :id="`option-${idx}`" :disabled="isAnswered" />
-        <Label :for="`option-${idx}`" class="w-full cursor-pointer py-3">
+        <RadioGroupItem :value="option" :id="`${question.id}-${idx}`" :disabled="isAnswered" />
+        <Label :for="`${question.id}-${idx}`" class="w-full cursor-pointer py-3">
           {{option}}
         </Label>
         <CheckCircle v-if="isAnswered && option === question.correctAnswer" class="h-5 w-5 text-green-500" />

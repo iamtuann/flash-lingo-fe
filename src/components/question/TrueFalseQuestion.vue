@@ -17,8 +17,8 @@
             : "hover:bg-accent"
         }`'
       >
-        <RadioGroupItem value="true" id="true" :disabled="isAnswered" />
-        <Label htmlFor="true" class="w-full cursor-pointer py-3">
+        <RadioGroupItem value="true" :id="`${question.id}-true`" :disabled="isAnswered" />
+        <Label :for="`${question.id}-true`" class="w-full cursor-pointer py-3">
           True
         </Label>
         <CheckCircle v-if="isAnswered && 'true' === question.correctAnswer" class="h-5 w-5 text-green-500" />
@@ -36,8 +36,8 @@
             : "hover:bg-accent"
         }`'
       >
-        <RadioGroupItem value="false" id="false" :disabled="isAnswered" />
-        <Label htmlFor="false" class="w-full cursor-pointer py-3">
+        <RadioGroupItem value="false" :id="`${question.id}-false`" :disabled="isAnswered" />
+        <Label :for="`${question.id}-false`" class="w-full cursor-pointer py-3">
           False
         </Label>
         <CheckCircle v-if="isAnswered && 'false' === question.correctAnswer" class="h-5 w-5 text-green-500" />

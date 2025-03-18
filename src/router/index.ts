@@ -65,6 +65,12 @@ const routes = [
         component: () => import('@/views/test/Test.vue'),
         meta: { layout: LearnLayout }
       },
+      {
+        path: "test/result",
+        name: 'TestResult',
+        component: () => import('@/views/test/TestResult.vue'),
+        meta: { layout: LearnLayout }
+      },
     ]
   },
   {

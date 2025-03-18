@@ -33,13 +33,15 @@
         <Progress :model-value="progressPercentage" class="w-full" />
       </div>
 
-      <div class="space-y-8 mb-8" v-if="!testState.isSubmitted">
-        <Card v-for="(question, i) in questions" :key="question.id" :class="isFlagged(question.id) ? 'border-yellow-400' : ''">
+      <Skeleton v-if="isLoading" class="h-96" />
+
+      <div class="space-y-8 mb-8" v-else-if="!testState.isSubmitted">
+        <Card v-for="(question, i) in questions" :key="i" :class="isFlagged(question.id) ? 'border-yellow-400' : ''">
           <CardHeader class="pb-2">
             <div class="flex justify-between items-start">
               <CardTitle class="text-lg flex items-center gap-2">
                 Question {{i + 1}}
-                <Badge :variant="getQuestionTypeBadgeVariant(question.type)">
+                <Badge variant="default">
                   {{getQuestionTypeLabel(question.type)}}
                 </Badge>
               </CardTitle>
@@ -63,20 +65,8 @@
           </CardContent>
         </Card>
       </div>
-      <div v-else>
-        <Card>
-          <CardHeader>
-            <CardTitle>Test Completed</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>You have completed the test. View your results in the Results tab.</p>
-          </CardContent>
-          <CardFooter>
-            <Button>View Results</Button>
-          </CardFooter>
-        </Card>
-      </div>
-      <div class="flex justify-end items-center mb-6">
+
+      <div v-if="!isLoading" class="flex justify-end items-center mb-6">
         <Button @click="showSubmitDialog = true" class="flex items-center gap-1">
           Submit Test
         </Button>
@@ -99,8 +89,11 @@
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" @click="showSubmitDialog = false">Cancel</Button>
-          <Button @click="submitTest">Submit Test</Button>
+          <Button :disabled="isCalculate" variant="outline" @click="showSubmitDialog = false">Cancel</Button>
+          <Button :disabled="isCalculate" @click="submitTest">
+            Submit Test
+            <LoaderCircle v-if="isCalculate" class="mr-2 h-4 w-4 animate-spin" />
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -130,13 +123,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { questionTypes } from '@/constants';
 import { QuestionService } from '@/services/question-service';
-import { useTermStore, useTopicStore } from '@/stores';
+import { useTermStore, useTestStore, useTopicStore } from '@/stores';
 import type { TestState, Question, Term, QuestionType, TestResult } from '@/types';
 import { formatTime } from '@/utils';
-import { Clock, Flag, Save, TriangleAlert } from 'lucide-vue-next';
-import { computed, reactive, ref } from 'vue';
+import { Clock, Flag, LoaderCircle, Save, TriangleAlert } from 'lucide-vue-next';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 
@@ -145,9 +139,11 @@ const router = useRouter()
 const topicId = ref(route.params.id as string)
 const termStore = useTermStore()
 const topicStore = useTopicStore()
+const testStore = useTestStore()
 
 const terms = ref<Term[]>([])
 const isLoading = ref(true)
+const isCalculate = ref(false)
 const questions = ref<Question[]>([])
 const testState = reactive<TestState>({
   answers: {},
@@ -159,6 +155,8 @@ const testState = reactive<TestState>({
 const showSubmitDialog = ref(false)
 const showExitDialog = ref(false)
 const elapsedTime = ref(0)
+let timer: ReturnType<typeof setInterval> | null = null
+
 const answeredCount = computed(() => Object.keys(testState.answers).length)
 const progressPercentage = computed(() => {
   if (questions.value.length === 0) {
@@ -170,6 +168,7 @@ const progressPercentage = computed(() => {
 getData()
 
 function submitTest() {
+  isCalculate.value = true
   const endTime = Date.now()
   const timeSpent = Math.floor((endTime - testState.startTime) / 1000)
   const questionResults: Record<
@@ -212,12 +211,15 @@ function submitTest() {
     timeSpent,
     questionResults,
   }
-
-  // setTestResult(result)
   testState.endTime = endTime
   testState.isSubmitted = true
   localStorage.removeItem("savedTest")
-  // router.push({name: 'TestResult', params: {id: topicId.value}})
+  testStore.questions = questions.value
+  testStore.testState = testState
+  testStore.testResult = result
+  isCalculate.value = false;
+  showSubmitDialog.value = false
+  router.push({name: 'TestResult', params: {id: topicId.value}})
 }
 
 function exitTest() {
@@ -231,9 +233,13 @@ function exitAndSave() {
 }
 
 function handleUserAnswer(questionId: string, answer: string | string[]) {
-  testState.answers = {
-    ...testState.answers,
-    [questionId]: answer
+  if (answer) {
+    testState.answers = {
+      ...testState.answers,
+      [questionId]: answer
+    }
+  } else {
+    delete testState.answers[questionId]
   }
 }
 
@@ -259,6 +265,21 @@ function saveTest() {
   alert("Test progress saved successfully!")
 }
 
+const startTimer = () => {
+  if (timer) clearInterval(timer)
+  timer = setInterval(() => {
+    elapsedTime.value = Math.floor((Date.now() - testState.startTime) / 1000)
+  }, 1000)
+}
+
+onMounted(() => {
+  testState.startTime = Date.now()
+  startTimer()
+})
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+})
+
 async function getData() {
   try {
     const res = await termStore.getAllByTopicId(topicId.value)
@@ -281,25 +302,11 @@ function generateTestQuestions(terms: Term[]) {
   const questionService = new QuestionService()
   const allTypes: QuestionType[] = questionTypes.map(q => q.type)
   questions.value = questionService.generateTestQuestions(terms, allTypes)
-  console.log(questions.value)
 }
 
 function getQuestionTypeLabel(type: string): string {
   const question = questionTypes.find(q => q.type === type)
   return question?.label || "Other question";
-}
-
-function getQuestionTypeBadgeVariant(type: QuestionType): "default" | "secondary" | "outline" {
-  switch (type) {
-    case "multipleChoice":
-      return "default"
-    case "termInput":
-      return "secondary"
-    case "trueFalse":
-      return "default"
-    default:
-      return "default"
-  }
 }
 </script>
 
