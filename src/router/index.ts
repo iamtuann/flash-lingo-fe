@@ -71,6 +71,13 @@ const routes = [
         component: () => import('@/views/test/TestResult.vue'),
         meta: { layout: LearnLayout }
       },
+      {
+        path: "game-bar",
+        alias: "game",
+        name: 'GameBar',
+        component: () => import('@/views/game/GameBar.vue'),
+        meta: { layout: LearnLayout }
+      },
     ]
   },
   {

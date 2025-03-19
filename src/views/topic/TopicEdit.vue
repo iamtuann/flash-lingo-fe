@@ -1,76 +1,78 @@
 <template>
   <div class="container">
-    <div class="flex items-center justify-between py-4 sticky top-0 bg-background">
-      <div class="flex items-center gap-4">
-        <Button 
-          v-if="topic?.status != EStatus.DRAFT"
-          :as="RouterLink" :to="{'name': 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}}"
-          variant="ghost" class="rounded-full w-10 h-10 border-2 border-border"
-        >
-          <ChevronLeft class="!size-6" />
-        </Button>
-        <span>{{ statusText }}</span>
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center justify-between py-4 sticky top-0 bg-background">
+        <div class="flex items-center gap-4">
+          <Button 
+            v-if="topic?.status != EStatus.DRAFT"
+            :as="RouterLink" :to="{'name': 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}}"
+            variant="ghost" class="rounded-full w-10 h-10 border-2 border-border"
+          >
+            <ChevronLeft class="!size-6" />
+          </Button>
+          <span>{{ statusText }}</span>
+        </div>
+        <div>
+          <Button :disabled="(isLoading.saveTopic || isLoading.topic) || terms.length < 2"
+            v-if="topic?.status == 2" @click="createTopic"
+          >
+            Create Flashcards
+            <LoaderCircle v-if="isLoading.saveTopic" class="mr-2 h-4 w-4 animate-spin" />
+          </Button>
+          <Button v-else :disabled="isSaving" @click="router.push({name: 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}})">
+            Done
+          </Button>
+        </div>
       </div>
-      <div>
-        <Button :disabled="(isLoading.saveTopic || isLoading.topic) || terms.length < 2"
-          v-if="topic?.status == 2" @click="createTopic"
-        >
-          Create Flashcards
-          <LoaderCircle v-if="isLoading.saveTopic" class="mr-2 h-4 w-4 animate-spin" />
-        </Button>
-        <Button v-else :disabled="isSaving" @click="router.push({name: 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}})">
-          Done
-        </Button>
+      <div v-if="!isEditingTopic">
+        <h2 class="text-2xl font-semibold py-2">
+          {{ topic?.name }}
+          <Button variant="ghost" size="sm" class="rounded-full" @click="isEditingTopic = true">
+            <PencilIcon />
+          </Button>
+        </h2>
+        <p class="opacity-60">{{ topic?.description }}</p>
       </div>
-    </div>
-    <div v-if="!isEditingTopic">
-      <h2 class="text-2xl font-semibold py-2">
-        {{ topic?.name }}
-        <Button variant="ghost" size="sm" class="rounded-full" @click="isEditingTopic = true">
-          <PencilIcon />
-        </Button>
-      </h2>
-      <p class="opacity-60">{{ topic?.description }}</p>
-    </div>
-    <TopicForm v-else
-      role="update" cancelable
-      @cancel="isEditingTopic = false"
-      @success="onUpdateSuccess"
-      />
-    <div v-if="isLoading.terms" class="mt-5 grid gap-4">
-      <Skeleton v-for="i in 2" class="h-40 rounded-lg" :key="i" />
-    </div>
-    <div v-else class="mt-5">
-      <draggable 
-        class="flex flex-col gap-4"
-        v-model="terms"
-        :component-data="{
-          tag: 'ul',
-          type: 'transition-group',
-          name: !drag ? 'flip-list' : null
-        }"
-        v-bind="dragOptions"
-        @start="drag=true" 
-        @end="drag=false" 
-        item-key="rank"
-        @update="onUpdateDrag"
-      >
-        <template #item="{element, index}">
-          <TermForm
-            v-bind="element" :index="index" :data-id="element.id"
-            @delete="onDeleteTerm"
-            @update="(data) => onUpdateTerm(index, data)"
-            @saving="onSavingTerm"
-            :disable-delete="terms.length < 2"
-          />
-        </template>
-      </draggable>
-      <div
-        role="button"
-        class="mt-4 bg-accent flex items-center justify-center px-5 py-8 rounded-lg text-secondary-foreground hover:text-primary"
-        @click="terms.push(defaultTerm())"  
-      >
-        <p class="uppercase font-bold">Add flash card</p>
+      <TopicForm v-else
+        role="update" cancelable
+        @cancel="isEditingTopic = false"
+        @success="onUpdateSuccess"
+        />
+      <div v-if="isLoading.terms" class="mt-5 grid gap-4">
+        <Skeleton v-for="i in 2" class="h-40 rounded-lg" :key="i" />
+      </div>
+      <div v-else class="mt-5">
+        <draggable 
+          class="flex flex-col gap-4"
+          v-model="terms"
+          :component-data="{
+            tag: 'ul',
+            type: 'transition-group',
+            name: !drag ? 'flip-list' : null
+          }"
+          v-bind="dragOptions"
+          @start="drag=true" 
+          @end="drag=false" 
+          item-key="rank"
+          @update="onUpdateDrag"
+        >
+          <template #item="{element, index}">
+            <TermForm
+              v-bind="element" :index="index" :data-id="element.id"
+              @delete="onDeleteTerm"
+              @update="(data) => onUpdateTerm(index, data)"
+              @saving="onSavingTerm"
+              :disable-delete="terms.length < 2"
+            />
+          </template>
+        </draggable>
+        <div
+          role="button"
+          class="mt-4 bg-accent flex items-center justify-center px-5 py-8 rounded-lg text-secondary-foreground hover:text-primary"
+          @click="terms.push(defaultTerm())"  
+        >
+          <p class="uppercase font-bold">Add flash card</p>
+        </div>
       </div>
     </div>
   </div>

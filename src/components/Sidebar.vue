@@ -1,6 +1,6 @@
 <template>
   <TooltipProvider>
-    <div class="bg-gray-900 h-full rounded-md">
+    <div class="bg-secondary h-full rounded-md">
       <div class="p-3 flex items-center gap-2" :class="isCollapsed && 'px-0 mx-auto justify-center'">
         <div class="p-1 cursor-pointer" @click="$emit('click:menu', !isCollapsed)">
           <Menu />
