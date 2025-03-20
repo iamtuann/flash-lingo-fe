@@ -2,7 +2,7 @@
   <div v-if="layout == 'list'">
     Topic
   </div>
-  <div v-else class="border border-border bg-accent rounded-md py-3 px-3">
+  <div v-else class="relative border border-border bg-accent rounded-md py-3 px-3">
     <div class="flex items-center">
       <p class="text-xl font-medium">{{ topic.name }} <span v-if="topic.status == 2">(Draft)</span></p>
       
@@ -14,6 +14,9 @@
     <div class="mt-1">
       <AvatarUser :user="topic.createdBy" size="5" />
       <span class="text-xs ml-2">{{ topic.createdBy.firstName +' '+ topic.createdBy.lastName }}</span>
+    </div>
+    <div class="absolute right-3 top-3">
+      <slot name="append" />
     </div>
   </div>
 </template>

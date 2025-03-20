@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <div class="flex items-center gap-3 mb-4">
+    <div class="flex items-center gap-3 mb-4 mt-4">
       <h2 class="text-2xl font-semibold tracking-tight py-2">{{ folder?.name }}</h2>
       <Badge variant="secondary" class="h-full">{{ folder?.status == 0 ? 'private' : 'public' }}</Badge>
       <div class="flex-1"></div>
+      <Button variant="outline" class="h-10 w-10" @click="showAddDialog = true">
+        <PlusIcon />
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Button size="icon" variant="secondary">
+          <Button variant="secondary" class="h-10 w-10">
             <EllipsisVertical />
           </Button>
         </DropdownMenuTrigger>
@@ -82,6 +85,8 @@
     <div v-else class="mt-5 text-center">
       This folder has no topics
     </div>
+
+    <AddTopicsDialog v-model="showAddDialog" @add-success="getData" />
   </div>
 </template>
 
@@ -89,9 +94,9 @@
 import { useFolderStore } from '@/stores';
 import { useRoute, useRouter } from 'vue-router';
 import type { Topic, Folder, Page } from "@/types";
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { Badge } from '@/components/ui/badge'
-import { EllipsisVertical, PencilIcon, TrashIcon } from 'lucide-vue-next';
+import { EllipsisVertical, PencilIcon, PlusIcon, TrashIcon } from 'lucide-vue-next';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
 import { TopicGroupSkeleton, TopicItem } from '@/components/topic';
@@ -107,6 +112,7 @@ import {
   PaginationNext,
   PaginationPrev,
 } from '@/components/ui/pagination'
+import AddTopicsDialog from './AddTopicsDialog.vue';
 
 const folderStore = useFolderStore()
 const route = useRoute()
@@ -130,9 +136,13 @@ const pageParams = reactive({
 })
 const dialogFolderForm = ref(false)
 const dialogDeleteFolder = ref(false)
+const showAddDialog = ref(false)
 
-function onUpdateFolderSuccess(data: Folder) {
-  folder.value = data
+watch(() => folderStore.folder, (newData) => {
+  folder.value = newData
+})
+
+function onUpdateFolderSuccess() {
   dialogFolderForm.value = false;
 }
 
@@ -157,9 +167,9 @@ async function getData() {
       folderStore.getById(folderId.value),
       folderStore.getTopics(folderId.value, name, pageIndex, pageSize, key, orderBy)
     ])
-    if (folderRes.status == 'fulfilled') {
-      folder.value = folderRes.value;
-    }
+    // if (folderRes.status == 'fulfilled') {
+    //   folder.value = folderRes.value;
+    // }
     if (topicRes.status == 'fulfilled') {
       pageTopic.content = topicRes.value.content;
       pageTopic.totalElements = topicRes.value.totalElements
