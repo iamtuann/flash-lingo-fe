@@ -10,34 +10,36 @@
   </div>
   <div v-else class="bg-accent rounded-lg" @focusin="onFocusIn" @focusout="onFocusOut" tabindex="0"
   :class="{'border border-red-500': errMsg}">
-    <div class="flex items-center justify-between px-5 py-3 border-b-2 border-background">
+    <div class="flex items-center justify-between px-5 py-1 border-b-2 border-background">
       <span>{{ props.index + 1 }}</span>
       <div class="flex gap-2">
-        <Button variant="ghost" size="icon" class="rounded-full hover:cursor-move hover:bg-primary">
+        <!-- <Button variant="ghost" size="icon" class="rounded-full hover:cursor-move hover:bg-primary">
           <GripHorizontal />
-        </Button>
+        </Button> -->
         <Button :disabled="disableDelete" @mousedown.stop="onDelete" size="icon" variant="ghost" class="rounded-full hover:bg-background bg-opacity-50">
           <Trash />
         </Button>
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-x-4 px-5 py-5">
-      <div class="grid gap-1">
-        <Label> Term </Label>
-        <Input
-          class="bg-accent rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:border-b-2"
-          v-model="formData.term"
-          placeholder="Enter term"
-          type="text"
-        />
-      </div>
-      <div class="grid gap-1">
-        <Label> Definition </Label>
-        <Input
-          class="bg-accent rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary"
-          v-model="formData.definition"
-          placeholder="Enter definition"
-          type="text"/>
+    <div class="px-5 py-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 ">
+        <div class="grid gap-1">
+          <Label> Term </Label>
+          <Input
+            class="bg-accent rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary focus-visible:border-b-2"
+            v-model="formData.term"
+            placeholder="Enter term"
+            type="text"
+          />
+        </div>
+        <div class="grid gap-1">
+          <Label> Definition </Label>
+          <Input
+            class="bg-accent rounded-none border-0 border-b border-foreground focus-visible:ring-0 focus-visible:border-primary"
+            v-model="formData.definition"
+            placeholder="Enter definition"
+            type="text"/>
+        </div>
       </div>
       <p class="error-msg mt-2">{{ errMsg }}</p>
     </div>

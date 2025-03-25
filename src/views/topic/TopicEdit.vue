@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="max-w-4xl mx-auto">
-      <div class="flex items-center justify-between py-4 sticky top-0 bg-background">
+      <div class="flex items-center justify-between py-4 sticky top-0 bg-background z-10">
         <div class="flex items-center gap-4">
           <Button 
             v-if="topic?.status != EStatus.DRAFT"
@@ -24,6 +24,7 @@
           </Button>
         </div>
       </div>
+      
       <div v-if="!isEditingTopic">
         <h2 class="text-2xl font-semibold py-2">
           {{ topic?.name }}
@@ -36,13 +37,13 @@
       <TopicForm v-else
         role="update" cancelable
         @cancel="isEditingTopic = false"
-        @success="onUpdateSuccess"
+        @success="onUpdateTopicSuccess"
         />
       <div v-if="isLoading.terms" class="mt-5 grid gap-4">
         <Skeleton v-for="i in 2" class="h-40 rounded-lg" :key="i" />
       </div>
       <div v-else class="mt-5">
-        <draggable 
+        <!-- <draggable 
           class="flex flex-col gap-4"
           v-model="terms"
           :component-data="{
@@ -65,30 +66,75 @@
               :disable-delete="terms.length < 2"
             />
           </template>
-        </draggable>
-        <div
-          role="button"
-          class="mt-4 bg-accent flex items-center justify-center px-5 py-8 rounded-lg text-secondary-foreground hover:text-primary"
-          @click="terms.push(defaultTerm())"  
-        >
-          <p class="uppercase font-bold">Add flash card</p>
+        </draggable> -->
+        <div class="flex flex-col gap-4">
+          <Card>
+            <CardContent class="px-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Term</TableHead>
+                    <TableHead>Definition</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow v-for="(term, index) in terms" :key="term.id">
+                    <TableCell class="font-medium min-w-52 max-w-80">
+                      {{term.term}}
+                      <span v-if="term.pronunciation" class="text-muted-foreground text-sm">{{term.pronunciation}}</span>
+                    </TableCell>
+                    <TableCell class="w-full truncate">{{term.definition}}</TableCell>
+                    <TableCell>
+                      <div class="flex gap-2">
+                        <Button
+                          variant="ghost" size="icon"
+                          @click="handleEditClick(term)"
+                          class="h-8 w-8"
+                        >
+                          <EditIcon class="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost" size="icon"
+                          @click="onDeleteTerm(term.id as number, index)"
+                          class="h-8 w-8 text-destructive"
+                        >
+                          <Trash2Icon class="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+            <CardFooter class="flex justify-between">
+              <div class="text-sm text-muted-foreground">Total terms: {{terms.length}}</div>
+              <Button class="flex items-center gap-1" @click="handleAddClick">
+                <PlusIcon class="h-4 w-4" /> Add New Term
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
       </div>
     </div>
+
+    <TermForm2 v-model="showEditDialog" :term="formData" @update="(data) => onUpdateTerm(data)" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { useTermStore, useTopicStore } from "@/stores";
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { type Topic, type Term, EStatus } from '@/types';
-import TermForm from '@/components/term/TermForm.vue';
-import draggable from 'vuedraggable'
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, LoaderCircle, PencilIcon } from "lucide-vue-next";
+import { ChevronLeft, EditIcon, LoaderCircle, PencilIcon, PlusIcon, Trash2Icon } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 import TopicForm from "@/components/topic/TopicForm.vue";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import TermForm2 from "@/components/term/TermForm2.vue";
+import { Card, CardFooter } from "@/components/ui/card";
+import CardContent from "@/components/ui/card/CardContent.vue";
 
 const route = useRoute();
 const router = useRouter()
@@ -100,12 +146,18 @@ const terms = ref<Term[]>([] as Term[])
 const topic = ref<Topic | null>(null)
 const defaultTerm = (): Term => {
   return {
+    id: '',
     topicId: topicId.value,
     term: '',
     definition: '',
+    pronunciation: '',
+    example: '',
     rank: terms.value.length
   }
 }
+const formData = ref<Term>({} as Term)
+
+const showEditDialog = ref(false)
 const isEditingTopic = ref(false)
 const activeRequests = ref<Set<number>>(new Set());
 const isSaving = computed(() => activeRequests.value.size > 0);
@@ -133,6 +185,16 @@ async function createTopic() {
   }
 }
 
+function handleEditClick(term: Term) {
+  formData.value = term;
+  showEditDialog.value = true
+}
+
+function handleAddClick() {
+  formData.value = defaultTerm()
+  showEditDialog.value = true
+}
+
 async function getAllTerms() {
   isLoading.terms = true
   isLoading.topic = true
@@ -155,7 +217,7 @@ async function getAllTerms() {
   }
 }
 
-function onUpdateSuccess(data: Topic) {
+function onUpdateTopicSuccess(data: Topic) {
   topic.value = data;
   isEditingTopic.value = false
 }
@@ -190,19 +252,26 @@ async function updateRank(id: string | number, rank: number) {
   }
 }
 
-function onUpdateTerm(index: number, data: Term) {
-  terms.value[index] = data;
-}
-
-function onDeleteTerm(index: number) {
-  terms.value.splice(index, 1)
-}
-
-watch(terms, () => {
-  if (terms.value.length == 0) {
-    terms.value.push(defaultTerm())
+function onUpdateTerm(data: Term) {
+  const index = terms.value.findIndex(t => t.id == data.id)
+  if (index > -1) {
+    terms.value[index] = data
+  } else {
+    terms.value.push(data)
   }
-})
+  showEditDialog.value = false
+}
+
+function onDeleteTerm(id: number | string, index?: number) {
+  try {
+    termStore.delete(topicId.value, id)
+    if (index) {
+      terms.value.splice(index, 1)
+    }
+  } catch (e) {
+    console.error(e)
+  }
+}
 
 getAllTerms();
 </script>

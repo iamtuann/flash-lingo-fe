@@ -5,6 +5,8 @@ export interface TopicRequest {
   id?: number | string,
   name: string,
   description: string,
+  shortPassage?: string,
+  conversation?: string,
   termLang?: string,
   defLang?: string,
 }
@@ -13,6 +15,8 @@ export interface Topic {
   id: number | string,
   name: string,
   description: string,
+  shortPassage?: string,
+  conversation?: string,
   createdBy: User,
   createdAt: Date,
   updatedAt: Date,

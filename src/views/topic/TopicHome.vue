@@ -88,7 +88,7 @@
       </div>
       <div v-else class="mt-6 flex flex-col gap-4">
         <template v-for="(term, idx) in terms" :key="term.id" >
-          <TermForm v-bind="term" :index="idx" readonly :hide-term="hideTerm" :hide-definition="hideDefinition" />
+          <TermItem :term="term" :hide-term="hideTerm" :hide-definition="hideDefinition" />
         </template>
       </div>
     </div>
@@ -110,6 +110,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import HoverCard from "@/components/hover-card/HoverCard.vue";
+import TermItem from "@/components/term/TermItem.vue";
 
 const route = useRoute()
 const router = useRouter()
