@@ -27,7 +27,7 @@
           ref="flipCard"
           :border-opacity="borderOpacity"
           :border-color="borderColor"
-          v-bind="props.terms[currentIndex]"
+          :term="props.terms[currentIndex]"
         />
       </div>
       <div class="absolute w-[600px] h-[350px] bg-accent opacity-40 inset-0 z-0 rounded-xl border-2 border-gray-600">

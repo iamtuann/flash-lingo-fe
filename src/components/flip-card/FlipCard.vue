@@ -1,23 +1,27 @@
 <template>
-  <div class="flip-card text-2xl">
-    <div class="flip-card-inner" :class="{ flipped: isFlipped }">
+  <div class="flip-card text-3xl" >
+    <div class="flip-card-inner" :class="{ flipped: isFlipped, 'no-transition': isResetting }">
       <div class="flip-card-face" :class="`!border-opacity-[${borderOpacity}] ${borderColor}`">
         <div></div>
-        
-        <div class="flex-1 flex items-center justify-center">
-          <h3>{{ term }}</h3>
+        <TTSButton class="absolute top-2 right-2" :text="term.term" />
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <h3>{{ term.term }}</h3>
+          <span v-if="term.pronunciation" class="block text-base text-muted-foreground mt-2">
+            {{ term.pronunciation }}
+          </span>
         </div>
-        <!-- <div class="py-1 w-full text-sm bg-[#a8b1ff]">
-          Click on the card to flip
-        </div> -->
         <Button variant="ghost" @click.stop="toggleFlipCard">
           <Repeat />
         </Button>
       </div>
       <div class="flip-card-face back" :class="`!border-opacity-[${borderOpacity}] ${borderColor}`">
         <div></div>
-        <div class="flex-1 flex items-center justify-center">
-          <p>{{ definition }}</p>
+        <TTSButton class="absolute top-2 right-2" :text="term.term" />
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <p>{{ term.definition }}</p>
+          <span v-if="term.example" class="block text-base text-muted-foreground mt-3 italic">
+            &ldquo; {{ term.example }} &rdquo;
+          </span>
         </div>
         <Button variant="ghost" class="rounded-full" @click.stop="toggleFlipCard">
           <Repeat />
@@ -28,21 +32,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import type { Term } from "@/types";
 import { Button } from "../ui/button";
 import { Repeat } from "lucide-vue-next";
+import TTSButton from '@/components/tts/TTSButton.vue';
 
-withDefaults(defineProps<Term & {
+const props = withDefaults(defineProps<{
+  term: Term,
   borderColor?: string,
   borderOpacity?: number
 }>(), {
   borderColor: 'border-gray-600',
   borderOpacity: 1
 })
-
-
 const isFlipped = ref(false);
+const isResetting = ref(false)
+
+
+watch(() => props.term, () => {
+  isResetting.value = true;
+  isFlipped.value = false;
+  
+  setTimeout(() => {
+    isResetting.value = false;
+  }, 100);
+})
 
 function toggleFlipCard() {
   isFlipped.value = !isFlipped.value
@@ -64,6 +79,10 @@ function toggleFlipCard() {
   transition: transform 0.5s;
   transform-style: preserve-3d;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.flip-card-inner.no-transition {
+  transition: none;
 }
 
 .flip-card-inner.flipped {
