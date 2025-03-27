@@ -152,7 +152,7 @@ async function deleteFolder() {
     await folderStore.delete(folderId.value)
     dialogDeleteFolder.value = false;
   } catch (e) {
-    console.log(e)
+    console.error(e)
   } finally {
     isDeleting.value = false
     router.replace({name: 'Home'})

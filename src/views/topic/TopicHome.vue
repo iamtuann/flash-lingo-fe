@@ -104,7 +104,6 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { EllipsisVertical, FileText, Gamepad, GraduationCap, Layers, Pencil, TrashIcon } from "lucide-vue-next";
-import TermForm from "@/components/term/TermForm.vue";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -149,7 +148,7 @@ async function deleteTopic() {
     await topicStore.delete(topicId.value)
     dialogDeleteTopic.value = false;
   } catch (e) {
-    console.log(e)
+    console.error(e)
   } finally {
     isDeleting.value = false
     router.replace({name: 'Home'})

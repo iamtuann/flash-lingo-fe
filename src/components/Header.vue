@@ -30,34 +30,14 @@
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-48" :sideOffset="12" align="end">
-          <Dialog v-model:open="dialogTopicForm">
-            <DialogTrigger class="w-full">
-              <DropdownMenuItem @select="(e) => e.preventDefault()" >
-                <Shapes class="mr-2 h-4 w-4" />
-                <span>Flashcard Topic</span>
-              </DropdownMenuItem>
-            </DialogTrigger>
-            <DialogContent @interactOutside="(e) => {e.preventDefault()}">
-              <DialogHeader>
-                <DialogTitle>Create a new Flashcard Topic</DialogTitle>
-              </DialogHeader>
-              <TopicForm @success="onCreateTopicSuccess" />
-            </DialogContent>
-          </Dialog>
-          <Dialog v-model:open="dialogFolderForm">
-            <DialogTrigger class="w-full">
-              <DropdownMenuItem @select="(e) => e.preventDefault()">
-                <FolderIcon class="mr-2 h-4 w-4" />
-                <span>Folder</span>
-              </DropdownMenuItem>
-            </DialogTrigger>
-            <DialogContent @interactOutside="(e) => {e.preventDefault()}">
-              <DialogHeader>
-                <DialogTitle>Create new Folder</DialogTitle>
-              </DialogHeader>
-              <FolderForm type="create" @success="onCreateFolderSuccess" />
-            </DialogContent>
-          </Dialog>
+          <DropdownMenuItem @select="(e) => {e.preventDefault(); dialogTopicForm = true}" >
+            <Shapes class="mr-2 h-4 w-4" />
+            <span>Flashcard Topic</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem @select="(e) => {e.preventDefault(); dialogFolderForm = true}">
+            <FolderIcon class="mr-2 h-4 w-4" />
+            <span>Folder</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
         
@@ -94,6 +74,22 @@
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+    <Dialog v-model:open="dialogTopicForm">
+      <DialogContent @interactOutside="(e) => {e.preventDefault()}">
+        <DialogHeader>
+          <DialogTitle>Create a new Flashcard Topic</DialogTitle>
+        </DialogHeader>
+        <TopicForm @success="onCreateTopicSuccess" />
+      </DialogContent>
+    </Dialog>
+    <Dialog v-model:open="dialogFolderForm">
+      <DialogContent @interactOutside="(e) => {e.preventDefault()}">
+        <DialogHeader>
+          <DialogTitle>Create new Folder</DialogTitle>
+        </DialogHeader>
+        <FolderForm type="create" @success="onCreateFolderSuccess" />
+      </DialogContent>
+    </Dialog>
   </header>
 </template>
 

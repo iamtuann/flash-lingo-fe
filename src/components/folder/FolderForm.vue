@@ -1,25 +1,39 @@
 <template>
-  <form @submit.prevent="onSubmit">
+  <form @submit="onSubmit">
     <div class="grid gap-4">
-      <div class="grid gap-3">
-        <Label required for="name"> Title </Label>
-        <Input id="name" name="title" v-model="request.name" placeholder="Enter a title" type="text"
-          :disabled="isLoading" />
-      </div>
-      <RadioGroup :default-value="0" v-model="request.status" class="grid gap-3">
-        <Label> Mode </Label>
-        <div class="flex gap-4">
-          <div class="flex items-center space-x-3">
-            <RadioGroupItem id="private" :value="0" />
-            <Label for="private">Private</Label>
-          </div>
-          <div class="flex items-center space-x-3">
-            <RadioGroupItem id="public" :value="1" />
-            <Label for="public">Public</Label>
-          </div>
-        </div>
-      </RadioGroup>
-      <p v-show="errMsg" role="alert" class="error-msg -mt-2">{{ errMsg }}</p>
+      <FormField v-slot="{ componentField }" name="name">
+        <FormItem>
+          <FormLabel required>Title</FormLabel>
+          <FormControl>
+            <Input type="text" placeholder="Enter a title" v-bind="componentField" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+      <FormField v-slot="{ componentField }" type="radio" name="status">
+        <FormItem>
+          <FormLabel>Mode</FormLabel>
+          <FormControl>
+            <RadioGroup v-bind="componentField" class="space-x-3">
+              <div class="flex gap-4">
+                <FormItem class="flex items-center space-y-0 gap-x-3">
+                  <FormControl>
+                    <RadioGroupItem :value="0" />
+                  </FormControl>
+                  <FormLabel>Private</FormLabel>
+                </FormItem>
+                <FormItem class="flex items-center space-y-0 gap-x-3">
+                  <FormControl>
+                    <RadioGroupItem :value="1" />
+                  </FormControl>
+                  <FormLabel>Public</FormLabel>
+                </FormItem>
+              </div>
+            </RadioGroup>
+          </FormControl>
+        </FormItem>
+      </FormField>
+      
       <div class="flex justify-end gap-3">
         <!-- <Button variant="ghost" :disabled="isLoading"> Cancel </Button> -->
         <Button :disabled="isLoading">
@@ -32,15 +46,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { Label } from "@/components/ui/label";
+import { ref } from "vue";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { LoaderCircle } from "lucide-vue-next";
-import { hasValues, getMessage } from "@/utils";
 import { useFolderStore } from "@/stores";
 import type { Folder } from "@/types";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { toTypedSchema } from "@vee-validate/zod";
+import { z } from "zod";
+import { configure, useForm } from "vee-validate";
 
 export type FolderFormEmits = {
   'success': [payload: Folder],
@@ -55,36 +71,37 @@ const emit = defineEmits<FolderFormEmits>()
 const props = defineProps<FolderFormProps>()
 
 const folderStore = useFolderStore()
-const request = reactive({
-  name: props.name ?? "",
-  status: props.status ?? 0
-})
 
 const isLoading = ref(false)
-const errMsg = ref("")
 
-async function onSubmit() {
-  errMsg.value = ""
+const formSchema = toTypedSchema(z.object({
+  name: z.string().nonempty({ message: 'This is required'}).default(props.name || ""),
+  status: z.number().optional().default(props.status || 0),
+}))
+configure({
+  validateOnBlur: false
+})
+
+const { handleSubmit } = useForm({
+  validationSchema: formSchema
+})
+
+const onSubmit = handleSubmit(async (values) => {
   isLoading.value=true
   try {
-    const valid = hasValues({name: request.name})
-    if (!valid) {
-      errMsg.value = "Folder name cannot be blank."
-      return;
-    }
     if (props.type == 'create') {
-      const res = await folderStore.create(request);
+      const res = await folderStore.create(values);
       emit('success', res)
     } else {
-      const res = await folderStore.update(props.id as number, request);
+      const res = await folderStore.update(props.id as number, values);
       emit('success', res)
     }
   } catch (e) {
-    errMsg.value = getMessage(e)
+    console.error(e)
   } finally {
     isLoading.value = false
   }
-}
+})
 </script>
 
 <style scoped>

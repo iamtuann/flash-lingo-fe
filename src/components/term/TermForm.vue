@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import type { Term } from '@/types';
 import { Button } from '@/components/ui/button';
-import { GripHorizontal, Trash } from 'lucide-vue-next';
+import { Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import Label from '@/components/ui/label/Label.vue';
 import Input from '@/components/ui/input/Input.vue';

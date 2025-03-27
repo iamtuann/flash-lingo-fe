@@ -1,12 +1,10 @@
 <template>
   <div class="relative" ref="popper">
     <Input
-      :autocomplete="false"
       :placeholder="placeholder"
       v-model="model"
       @update:model-value="showContent = true"
       @focus="$emit('focus-input'); showContent = true"
-      required
     />
     <div v-show="items.length > 0 && showContent"
       tabindex="1"

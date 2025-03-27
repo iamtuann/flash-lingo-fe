@@ -1,74 +1,92 @@
 <template>
-  <Dialog v-model:open="model" >
+  <Dialog v-model:open="model">
     <DialogContent class="max-w-3xl">
-      <DialogHeader>
-        <DialogTitle>Edit Term</DialogTitle>
-      </DialogHeader>
+      <form class="space-y-4" @submit="onSubmit">
+        <DialogHeader>
+          <DialogTitle>Edit Term</DialogTitle>
+        </DialogHeader>
+  
+        <div class="space-y-4 py-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField v-slot="{ componentField }" name="term">
+              <FormItem>
+                <FormLabel required>Term</FormLabel>
+                <FormControl>
+                  <PopperInput
+                    placeholder="Enter the term"
+                    v-bind="componentField"
+                    @update:model-value="getSuggestWords"
+                    :items="wordSuggestions"
+                    @select="onSelectSuggestWord"
+                  >
+                    <template #item="{item}">
+                      {{ item.word }} 
+                      <span v-if="item.pronunciation" class="text-muted-foreground ml-2">{{ item.pronunciation }}</span>
+                    </template>
+                  </PopperInput>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
 
-      <div class="space-y-4 py-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <Label for="edit-term" required>Term</Label>
-            <PopperInput
-              placeholder="Enter the term"
-              v-model="formData.term"
-              @update:model-value="getSuggestWords"
-              :items="wordSuggestions"
-              @select="onSelectSuggestWord"
-            >
-              <template #item="{item}">
-                {{ item.word }} 
-                <span v-if="item.pronunciation" class="text-muted-foreground ml-2">{{ item.pronunciation }}</span>
-              </template>
-            </PopperInput>
+            <FormField v-slot="{ componentField }" name="pronunciation">
+              <FormItem>
+                <FormLabel>Pronunciation</FormLabel>
+                <FormControl>
+                  <PopperInput
+                    placeholder="e.g. /ˈvəʊˌkæbjʊləri/"
+                    v-bind="componentField"
+                    @update:model-value="getPronunciation"
+                    :items="pronunSuggestions"
+                    @select="onSelectPronun"
+                    @focus-input="getPronunciation"
+                  >
+                  </PopperInput>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
+  
+          <FormField v-slot="{ componentField }" name="definition">
+            <FormItem>
+              <FormLabel required>Definition</FormLabel>
+              <FormControl>
+                <PopperInput
+                  placeholder="Enter the definition"
+                  v-bind="componentField"
+                  @update:model-value="getSuggestDefinition"
+                  :items="defSuggestions"
+                  @select="onSelectSuggestDefinition"
+                  @focus-input="getSuggestDefinition"
+                >
+                </PopperInput>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <Label for="edit-pronunciation">Pronunciation</Label>
-            <PopperInput
-              placeholder="e.g. /ˈvəʊˌkæbjʊləri/"
-              v-model="formData.pronunciation"
-              @update:model-value="getPronunciation"
-              :items="pronunSuggestions"
-              @select="onSelectPronun"
-            @focus-input="getPronunciation"
-            >
-            </PopperInput>
-          </div>
+          <FormField v-slot="{ componentField }" name="example">
+            <FormItem>
+              <FormLabel>Example Usage</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="Enter an example sentence using this term" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
-
-        <div class="space-y-2">
-          <Label for="edit-definition" required>Definition</Label>
-          <PopperInput
-            placeholder="Enter the definition"
-            v-model="formData.definition"
-            @update:model-value="getSuggestDefinition"
-            :items="defSuggestions"
-            @select="onSelectSuggestDefinition"
-            @focus-input="getSuggestDefinition"
-          >
-          </PopperInput>
-        </div>
-
-        <div class="space-y-2">
-          <Label for="edit-example">Example Usage</Label>
-          <Input
-            id="edit-example"
-            placeholder="Enter an example sentence using this term"
-            v-model="formData.example"
-          />
-        </div>
-      </div>
-
-      <DialogFooter>
-        <Button :disabled="isSaving" variant="outline" @click="model = false">
-          Cancel
-        </Button>
-        <Button @click="saveTerm" class="flex items-center gap-1">
-          <LoaderCircle v-if="isSaving" class="mr-2 h-4 w-4 animate-spin" />
-          Save Term
-        </Button>
-      </DialogFooter>
+  
+        <DialogFooter>
+          <Button :disabled="isSaving" variant="outline" @click="model = false">
+            Cancel
+          </Button>
+          <Button type="submit" class="flex items-center gap-1">
+            <LoaderCircle v-if="isSaving" class="mr-2 h-4 w-4 animate-spin" />
+            Save Term
+          </Button>
+        </DialogFooter>
+      </form>
     </DialogContent>
   </Dialog>
 </template>
@@ -76,15 +94,17 @@
 <script setup lang="ts">
 import type { Word, Term } from '@/types';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { ref, watch } from 'vue';
 import { LoaderCircle } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { useTermStore, useSuggestionStore } from '@/stores';
-import { getMessage } from '@/utils';
 import { useDebounceFn } from '@vueuse/core';
 import { PopperInput } from '../ui/popper';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { toTypedSchema } from '@vee-validate/zod';
+import * as z from 'zod'
+import { useForm } from 'vee-validate';
 
 type TermFormEmits = {
   'update': [payload: Term],
@@ -99,20 +119,44 @@ const termStore = useTermStore()
 const suggestionStore = useSuggestionStore()
 
 const isSaving = ref(false)
-const errMsg = ref('')
-const formData = ref<Term>({...props.term})
-
-watch(model, () => {
-  formData.value = {...props.term}
-})
 const wordSuggestions = ref<Word[]>([])
 const defSuggestions = ref<string[]>([])
 const pronunSuggestions = ref<string[]>([])
 
+const formSchema = toTypedSchema<any, Term, Term>(z.object({
+  id: z.string().or(z.number()).optional(),
+  topicId: z.string().or(z.number()).optional(),
+  term: z.string().nonempty({ message: 'This is required'}),
+  pronunciation: z.string().or(z.null()).optional(),
+  definition: z.string().nonempty({ message: 'This is required'}),
+  example: z.string().or(z.null()).optional(),
+  partOfSpeech: z.string().or(z.null()).optional(),
+  level: z.string().or(z.null()).optional(),
+  rank: z.number().optional(),
+}))
+const {resetForm, handleSubmit, setValues, values} = useForm({
+  validationSchema: formSchema,
+})
+watch(model, () => {
+  resetForm({values: {...props.term}})
+})
+
+const onSubmit = handleSubmit(async (values) => {
+  isSaving.value = true
+  try {
+    const res = await termStore.save(values)
+    emits('update', res)
+  } catch (e) {
+    console.error(e);
+  } finally {
+    isSaving.value = false
+  }
+})
+
 const getSuggestWords = useDebounceFn(async () => {
   try {
-    if (formData.value.term) {
-      const res = await suggestionStore.getSuggestWords(formData.value.term)
+    if (values.term) {
+      const res = await suggestionStore.getSuggestWords(values.term)
       wordSuggestions.value = res.suggestions
     } else {
       wordSuggestions.value = []
@@ -124,8 +168,8 @@ const getSuggestWords = useDebounceFn(async () => {
 
 const getSuggestDefinition = useDebounceFn(async () => {
   try {
-    if (formData.value.term) {
-      const res = await suggestionStore.getSuggestionDefinitions(formData.value.term, formData.value.definition)
+    if (values.term) {
+      const res = await suggestionStore.getSuggestionDefinitions(values.term, values.definition)
       defSuggestions.value = res.suggestions
     } else {
       defSuggestions.value = []
@@ -137,8 +181,8 @@ const getSuggestDefinition = useDebounceFn(async () => {
 
 const getPronunciation = useDebounceFn(async () => {
   try {
-    if (formData.value.term) {
-      const res = await suggestionStore.getPronunciation(formData.value.term, formData.value.pronunciation)
+    if (values.term) {
+      const res = await suggestionStore.getPronunciation(values.term, values.pronunciation)
       pronunSuggestions.value = res.suggestions
     } else {
       pronunSuggestions.value = []
@@ -149,32 +193,25 @@ const getPronunciation = useDebounceFn(async () => {
 }, 1000)
 
 const onSelectSuggestWord = (word: Word) => {
-  formData.value.term = word.word
-  formData.value.pronunciation = word.pronunciation
+  setValues({
+    term: word.word,
+    pronunciation: word.pronunciation
+  })
   wordSuggestions.value = []
 }
 
 const onSelectSuggestDefinition = (definition: string) => {
-  formData.value.definition = definition
+  setValues({
+    definition: definition
+  })
   defSuggestions.value = []
 }
 
 const onSelectPronun = (pronun: string) => {
-  formData.value.pronunciation = pronun;
+  setValues({
+    pronunciation: pronun
+  })
   pronunSuggestions.value = []
-}
-
-async function saveTerm() {
-  isSaving.value = true
-  errMsg.value = ''
-  try {
-    const res = await termStore.save(formData.value)
-    emits('update', res)
-  } catch (e) {
-    errMsg.value = getMessage(e)
-  } finally {
-    isSaving.value = false
-  }
 }
 </script>
 
