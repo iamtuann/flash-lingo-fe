@@ -23,7 +23,7 @@
             &ldquo; {{ term.example }} &rdquo;
           </span>
         </div>
-        <Button variant="ghost" class="rounded-full" @click.stop="toggleFlipCard">
+        <Button id="flip-btn" variant="ghost" class="rounded-full" @click.stop="toggleFlipCard">
           <Repeat />
         </Button>
       </div>

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "test": "vitest",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -32,11 +33,14 @@
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.10.7",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.20",
+    "jsdom": "^26.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
+    "vitest": "^3.0.9",
     "vue-tsc": "^2.2.0"
   }
 }
