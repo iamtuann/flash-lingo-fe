@@ -72,10 +72,15 @@ const routes = [
         meta: { layout: LearnLayout }
       },
       {
-        path: "game-bar",
-        alias: "game",
+        path: "games",
         name: 'GameBar',
         component: () => import('@/views/game/GameBar.vue'),
+        meta: { layout: LearnLayout }
+      },
+      {
+        path: "games/match-cards",
+        name: 'MatchCards',
+        component: () => import('@/views/game/MatchCards.vue'),
         meta: { layout: LearnLayout }
       },
     ]

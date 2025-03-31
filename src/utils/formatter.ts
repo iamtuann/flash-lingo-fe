@@ -6,3 +6,7 @@ export const formatTime = (seconds: number) => {
 
   return `${hours > 0 ? `${hours}h ` : ""}${minutes}m ${secs}s`
 }
+
+export const milisecondToSecond = (ms: number) => {
+  return (ms / 1000).toFixed(1);
+}
