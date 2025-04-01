@@ -83,6 +83,12 @@ const routes = [
         component: () => import('@/views/game/MatchCards.vue'),
         meta: { layout: LearnLayout }
       },
+      {
+        path: "games/word-scramble",
+        name: 'WordScramble',
+        component: () => import('@/views/game/GameWordScramble.vue'),
+        meta: { layout: LearnLayout }
+      },
     ]
   },
   {

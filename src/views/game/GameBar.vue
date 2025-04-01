@@ -84,10 +84,10 @@ const listGame = [
     availabel: true,
   },
   {
-    title: 'Word Drop',
+    title: 'Word Scramble',
     icon: '',
     backgroundImage: '',
-    to: {name: 'MatchCards', params: {id: topicId.value}},
+    to: {name: 'WordScramble', params: {id: topicId.value}},
     description: ['Catch falling words that match the given definition before they hit the ground.', 'You need at least 8 vocabulary terms to play this game. Currently you have 5 terms.'],
     active: true,
     availabel: true,

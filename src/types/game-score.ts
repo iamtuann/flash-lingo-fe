@@ -2,6 +2,7 @@ import type { User } from "./auth";
 
 export enum GameType {
   MatchCards = 1,
+  WordScramble = 2
 }
 
 export interface Score {

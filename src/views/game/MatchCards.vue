@@ -4,39 +4,17 @@
       <div class="min-h-24"><GameLoading /></div>
       <div class="text-lg">Setting Game...</div>
     </div>
-    <template v-else-if="isGameCompleted">
-      <div class="p-8 text-center mb-8">
-        <div class="flex justify-center mb-4">
-          <TrophyIcon class="h-16 w-16 text-yellow-500" />
-        </div>
-        <h2 class="text-2xl font-bold mb-2">Congratulations!</h2>
-        <p class="text-lg mb-4">You've completed the Match Cards game!</p>
-        <div class="space-y-2">
-          <div class="text-left text-muted-foreground font-semibold">Top ranking</div>
-          <Card v-for="(rank, idx) in ranking" :key="idx"
-            class="py-3 px-4 flex items-center border-2"
-            :class="{
-              'border-yellow-500': idx == 0, 'border-gray-300': idx == 1, 'border-orange-800': idx == 2,
-            }"
-          >
-            <div>
-              {{ rank.user ? rank.user.firstName + ' ' + rank.user.lastName : 'You' }}
-            </div>
-            <div class="flex-1"></div>
-            <div>{{ milisecondToSecond(rank.time) }}</div>
-          </Card>
-        </div>
-
-        <div class="mt-6 flex justify-center">
-          <Button @click="initialGame(terms, TERM_COUNT)" class="flex items-center gap-1">
-            <RotateCcw class="h-4 w-4" /> Play Again
-          </Button>
-        </div>
-      </div>
-    </template>
+    <GameResult
+      v-else-if="isGameCompleted"
+      :game-type="GameType.MatchCards"
+      name="Match Cards"
+      :time="stopwatch.elapsedTime.value"
+      @play-again="initialGame(terms, TERM_COUNT)"
+    />
+    
     <template v-else>
       <div class="flex justify-center items-center py-4">
-        <span>{{ milisecondToSecond(elapsedTime) }}</span>
+        <span>{{ stopwatch.timeFormatted }}</span>
       </div>
       <div class="grid grid-cols-3 md:grid-cols-4 gap-2 mt-4">
         <div
@@ -57,15 +35,15 @@
 </template>
 
 <script setup lang="ts">
-import { useGameScoreStore, useTermStore } from '@/stores';
-import { GameType, type Score, type Term } from '@/types';
-import { onUnmounted, ref, watch } from 'vue';
+import { useTermStore } from '@/stores';
+import { GameType, type Term } from '@/types';
+import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Card } from '@/components/ui/card'
 import { milisecondToSecond } from '@/utils';
-import { RotateCcw, TrophyIcon } from 'lucide-vue-next';
-import { Button } from '@/components/ui/button';
 import GameLoading from './GameLoading.vue';
+import { useStopwatch } from '@/composable';
+import GameResult from './GameResult.vue';
 
 interface Card {
   content: string,
@@ -78,19 +56,16 @@ interface Card {
 const route = useRoute()
 const router = useRouter()
 const termStore = useTermStore()
-const gameScoreStore = useGameScoreStore();
+const stopwatch = useStopwatch(100, milisecondToSecond)
 const TERM_COUNT = 6;
 
 const topicId = ref(route.params.id as string)
 const terms = ref<Term[]>([])
 const cards = ref<Card[]>([])
-const ranking = ref<Score[]>([])
 const isLoading = ref(true)
 
 const activeCards = ref<Card[]>([])
 const matched = ref(0)
-const elapsedTime = ref(0)
-let timer: ReturnType<typeof setInterval> | null = null
 const isGameCompleted = ref(false)
 
 const handleSelectCard = (card: Card) => {
@@ -130,16 +105,14 @@ watch(activeCards, (actives) => {
           card.content === firstCard.content || card.content === secondCard.content ? { ...card, isSelected: false } : card,
         ),
       activeCards.value = []
-      elapsedTime.value += 1000
+      stopwatch.plusTime(1000)
     }, 200)
   }
 })
 
 async function handleGameComplete() {
-  if (timer) clearInterval(timer)
+  stopwatch.stop()
   isGameCompleted.value = true
-  await gameScoreStore.saveScore(topicId.value, GameType.MatchCards, elapsedTime.value)
-  ranking.value = await gameScoreStore.getTopScores(topicId.value, GameType.MatchCards)
 }
 
 function initialGame(terms: Term[], count: number) {
@@ -167,22 +140,10 @@ function initialGame(terms: Term[], count: number) {
 
   cards.value = [...cardPairs].sort(() => Math.random() - 0.5)
   matched.value = 0
-  elapsedTime.value = 0;
   isGameCompleted.value = false
   activeCards.value = []
-  startTimer()
+  stopwatch.start()
 }
-
-const startTimer = () => {
-  if (timer) clearInterval(timer)
-  timer = setInterval(() => {
-    elapsedTime.value += 100
-  }, 100)
-}
-
-onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
 
 async function getData() {
   try {
