@@ -23,5 +23,13 @@ export const useUserStore = defineStore('userStore', {
       })
       return res.data
     },
+    async getRecentTopics(name: string, pageIndex: number, pageSize: number, key?: string, orderBy?: string): Promise<Page<Topic>> {
+      const res = await ApiService.get('/users/recent-topics', {
+        params: {
+          name, pageIndex, pageSize, key, orderBy
+        }
+      })
+      return res.data
+    },
   }
 })

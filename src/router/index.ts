@@ -8,7 +8,7 @@ const routes = [
     path: "",
     alias: "/",
     name: 'Home',
-    component: () => import('@/views/Home.vue'),
+    component: () => import('@/views/home/Index.vue'),
     meta: { layout: DefaultLayout }
   },
   {

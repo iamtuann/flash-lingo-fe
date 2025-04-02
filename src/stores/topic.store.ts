@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
 import type { Topic, TopicRequest } from "@/types/topic";
-import type { EStatus } from "@/types";
+import type { EStatus, Page } from "@/types";
 
 type topicStore = {
   topic: Topic | null
@@ -12,6 +12,18 @@ export const useTopicStore = defineStore('topic', {
     topic: null
   } as topicStore),
   actions: {
+    async searchTopic(name: string, pageIndex: number, pageSize: number, key?: string, orderBy?: string): Promise<Page<Topic>> {
+      const res = await ApiService.get('/topics', {
+        params: {
+          name, pageIndex, pageSize, key, orderBy
+        }
+      })
+      return res.data
+    },
+    async getPopularTopic(): Promise<Page<Topic>> {
+      const res = await ApiService.get('/topics/list/popular')
+      return res.data
+    },
     async save(request: TopicRequest): Promise<Topic> {
       this.topic = null
       const res = await ApiService.post('/topics', request)

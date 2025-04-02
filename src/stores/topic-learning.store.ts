@@ -9,7 +9,7 @@ export const useTopicLearningStore = defineStore('topicLearning', {
   }),
   actions: {
     async getTopicLearning(topicId: string | number):Promise<TopicLearning> {
-      const res = await ApiService.get('/learning', {
+      const res = await ApiService.get('/learning/flashcard', {
         params: {
           topicId: topicId
         }
@@ -17,7 +17,7 @@ export const useTopicLearningStore = defineStore('topicLearning', {
       return res.data
     },
     async saveTopicLearning(request: TopicLearning) {
-      const res = await ApiService.post('/learning', request)
+      const res = await ApiService.post('/learning/flashcard', request)
       return res;
     }
   }
