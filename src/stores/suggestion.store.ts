@@ -38,5 +38,14 @@ export const useSuggestionStore = defineStore('suggestionStore', {
       })
       return res.data
     },
+    async generateExamples(term: string, definition: string): Promise<string[]> {
+      const res = await ApiService.post('/suggestions/examples/generate', null, {
+        params: {
+          term,
+          definition
+        }
+      })
+      return res.data
+    },
   }
 })

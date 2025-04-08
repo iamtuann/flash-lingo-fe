@@ -1,6 +1,6 @@
 <template>
   <Dialog v-model:open="model">
-    <DialogContent class="max-w-3xl">
+    <DialogContent class="max-w-3xl" @interactOutside="(e) => {e.preventDefault()}">
       <form class="space-y-4" @submit="onSubmit">
         <DialogHeader>
           <DialogTitle>Edit Term</DialogTitle>
@@ -70,9 +70,48 @@
             <FormItem>
               <FormLabel>Example Usage</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Enter an example sentence using this term" v-bind="componentField" />
+                <div class="relative">
+                  <Textarea rows="2" class="resize-none pr-10" placeholder="Enter an example sentence using this term" v-bind="componentField" />
+                  <TooltipProvider>
+                    <Tooltip :delay-duration="0">
+                      <TooltipTrigger as-child type="button">
+                        <Button 
+                          :disabled="!values.term || !values.definition || isGeneratingExam"
+                          @click="generateExamples"
+                          variant="ghost" size="icon" type="button"
+                          class="absolute right-1 top-1 cursor-pointer"
+                        >
+                          <div class="ai-icon" ></div>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent align="center" side="top" class="flex items-center">
+                        <p>{{ (values.term && values.definition) ? 'Generate examples with AI' : 'Fill term and definition to use' }}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </FormControl>
-              <FormMessage />
+              <div class="flex">
+                <FormMessage />
+                <div class="flex-1"></div>
+                <div v-if="examples.length > 0" class="flex gap-1 items-center text-xs text-muted-foregrounds">
+                  <Button type="button" variant="ghost"
+                    class="w-6 h-6 p-0 cursor-pointer"
+                    :disabled="currentExamIndex <= 0"
+                    @click="currentExamIndex--"
+                  >
+                    <ChevronLeft :size="16"/>
+                  </Button>
+                  <span>{{currentExamIndex + 1}} / {{ examples.length }}</span>
+                  <Button type="button" variant="ghost"
+                    class="w-6 h-6 p-0 cursor-pointer"
+                    :disabled="currentExamIndex >= examples.length - 1"
+                    @click="currentExamIndex++"
+                  >
+                    <ChevronRight :size="16"/>
+                  </Button>
+                </div>
+              </div>
             </FormItem>
           </FormField>
         </div>
@@ -94,9 +133,8 @@
 <script setup lang="ts">
 import type { Word, Term } from '@/types';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { ref, watch } from 'vue';
-import { LoaderCircle } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight, LoaderCircle } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { useTermStore, useSuggestionStore } from '@/stores';
 import { useDebounceFn } from '@vueuse/core';
@@ -105,6 +143,8 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { toTypedSchema } from '@vee-validate/zod';
 import * as z from 'zod'
 import { useForm } from 'vee-validate';
+import { Textarea } from '@/components/ui/textarea';
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 type TermFormEmits = {
   'update': [payload: Term],
@@ -119,9 +159,12 @@ const termStore = useTermStore()
 const suggestionStore = useSuggestionStore()
 
 const isSaving = ref(false)
+const isGeneratingExam = ref(false)
 const wordSuggestions = ref<Word[]>([])
 const defSuggestions = ref<string[]>([])
 const pronunSuggestions = ref<string[]>([])
+const examples = ref<string[]>([])
+const currentExamIndex = ref(-1)
 
 const formSchema = toTypedSchema<any, Term, Term>(z.object({
   id: z.string().or(z.number()).optional(),
@@ -139,6 +182,12 @@ const {resetForm, handleSubmit, setValues, values} = useForm({
 })
 watch(model, () => {
   resetForm({values: {...props.term}})
+})
+
+watch(currentExamIndex, (newIndex) => {
+  setValues({
+    example: examples.value[newIndex]
+  })
 })
 
 const onSubmit = handleSubmit(async (values) => {
@@ -213,8 +262,38 @@ const onSelectPronun = (pronun: string) => {
   })
   pronunSuggestions.value = []
 }
+
+async function generateExamples() {
+  isGeneratingExam.value = true
+  try {
+    const res = await suggestionStore.generateExamples(values.term, values.definition);
+    if (res && res.length > 0) {
+      examples.value = res
+      currentExamIndex.value=0
+    }
+    setTimeout(() => {
+      isGeneratingExam.value = false
+    }, 10000);
+  } catch (e) {
+    console.error(e);
+    isGeneratingExam.value = false
+  }
+}
 </script>
 
 <style scoped>
+.ai-icon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(90deg, #8c52ff, #ff914d);
+  -webkit-mask-image: url('@/assets/images/stars-icon.png');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
 
+  mask-image: url('@/assets/images/stars-icon.png');
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
 </style>
