@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 import FlipCard from "@/components/flip-card/FlipCard.vue";
 import type { Term } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -94,13 +94,20 @@ const borderOpacity = computed(() => {
   return Math.min(1, Math.abs(cardState.offsetX) / threshold);
 })
 const borderColor = computed(() => {
-  if (cardState.offsetX > 20) {
+  if (cardState.offsetX > 20 || cardState.isResolve) {
     return 'border-green-600'
-  } else if (cardState.offsetX < -20) {
+  } else if (cardState.offsetX < -20 || cardState.isReject) {
     return 'border-red-600'
   } else {
     return 'border-gray-600'
   }
+})
+
+onMounted(() => {
+  document.addEventListener('keydown', shotcutTerm)
+})
+onUnmounted(() => {
+  document.removeEventListener('keydown', shotcutTerm)
 })
 
 function handleRejectTerm() {
@@ -165,6 +172,23 @@ function endDrag(event: MouseEvent) {
   cardState.offsetX = 0;
   cardState.isReject = false;
   cardState.isResolve = false;
+}
+
+const shotcutTerm = (e: KeyboardEvent) => {
+  if (e.code == 'ArrowRight') {
+    cardState.isResolve = true
+    setTimeout(() => {
+      cardState.isResolve = false
+      handleResolveTerm()
+    }, 700);
+  }
+  if (e.code == 'ArrowLeft') {
+    cardState.isReject = true
+    setTimeout(() => {
+      cardState.isReject = false
+      handleRejectTerm()
+    }, 700);
+  }
 }
 </script>
 

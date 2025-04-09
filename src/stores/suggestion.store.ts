@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
-import type { Suggestion, Word } from "@/types";
+import type { Page, Photo, Suggestion, Word } from "@/types";
 
 
 export const useSuggestionStore = defineStore('suggestionStore', {
@@ -43,6 +43,14 @@ export const useSuggestionStore = defineStore('suggestionStore', {
         params: {
           term,
           definition
+        }
+      })
+      return res.data
+    },
+    async searchPhotos(query: string): Promise<Page<Photo>> {
+      const res = await ApiService.get('/suggestions/search-photos', {
+        params: {
+          query
         }
       })
       return res.data

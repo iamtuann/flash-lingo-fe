@@ -10,21 +10,24 @@
             {{ term.pronunciation }}
           </span>
         </div>
-        <Button variant="ghost" @click.stop="toggleFlipCard">
+        <Button variant="ghost" class="w-full h-7 hover:bg-secondary" @click.stop="toggleFlipCard">
+          <span class="mr-auto text-xs font-normal">Still learn <span class="tracking-widest opacity-60">	&#8592; </span></span>
           <Repeat />
+          <span class="ml-auto text-xs font-normal"><span class="tracking-widest opacity-60">	&#8594; </span> Know</span>
         </Button>
       </div>
       <div class="flip-card-face back" :class="`!border-opacity-[${borderOpacity}] ${borderColor}`">
         <div></div>
         <TTSButton class="absolute top-2 right-2" :text="term.term" />
-        <div class="flex-1 flex flex-col items-center justify-center">
+        <div class="flex-1 flex flex-col items-center justify-center gap-3">
           <p>{{ term.definition }}</p>
-          <span v-if="term.example" class="block text-base text-muted-foreground mt-3 italic">
+          <img v-if="term.imageUrl" :src="term.imageUrl" class="w-32 h-32 object-cover rounded-md" :alt="term.term">
+          <span v-if="term.example" class="block text-base text-muted-foreground italic">
             &ldquo; {{ term.example }} &rdquo;
           </span>
         </div>
-        <Button id="flip-btn" variant="ghost" class="rounded-full" @click.stop="toggleFlipCard">
-          <Repeat />
+        <Button id="flip-btn" variant="ghost" class="w-full h-7 hover:bg-secondary font-normal text-xs" @click.stop="toggleFlipCard">
+          <p>Press <span class="text-xs tracking-widest opacity-60">space</span> to flip</p>
         </Button>
       </div>
     </div>
@@ -32,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import type { Term } from "@/types";
 import { Button } from "../ui/button";
 import { Repeat } from "lucide-vue-next";
@@ -49,6 +52,12 @@ const props = withDefaults(defineProps<{
 const isFlipped = ref(false);
 const isResetting = ref(false)
 
+onMounted(() => {
+  document.addEventListener('keydown', handlePressSpace)
+})
+onUnmounted(() => {
+  document.removeEventListener('keydown', handlePressSpace)
+})
 
 watch(() => props.term, () => {
   isResetting.value = true;
@@ -58,6 +67,11 @@ watch(() => props.term, () => {
     isResetting.value = false;
   }, 100);
 })
+const handlePressSpace = (e: KeyboardEvent) => {
+  if (e.code == 'Space') {
+    toggleFlipCard()
+  }
+}
 
 function toggleFlipCard() {
   isFlipped.value = !isFlipped.value
