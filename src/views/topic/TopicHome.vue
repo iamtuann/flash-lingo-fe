@@ -16,11 +16,19 @@
             </DropdownMenuTrigger>
             <DropdownMenuContent class="w-44" :sideOffset="12" align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem class="cursor-pointer" :as="RouterLink" :to="{name: 'TopicEdit', params: {id: topicId}}">
+                <DropdownMenuItem v-if="isEditable" class="cursor-pointer" :as="RouterLink" :to="{name: 'TopicEdit', params: {id: topicId}}">
                   <Pencil class="mr-2 h-4 w-4" />
                   <span>Edit</span>
                 </DropdownMenuItem>
-                <Dialog v-model:open="dialogDeleteTopic">
+                <DropdownMenuItem class="cursor-pointer">
+                  <Copy class="mr-2 h-4 w-4" />
+                  <span>Make a copy</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem class="cursor-pointer">
+                  <FolderPlus class="mr-2 h-4 w-4" />
+                  <span>Add to folder</span>
+                </DropdownMenuItem>
+                <Dialog v-if="isEditable" v-model:open="dialogDeleteTopic">
                   <DialogTrigger class="w-full">
                     <DropdownMenuItem class="text-red-500 cursor-pointer focus:text-red-500" @select="(e) => e.preventDefault()">
                       <TrashIcon :strokeWidth="3" class="mr-2 h-4 w-4" />
@@ -103,18 +111,20 @@ import { EStatus, type Topic, type Term } from "@/types";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { EllipsisVertical, FileText, Gamepad, GraduationCap, Layers, Pencil, TrashIcon } from "lucide-vue-next";
+import { Copy, EllipsisVertical, FileText, FolderPlus, Gamepad, GraduationCap, Layers, Pencil, TrashIcon } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import HoverCard from "@/components/hover-card/HoverCard.vue";
 import TermItem from "@/components/term/TermItem.vue";
+import { editableTopic } from "@/utils";
 
 const route = useRoute()
 const router = useRouter()
 const termStore = useTermStore()
 const topicStore = useTopicStore();
+const isEditable = ref(false);
 
 const topicId = ref(route.params.id as string)
 const topic = ref<Topic>()
@@ -164,6 +174,9 @@ async function getData() {
     ])
     topic.value = res[0]
     terms.value = res[1]
+    if (editableTopic(topic.value)) {
+      isEditable.value = true
+    }
     if (topic.value.status == EStatus.DRAFT) {
       router.replace({name: 'TopicEdit', params: {id: topicId.value}})
     } else if (!route.params.slug || topic.value.slug != route.params.slug) {

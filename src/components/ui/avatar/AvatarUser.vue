@@ -3,7 +3,7 @@
     class="inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer"
     :class="`size-${size}`"
   >
-    <AvatarImage :src="user.avatarUrl" :alt="user.firstName+' '+user.lastName" />
+    <AvatarImage :src="user.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
     <AvatarFallback
       class="text-primary flex h-full w-full items-center justify-center bg-white font-bold" :delay-ms="600"
     >

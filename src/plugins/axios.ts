@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import router from "@/router";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
@@ -28,7 +29,7 @@ instance.interceptors.response.use(
     if (status == 401) {
       
     } else if (status == 403) {
-      
+      router.replace({name: 'AccessDenied'})
     }
     return Promise.reject(error)
   }

@@ -135,6 +135,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import TermForm2 from "@/components/term/TermForm2.vue";
 import { Card, CardFooter } from "@/components/ui/card";
 import CardContent from "@/components/ui/card/CardContent.vue";
+import { editableTopic } from "@/utils";
 
 const route = useRoute();
 const router = useRouter()
@@ -208,6 +209,9 @@ async function getAllTerms() {
     }
     if (topicRes.status == 'fulfilled') {
       topic.value = topicRes.value
+    }
+    if (!editableTopic(topic.value)) {
+      router.replace({name: 'AccessDenied'})
     }
   } catch (e) {
     console.error(e)

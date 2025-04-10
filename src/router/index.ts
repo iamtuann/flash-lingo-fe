@@ -115,6 +115,12 @@ const routes = [
     component: () => import('@/views/folder/FolderTopics.vue'),
     meta: { layout: DefaultLayout },
   },
+  {
+    path: "/access-denied",
+    name: "AccessDenied",
+    component: () => import('@/views/403Page.vue'),
+    meta: { layout: DefaultLayout },
+  },
 ]
 
 const router = createRouter({

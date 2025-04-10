@@ -6,14 +6,14 @@ import type { AuthResponse } from "@/types/auth";
 
 type authStore = {
   token: string,
-  username: string,
+  email: string,
   isAuthenticated: boolean
 }
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: '',
-    username: '',
+    email: '',
     isAuthenticated: false,
   } as authStore),
   actions: {
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', {
         Cookies.remove('token')
         Cookies.set('token', token, {secure: true, sameSite: 'strict', expires: 30})
         const payload = JSON.parse(atob(token.split('.')[1]))
-        this.username = payload.sub
+        this.email = payload.sub
         this.isAuthenticated = true;
       } catch (e) {
         console.error(e);
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore('auth', {
     },
     removeToken() {
       this.token = '',
-      this.username = '',
+      this.email = '',
       Cookies.remove('token')
     },
     isTokenExpired(token:string) {
