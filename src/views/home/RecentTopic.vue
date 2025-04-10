@@ -5,9 +5,7 @@
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
       <template v-for="item in topics" :key="item.id">
-        <RouterLink :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}">
-          <TopicItem :topic="item" layout="grid" />
-        </RouterLink>
+        <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid" />
       </template>
     </div>
   </section>

@@ -8,7 +8,7 @@
     </RouterLink>
     </div>
     <div class="mt-7" v-if="pageFolder.totalElements > 0">
-      <Pagination v-slot="{ page }" :items-per-page="pageParams.pageSize" :total="pageFolder.totalElements" :sibling-count="1" show-edges :default-page="1">
+      <Pagination v-slot="{ page }" v-model:page="pageParams.pageIndex" :items-per-page="pageParams.pageSize" :total="pageFolder.totalElements" :sibling-count="2" show-edges :default-page="1">
         <PaginationList v-slot="{ items }" class="flex items-center gap-1 justify-center">
           <PaginationFirst />
           <PaginationPrev />
@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores';
 import type { Folder, Page } from '@/types';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import {
   Button,
 } from '@/components/ui/button'
@@ -60,6 +60,10 @@ const pageFolder = reactive<Page<Folder>>({
   content: [],
   totalPages: 1,
   totalElements: 0
+})
+
+watch(pageParams, () => {
+  getData()
 })
 
 async function getData() {

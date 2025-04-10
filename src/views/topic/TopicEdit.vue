@@ -12,13 +12,17 @@
           </Button>
           <span>{{ statusText }}</span>
         </div>
-        <div>
-          <Button :disabled="(isLoading.saveTopic || isLoading.topic) || terms.length < 2"
-            v-if="topic?.status == 2" @click="createTopic"
-          >
-            Create Flashcards
-            <LoaderCircle v-if="isLoading.saveTopic" class="mr-2 h-4 w-4 animate-spin" />
-          </Button>
+        <div class="flex items-center gap-2">
+          <template v-if="topic?.status == 2">
+            <Button :disabled="(isLoading.saveTopic || isLoading.topic) || terms.length < 2"  @click="createTopic" >
+              Create Flashcards
+              <LoaderCircle v-if="isLoading.saveTopic" class="mr-2 h-4 w-4 animate-spin" />
+            </Button>
+            <Button variant="destructive" size="icon" @click="deleteTopic">
+              <TrashIcon />
+            </Button>
+          </template>
+          
           <Button v-else :disabled="isSaving" @click="router.push({name: 'TopicHome', params: {id: topicId, slug: topic?.slug || ''}})">
             Done
           </Button>
@@ -128,7 +132,7 @@ import { useTermStore, useTopicStore } from "@/stores";
 import { computed, reactive, ref } from 'vue';
 import { type Topic, type Term, EStatus } from '@/types';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, EditIcon, LoaderCircle, PencilIcon, PlusIcon, Trash2Icon } from "lucide-vue-next";
+import { ChevronLeft, EditIcon, LoaderCircle, PencilIcon, PlusIcon, Trash2Icon, TrashIcon } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 import TopicForm from "@/components/topic/TopicForm.vue";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -169,10 +173,10 @@ const isLoading = reactive({
   terms: false,
   saveTopic: false
 })
-const drag = ref(false)
-const dragOptions = computed(() => { 
-  return { animation: 200, group: "description", disabled: false, ghostClass: "ghost", }; 
-});
+// const drag = ref(false)
+// const dragOptions = computed(() => { 
+//   return { animation: 200, group: "description", disabled: false, ghostClass: "ghost", }; 
+// });
 
 async function createTopic() {
   isLoading.saveTopic = true
@@ -226,35 +230,35 @@ function onUpdateTopicSuccess(data: Topic) {
   isEditingTopic.value = false
 }
 
-function onSavingTerm(index: number, isLoading: boolean) {
-  if (isLoading) {
-    activeRequests.value.add(index);
-  } else {
-    activeRequests.value.delete(index);
-  }
-};
+// function onSavingTerm(index: number, isLoading: boolean) {
+//   if (isLoading) {
+//     activeRequests.value.add(index);
+//   } else {
+//     activeRequests.value.delete(index);
+//   }
+// };
 
-async function onUpdateDrag(event:any) {
-  const oldIndex = event.oldIndex as number
-  const newIndex = event.newIndex as number
-  const item = event.item as HTMLElement
+// async function onUpdateDrag(event:any) {
+//   const oldIndex = event.oldIndex as number
+//   const newIndex = event.newIndex as number
+//   const item = event.item as HTMLElement
 
-  terms.value[oldIndex].rank = newIndex;
-  if (item.dataset.id) {
-    updateRank(item.dataset.id, newIndex)
-  }
-}
+//   terms.value[oldIndex].rank = newIndex;
+//   if (item.dataset.id) {
+//     updateRank(item.dataset.id, newIndex)
+//   }
+// }
 
-async function updateRank(id: string | number, rank: number) {
-  onSavingTerm(rank, true)
-  try {
-    await termStore.changeRank(id, topicId.value, rank);
-  } catch (e) {
-    console.error(e)
-  } finally {
-    onSavingTerm(rank, false)
-  }
-}
+// async function updateRank(id: string | number, rank: number) {
+//   onSavingTerm(rank, true)
+//   try {
+//     await termStore.changeRank(id, topicId.value, rank);
+//   } catch (e) {
+//     console.error(e)
+//   } finally {
+//     onSavingTerm(rank, false)
+//   }
+// }
 
 function onUpdateTerm(data: Term) {
   const index = terms.value.findIndex(t => t.id == data.id)
@@ -274,6 +278,16 @@ function onDeleteTerm(id: number | string, index?: number) {
     }
   } catch (e) {
     console.error(e)
+  }
+}
+
+async function deleteTopic() {
+  try {
+    await topicStore.delete(topicId.value)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    router.replace({name: 'Home'})
   }
 }
 

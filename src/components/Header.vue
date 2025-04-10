@@ -111,7 +111,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { FolderIcon, LogOut, Plus, Settings, Shapes, User } from 'lucide-vue-next';
 import Search from '@/components/Search.vue';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useRouter } from 'vue-router';
 import TopicForm from '@/components/topic/TopicForm.vue';
 import { FolderForm } from "@/components/folder";

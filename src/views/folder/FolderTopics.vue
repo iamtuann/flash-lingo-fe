@@ -57,11 +57,24 @@
     <TopicGroupSkeleton v-if="isLoading" />
     <template v-else-if="pageTopic.totalElements > 0">
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-        <RouterLink v-for="item in pageTopic.content" :key="item.id"
-          :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}"
-        >
-          <TopicItem :topic="item" layout="grid" />
-        </RouterLink>
+        <template v-for="item in pageTopic.content" :key="item.id">
+          <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid">
+            <template #append>
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <Button variant="secondary" size="icon">
+                    <EllipsisVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-44" :sideOffset="12" align="end">
+                  <DropdownMenuItem  @click="handleRemoveTopic(item.id)">
+                    <MinusIcon class="mr-2 h-4 w-4" /> <span>Remove</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </template>
+          </TopicItem>
+        </template>
       </div>
       <div class="mt-7">
         <Pagination v-slot="{ page }" :items-per-page="pageParams.pageSize" :total="pageTopic.totalElements" :sibling-count="1" show-edges :default-page="1">
@@ -96,7 +109,7 @@ import { useRoute, useRouter } from 'vue-router';
 import type { Topic, Folder, Page } from "@/types";
 import { computed, reactive, ref, watch } from 'vue';
 import { Badge } from '@/components/ui/badge'
-import { EllipsisVertical, PencilIcon, PlusIcon, TrashIcon } from 'lucide-vue-next';
+import { EllipsisVertical, MinusIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-vue-next';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
 import { TopicGroupSkeleton, TopicItem } from '@/components/topic';
@@ -146,6 +159,15 @@ function onUpdateFolderSuccess() {
   dialogFolderForm.value = false;
 }
 
+async function handleRemoveTopic(topicId: string | number) {
+  try {
+    await folderStore.removeTopic(folderId.value, topicId);
+    getData()
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 async function deleteFolder() {
   isDeleting.value = true;
   try {
@@ -167,9 +189,6 @@ async function getData() {
       folderStore.getById(folderId.value),
       folderStore.getTopics(folderId.value, name, pageIndex, pageSize, key, orderBy)
     ])
-    // if (folderRes.status == 'fulfilled') {
-    //   folder.value = folderRes.value;
-    // }
     if (topicRes.status == 'fulfilled') {
       pageTopic.content = topicRes.value.content;
       pageTopic.totalElements = topicRes.value.totalElements

@@ -49,10 +49,17 @@ export const useFolderStore = defineStore('folderStore', {
       this.folder = null
       return res.data;
     },
-    async addTopic(folderId: string | number, topicIds: (string | number)[]) {
-      const res = await ApiService.post(`/folders/topics`, {
-        folderId, topicIds
+    async addTopics(folderId: string | number, topicIds: (string | number)[]) {
+      const res = await ApiService.post(`/folders/${folderId}/topics`, {
+        topicIds
       });
+      if (res.status == 200) {
+        this.folder = res.data
+      }
+      return res.data;
+    },
+    async removeTopic(folderId: string | number, topicId: string | number) {
+      const res = await ApiService.delete(`/folders/${folderId}/topics/${topicId}`)
       if (res.status == 200) {
         this.folder = res.data
       }

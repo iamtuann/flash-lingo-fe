@@ -15,6 +15,12 @@ export const useTermStore = defineStore('term', {
       const res = await ApiService.post('/terms', request)
       return res.data;
     },
+    async saveList(request: Term[]): Promise<Term[]> {
+      const res = await ApiService.post('/terms/list', {
+        terms: request
+      })
+      return res.data;
+    },
     async changeRank(id: string | number, topicId: string | number, rank: number) {
       const res = await ApiService.post('/terms', {
         id,

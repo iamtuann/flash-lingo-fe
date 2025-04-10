@@ -27,9 +27,9 @@ export const useTopicStore = defineStore('topic', {
     async save(request: TopicRequest): Promise<Topic> {
       this.topic = null
       const res = await ApiService.post('/topics', request)
-      if (res.status == 200) {
-        this.topic = res.data
-      }
+      // if (res.status == 200) {
+      //   this.topic = res.data
+      // }
       return res.data;
     },
     async getById(id: number | string): Promise<Topic> {
@@ -60,6 +60,12 @@ export const useTopicStore = defineStore('topic', {
       if (this.topic?.id == topicId) {
         this.topic = null
       }
+    },
+    async addToFolders(topicId: string | number, folderIds: (string | number)[]) {
+      const res = await ApiService.post(`/topics/${topicId}/folders`, {
+        folderIds
+      });
+      return res.data;
     }
   }
 })

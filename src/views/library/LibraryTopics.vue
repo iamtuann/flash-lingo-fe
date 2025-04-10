@@ -4,11 +4,10 @@
     <template v-else-if="pageTopic.totalElements > 0">
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
         <template v-for="item in pageTopic.content" :key="item.id">
-          <RouterLink
+          <TopicItem 
             :to="item.status != EStatus.DRAFT ? {name: 'TopicHome', params: {id: item.id, slug: item.slug}} : {name: 'TopicEdit', params: {id: item.id}}"
-          >
-            <TopicItem :topic="item" layout="grid" />
-          </RouterLink>
+            :topic="item" layout="grid"
+          />
         </template>
       </div>
       <div class="mt-7">

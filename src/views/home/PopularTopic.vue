@@ -5,9 +5,7 @@
     <div class="relative group" v-if="topics.length > 2">
       <Carousel ref="carouselRef" v-model="currentSlide" class="mt-4" v-bind="carouselConfig">
         <Slide v-for="(item, idx) in topics" :key="idx">
-          <RouterLink class="block w-full" :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}">
-            <TopicItem :topic="item" layout="grid" />
-          </RouterLink>
+          <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid" class="block w-full"/>
         </Slide>
       </Carousel>
       <div class="hidden group-hover:block">
@@ -29,9 +27,7 @@
     </div>
     <div v-else class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
       <template v-for="item in topics" :key="item.id">
-        <RouterLink :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}">
-          <TopicItem :topic="item" layout="grid" />
-        </RouterLink>
+        <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid" />
       </template>
     </div>
   </section>

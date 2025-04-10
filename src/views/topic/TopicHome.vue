@@ -1,4 +1,5 @@
 <template>
+  <div v-show="isCoping" class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"></div>
   <div class="container py-8">
     <div class="max-w-3xl mx-auto">
       <div class="flex items-center py-2 gap-3">
@@ -20,11 +21,12 @@
                   <Pencil class="mr-2 h-4 w-4" />
                   <span>Edit</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem class="cursor-pointer">
-                  <Copy class="mr-2 h-4 w-4" />
+                <DropdownMenuItem @click="handleCopyTopic" class="cursor-pointer">
+                  <LoaderCircle v-if="isCoping" class="mr-2 h-4 w-4 animate-spin" />
+                  <Copy v-else class="mr-2 h-4 w-4" />
                   <span>Make a copy</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem class="cursor-pointer">
+                <DropdownMenuItem class="cursor-pointer" @click="showAddDialog = true">
                   <FolderPlus class="mr-2 h-4 w-4" />
                   <span>Add to folder</span>
                 </DropdownMenuItem>
@@ -43,8 +45,8 @@
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter class="mt-4">
-                      <Button variant="outline" @click="dialogDeleteTopic = false">Cancel</Button>
-                      <Button variant="destructive" @click="deleteTopic">Delete</Button>
+                      <Button :disabled="isDeleting" variant="outline" @click="dialogDeleteTopic = false">Cancel</Button>
+                      <Button :disabled="isDeleting" variant="destructive" @click="deleteTopic">Delete</Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -101,17 +103,18 @@
       </div>
     </div>
   </div>
+  <AddToFoldersDialog v-model="showAddDialog" @add-success="showAddDialog = false" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useTermStore, useTopicStore } from "@/stores";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { EStatus, type Topic, type Term } from "@/types";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Copy, EllipsisVertical, FileText, FolderPlus, Gamepad, GraduationCap, Layers, Pencil, TrashIcon } from "lucide-vue-next";
+import { Copy, EllipsisVertical, FileText, FolderPlus, Gamepad, GraduationCap, Layers, LoaderCircle, Pencil, TrashIcon } from "lucide-vue-next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -119,6 +122,7 @@ import { Switch } from "@/components/ui/switch";
 import HoverCard from "@/components/hover-card/HoverCard.vue";
 import TermItem from "@/components/term/TermItem.vue";
 import { editableTopic } from "@/utils";
+import AddToFoldersDialog from "./AddToFoldersDialog.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -126,7 +130,7 @@ const termStore = useTermStore()
 const topicStore = useTopicStore();
 const isEditable = ref(false);
 
-const topicId = ref(route.params.id as string)
+const topicId = computed(() => route.params.id as string)
 const topic = ref<Topic>()
 const terms = ref<Term[]>([] as Term[])
 const hideTerm = ref(false);
@@ -134,6 +138,8 @@ const hideDefinition = ref(false);
 const isLoading = ref(false)
 const dialogDeleteTopic = ref(false)
 const isDeleting = ref(false)
+const isCoping = ref(false)
+const showAddDialog = ref(false)
 
 function toggleHideTerm() {
   hideTerm.value = !hideTerm.value
@@ -152,6 +158,26 @@ async function updateStatus(data: boolean) {
     console.error(e)
   }
 }
+
+async function handleCopyTopic() {
+  try {
+    isCoping.value = true
+    const topic = await topicStore.save({
+      name: topicStore.topic?.name ? topicStore.topic.name + " Copy" : "New Topic",
+      description: topicStore.topic?.description || ""
+    })
+    const newTerms = terms.value.map(term => {
+      return {...term, id: "", topicId: topic.id}
+    })
+    await termStore.saveList(newTerms);
+    isCoping.value = false
+    router.push({name: 'TopicEdit', params: {id: topic.id}})
+  } catch (e) {
+    console.error(e)
+    isCoping.value = false
+  }
+}
+
 async function deleteTopic() {
   isDeleting.value = true;
   try {
