@@ -19,7 +19,7 @@
         </li>
         <li>
           <RouterLink
-            :to="{name: 'Home'}"
+            :to="{name: 'LibraryRecentLearning'}"
             :class="cn(buttonVariants({ variant: 'outline' }), 'h-8')"
             active-class="bg-primary text-primary-foreground shadow hover:bg-primary/90"
           > Recent Learning </RouterLink>

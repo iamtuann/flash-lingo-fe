@@ -102,9 +102,37 @@ const routes = [
         component: () => import('@/views/library/LibraryTopics.vue')
       },
       {
+        path: "recent-learning",
+        name: 'LibraryRecentLearning',
+        component: () => import('@/views/library/LibraryRecent.vue')
+      },
+      {
         path: "folders",
         name: 'LibraryFolders',
         component: () => import('@/views/library/LibraryFolders.vue')
+      },
+    ],
+    meta: { layout: DefaultLayout }
+  },
+  {
+    path: "/search",
+    component: () => import('@/views/search/Index.vue'),
+    children: [
+      {
+        path: "",
+        alias: "all",
+        name: 'SearchAll',
+        component: () => import('@/views/search/SearchAll.vue')
+      },
+      {
+        path: "topics",
+        name: 'SearchTopic',
+        component: () => import('@/views/search/SearchTopic.vue')
+      },
+      {
+        path: "users",
+        name: 'SearchUser',
+        component: () => import('@/views/search/SearchUser.vue')
       },
     ],
     meta: { layout: DefaultLayout }

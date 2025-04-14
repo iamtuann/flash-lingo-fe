@@ -1,9 +1,9 @@
 <template>
-  <Primitive :as="viewable ? as : 'div'" :as-child="asChild" class="relative" :class="cn({'opacity-60': !viewable}, props.class)">
+  <Primitive :as="viewable ? as : 'div'" :as-child="asChild" class="relative bg-accent rounded-md" :class="cn({'opacity-60': !viewable}, props.class)">
     <div v-if="layout == 'list'">
       Topic
     </div>
-    <div v-else class="border border-border bg-accent rounded-md py-3 px-3">
+    <div v-else class="p-4">
       <div class="flex items-center">
         <p class="text-xl font-medium">{{ topic.name }} <span v-if="topic.status == 2">(Draft)</span></p>
         

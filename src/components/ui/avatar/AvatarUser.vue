@@ -6,6 +6,7 @@
     <AvatarImage :src="user.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
     <AvatarFallback
       class="text-primary flex h-full w-full items-center justify-center bg-white font-bold" :delay-ms="600"
+      :class="textSize || ''"
     >
       {{ user.firstName[0] + user.lastName[0] }}
     </AvatarFallback>
@@ -20,7 +21,8 @@ import AvatarImage from './AvatarImage.vue';
 
 defineProps<{
   user: User,
-  size: number | string
+  size: number | string,
+  textSize?: string
 }>()
 </script>
 

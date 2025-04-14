@@ -227,14 +227,19 @@ watch(model, () => {
   } else {
     photos.value = []
     examples.value = []
-    currentExamIndex.value = 0
+    wordSuggestions.value = []
+    pronunSuggestions.value = []
+    defSuggestions.value = []
+    currentExamIndex.value = -1
   }
 })
 
 watch(currentExamIndex, (newIndex) => {
-  setValues({
-    example: examples.value[newIndex]
-  })
+  if (newIndex >= 0 && newIndex < 3) {
+    setValues({
+      example: examples.value[newIndex]
+    })
+  }
 })
 
 watch(searchImg, () => {

@@ -3,7 +3,7 @@
     <h3 class="font-semibold text-lg mb-3">Recents learning</h3>
     <TopicGroupSkeleton v-if="isLoading" />
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
       <template v-for="item in topics" :key="item.id">
         <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid" />
       </template>

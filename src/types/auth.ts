@@ -17,4 +17,5 @@ export interface User {
   createdAt: Date,
   updatedAt: Date,
   status: number,
+  topicsNumber: number
 }
