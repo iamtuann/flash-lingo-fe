@@ -118,6 +118,7 @@ async function onSubmit() {
     const {email, password, firstName, lastName} = formData;
     const res = await useAuthStore().register(email, password, firstName, lastName)
     if (res.status === 201) {
+      await useAuthStore().login(email, password)
       router.push({name: 'Home'})
     }
   } catch (e) {

@@ -1,7 +1,8 @@
 <template>
-  <header class="p-2 -mx-2 h-16 bg-transparent relative flex items-center justify-between gap-2">
+  <header class="px-2 py-3 -mx-2 h-[72px] bg-transparent relative flex items-center justify-between gap-2">
     <div class="relative z-[1]">
-      <RouterLink to="" class="text-xl font-bold px-3 py-2">
+      <RouterLink :to="{name: 'Home'}" class="flex items-center gap-1 text-xl font-bold px-3 py-2">
+        <img class="block h-14" src="@/assets/images/logo.png" alt="logo">
         Flash Lingo
       </RouterLink>
     </div>
@@ -23,7 +24,7 @@
           Log in
         </RouterLink>
       </template>
-      <DropdownMenu>
+      <DropdownMenu v-else>
         <DropdownMenuTrigger as-child>
           <Button size="icon" class="mr-1">
             <Plus class="!size-5" />
@@ -117,9 +118,11 @@ import TopicForm from '@/components/topic/TopicForm.vue';
 import { FolderForm } from "@/components/folder";
 import { ref } from 'vue';
 import type { Folder } from '@/types';
+import { useSessionTracker } from '@/composable';
 
 const authStore = useAuthStore()
 const router = useRouter()
+const {endSession} = useSessionTracker()
 let user:AuthResponse
 if (authStore.isAuthenticated) {
   user = JSON.parse(localStorage.getItem('user') || '')
@@ -137,6 +140,7 @@ function onCreateFolderSuccess(data: Folder) {
 }
 
 function handleLogout() {
+  endSession()
   authStore.removeToken();
   router.push({name: 'Login'})
 }

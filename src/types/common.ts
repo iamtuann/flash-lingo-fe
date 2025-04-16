@@ -16,3 +16,10 @@ export interface Photo {
   src: string;
   alt: string;
 }
+
+export interface StudyTime {
+  id: number;
+  userId: string | number;
+  statDate: string; // yyyy-MM-dd
+  totalDurationSeconds: number;
+}

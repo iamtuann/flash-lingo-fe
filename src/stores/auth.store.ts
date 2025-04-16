@@ -3,6 +3,7 @@ import ApiService from '@/plugins/axios';
 import Cookies from "js-cookie";
 import type { AxiosResponse } from "axios";
 import type { AuthResponse } from "@/types/auth";
+import { useSessionTracker } from "@/composable";
 
 type authStore = {
   token: string,
@@ -35,6 +36,7 @@ export const useAuthStore = defineStore('auth', {
         const {token, ...user} = res.data;
         this.setToken(token);
         localStorage.setItem("user", JSON.stringify(user))
+        useSessionTracker().initSessionTracking()
       }
       return res.data;
     },
@@ -46,6 +48,7 @@ export const useAuthStore = defineStore('auth', {
         const {token, ...user} = res.data;
         this.setToken(token);
         localStorage.setItem("user", JSON.stringify(user))
+        useSessionTracker().initSessionTracking()
       }
       return res.data;
     },
