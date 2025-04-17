@@ -8,9 +8,10 @@ export const useStudyStore = defineStore('studyStore', {
     
   }),
   actions: {
-    async getDailyStudyTime(start: Date, end: Date): Promise<StudyTime[]> {
+    async getDailyStudyTime(start: Date, end: Date, userId?: string | number): Promise<StudyTime[]> {
       const res = await ApiService.get('/study/daily-time', {
         params: {
+          userId,
           start: start.toISOString().slice(0, 10),
           end: end.toISOString().slice(0, 10)
         }

@@ -1,7 +1,7 @@
 <template>
   <Avatar
     class="inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer"
-    :class="`size-${size}`"
+    :class="`w-${size} h-${size}`"
   >
     <AvatarImage :src="user.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
     <AvatarFallback

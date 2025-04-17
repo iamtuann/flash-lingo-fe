@@ -1,6 +1,6 @@
 <template>
   <section class="grid grid-cols-12 gap-3">
-    <div class="col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-5">
+    <div v-if="authStore.isAuthenticated" class="col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-5">
       <div class="h-full flex flex-col gap-4 bg-secondary shadow-sm rounded-xl p-4 md:p-6">
         <div>
           <h3 class="text-2xl font-semibold">Study time</h3>
@@ -9,7 +9,7 @@
         <div class="flex-1 text-lg text-green-400">
           Today: {{ formatTime(todayStudyTime?.totalDurationSeconds) }}
         </div>
-        <RouterLink :to="{name: 'Home'}" class="flex items-center">
+        <RouterLink :to="{name: 'UserProfile', params: {id: authStore.user?.id}}" class="flex items-center hover:text-amber-400">
           View process <ChevronRight />
         </RouterLink>
       </div>
@@ -39,12 +39,13 @@
 <script setup lang="ts">
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
-import { useStudyStore } from '@/stores';
+import { useAuthStore, useStudyStore } from '@/stores';
 import type { StudyTime } from '@/types';
 import { ref } from "vue"
 import { ChevronRight } from 'lucide-vue-next';
 
 const studyStore = useStudyStore()
+const authStore = useAuthStore()
 
 const carouselConfig = {
   itemsToShow: 1,
@@ -72,7 +73,9 @@ async function getProcessStudy() {
     console.error(e)
   }
 }
-getProcessStudy()
+if (authStore.isAuthenticated) {
+  getProcessStudy()
+}
 </script>
 
 <style scoped>

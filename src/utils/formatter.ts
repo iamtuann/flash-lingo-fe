@@ -7,6 +7,15 @@ export const formatTime = (seconds: number) => {
   return `${hours > 0 ? `${hours}h ` : ""}${minutes}m ${secs}s`
 }
 
+export const secondToHourMinute = (seconds: number | null | undefined) => {
+  if (!seconds) {
+    return ""
+  }
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  return `${hours > 0 ? `${hours}h ` : ""}${minutes}m`
+}
+
 export const milisecondToSecond = (ms: number) => {
   return (ms / 1000).toFixed(1);
 }

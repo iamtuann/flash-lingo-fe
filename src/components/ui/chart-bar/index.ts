@@ -43,6 +43,12 @@ export interface BaseChartProps<T extends Record<string, any>> {
    * @default true
    */
   showXAxis?: boolean
+
+  xNumTicks?: number;
+
+  yNumTicks?: number;
+  
+  tickTextHideOverlapping?: boolean;
   /**
    * Controls the visibility of the Y axis.
    * @default true

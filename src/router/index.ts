@@ -12,6 +12,12 @@ const routes = [
     meta: { layout: DefaultLayout }
   },
   {
+    path: "/profile/:id",
+    name: 'UserProfile',
+    component: () => import('@/views/Profile.vue'),
+    meta: { layout: DefaultLayout }
+  },
+  {
     path: "/signup",
     name: 'Signup',
     component: () => import('@/views/Signup.vue')

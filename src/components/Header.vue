@@ -43,10 +43,10 @@
       </DropdownMenu>
         
 
-      <DropdownMenu>
+      <DropdownMenu v-if="user">
         <DropdownMenuTrigger as-child>
-          <Avatar v-if="authStore.isAuthenticated" class="size-9 md:size-10 inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer">
-            <AvatarImage :src="user.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
+          <Avatar class="size-9 md:size-10 inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer">
+            <AvatarImage :src="user?.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
             <AvatarFallback
               class="text-primary flex h-full w-full items-center justify-center bg-white font-bold" :delay-ms="600"
             >
@@ -58,8 +58,8 @@
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <User class="mr-2 h-4 w-4" />
+            <DropdownMenuItem @click="router.push({name: 'UserProfile', params: {id: user.id}})">
+              <UserIcon class="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import type { AuthResponse } from '@/types/auth';
+// import type { AuthResponse, User } from '@/types/auth';
 import type { Topic } from '@/types/topic';
 import { useAuthStore } from "@/stores";
 import { cn } from '@/lib/utils';
@@ -110,7 +110,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { FolderIcon, LogOut, Plus, Settings, Shapes, User } from 'lucide-vue-next';
+import { FolderIcon, LogOut, Plus, Settings, Shapes, UserIcon } from 'lucide-vue-next';
 import Search from '@/components/Search.vue';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useRouter } from 'vue-router';
@@ -119,14 +119,13 @@ import { FolderForm } from "@/components/folder";
 import { ref } from 'vue';
 import type { Folder } from '@/types';
 import { useSessionTracker } from '@/composable';
+import { storeToRefs } from 'pinia';
 
 const authStore = useAuthStore()
 const router = useRouter()
 const {endSession} = useSessionTracker()
-let user:AuthResponse
-if (authStore.isAuthenticated) {
-  user = JSON.parse(localStorage.getItem('user') || '')
-}
+const { user } = storeToRefs(authStore)
+
 const dialogTopicForm = ref(false)
 const dialogFolderForm = ref(false)
 

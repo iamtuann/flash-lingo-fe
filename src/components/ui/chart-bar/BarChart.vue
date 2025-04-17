@@ -23,6 +23,10 @@ const props = withDefaults(defineProps<BaseChartProps<T> & {
    * @default 0
    */
   roundedCorners?: number
+
+  columnWidth?: number;
+
+  formatColor?: import("@unovis/ts").ColorAccessor<any>;
 }>(), {
   type: 'grouped',
   margin: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
@@ -33,6 +37,7 @@ const props = withDefaults(defineProps<BaseChartProps<T> & {
   showTooltip: true,
   showLegend: true,
   showGridLine: true,
+  tickTextHideOverlapping: true,
 })
 const emits = defineEmits<{
   legendItemClick: [d: BulletLegendItemInterface, i: number]
@@ -73,9 +78,11 @@ const selectorsBar = computed(() => props.type === 'grouped' ? GroupedBar.select
       <VisBarComponent
         :x="(d: Data, i: number) => i"
         :y="categories.map(category => (d: Data) => d[category]) "
-        :color="colors"
+        :color="type == 'stacked' && formatColor ? formatColor : colors"
         :rounded-corners="roundedCorners"
         :bar-padding="0.05"
+        :groupWidth="columnWidth"
+        :barWidth="columnWidth"
         :attributes="{
           [selectorsBar]: {
             opacity: (d: Data, i:number) => {
@@ -92,6 +99,9 @@ const selectorsBar = computed(() => props.type === 'grouped' ? GroupedBar.select
         :tick-format="xFormatter ?? ((v: number) => data[v]?.[index])"
         :grid-line="false"
         :tick-line="false"
+        :full-size="true"
+        :num-ticks="xNumTicks"
+        :tickTextHideOverlapping="tickTextHideOverlapping"
         tick-text-color="hsl(var(--vis-text-color))"
       />
       <VisAxis
@@ -99,6 +109,8 @@ const selectorsBar = computed(() => props.type === 'grouped' ? GroupedBar.select
         type="y"
         :tick-line="false"
         :tick-format="yFormatter"
+        :num-ticks="yNumTicks"
+        :tickTextHideOverlapping="tickTextHideOverlapping"
         :domain-line="false"
         :grid-line="showGridLine"
         :attributes="{

@@ -2,12 +2,13 @@ import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
 import Cookies from "js-cookie";
 import type { AxiosResponse } from "axios";
-import type { AuthResponse } from "@/types/auth";
+import type { AuthResponse, User } from "@/types/auth";
 import { useSessionTracker } from "@/composable";
 
 type authStore = {
   token: string,
   email: string,
+  user: User | null
   isAuthenticated: boolean
 }
 
@@ -15,9 +16,17 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: '',
     email: '',
+    user: null,
     isAuthenticated: false,
   } as authStore),
   actions: {
+    async getProfile(): Promise<User> {
+      const res = await ApiService.get('/auth/profile')
+      if (res.status === 200) {
+        this.user = res.data
+      }
+      return res.data;
+    },
     async register(email: string, password: string, firstName: string, lastName: string) {
       const res = await ApiService.post('/auth/register', {
         email,
@@ -36,6 +45,7 @@ export const useAuthStore = defineStore('auth', {
         const {token, ...user} = res.data;
         this.setToken(token);
         localStorage.setItem("user", JSON.stringify(user))
+        this.getProfile()
         useSessionTracker().initSessionTracking()
       }
       return res.data;

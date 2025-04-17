@@ -48,5 +48,9 @@ export const useUserStore = defineStore('userStore', {
       })
       return res.data
     },
+    async getProfile(userId: string | number): Promise<User> {
+      const res = await ApiService.get('/users/' + userId)
+      return res.data
+    },
   }
 })
