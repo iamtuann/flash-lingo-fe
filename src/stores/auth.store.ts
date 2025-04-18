@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
 import Cookies from "js-cookie";
 import type { AxiosResponse } from "axios";
-import type { AuthResponse, User } from "@/types/auth";
+import type { AuthResponse, User, UserRequest } from "@/types/auth";
 import { useSessionTracker } from "@/composable";
 
 type authStore = {
@@ -21,7 +21,17 @@ export const useAuthStore = defineStore('auth', {
   } as authStore),
   actions: {
     async getProfile(): Promise<User> {
+      if (this.user) {
+        return this.user;
+      }
       const res = await ApiService.get('/auth/profile')
+      if (res.status === 200) {
+        this.user = res.data
+      }
+      return res.data;
+    },
+    async updateProfile(request: UserRequest): Promise<User> {
+      const res = await ApiService.put('/auth/profile', request)
       if (res.status === 200) {
         this.user = res.data
       }

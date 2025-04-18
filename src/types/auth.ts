@@ -13,9 +13,21 @@ export interface User {
   email: string,
   firstName: string,
   lastName: string,
-  avatarUrl: string,
+  avatarUrl?: string,
+  username: string,
+  dob: string,
+  bio: string,
   createdAt: Date,
   updatedAt: Date,
   status: number,
   topicsNumber: number
+}
+
+export interface UserRequest {
+  email: string,
+  firstName: string,
+  lastName: string,
+  username: string,
+  dob?: string,
+  bio?: string,
 }

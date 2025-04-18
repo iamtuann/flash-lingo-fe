@@ -1,5 +1,6 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import LearnLayout from "@/layouts/LearnLayout.vue";
+import SettingLayout from "@/layouts/SettingLayout.vue";
 import { h } from "vue";
 import { createRouter, createWebHistory, RouterView } from "vue-router";
 
@@ -148,6 +149,19 @@ const routes = [
     name: "FolderTopics",
     component: () => import('@/views/folder/FolderTopics.vue'),
     meta: { layout: DefaultLayout },
+  },
+  {
+    path: "/settings",
+    component: {render: () => h(RouterView)},
+    meta: { layout: SettingLayout },
+    children: [
+      {
+        path: "",
+        alias: "profile",
+        name: 'SettingProfile',
+        component: () => import('@/views/setting/Profile.vue')
+      },
+    ]
   },
   {
     path: "/access-denied",

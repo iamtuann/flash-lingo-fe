@@ -62,7 +62,7 @@
               <UserIcon class="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem @click="router.push({name: 'SettingProfile'})">
               <Settings class="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>

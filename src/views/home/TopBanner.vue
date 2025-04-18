@@ -1,6 +1,6 @@
 <template>
   <section class="grid grid-cols-12 gap-3">
-    <div v-if="authStore.isAuthenticated" class="col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-5">
+    <div v-if="authStore.user" class="col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-5">
       <div class="h-full flex flex-col gap-4 bg-secondary shadow-sm rounded-xl p-4 md:p-6">
         <div>
           <h3 class="text-2xl font-semibold">Study time</h3>
