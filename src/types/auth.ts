@@ -20,6 +20,7 @@ export interface User {
   createdAt: Date,
   updatedAt: Date,
   status: number,
+  provider: 'System' | 'Google',
   topicsNumber: number
 }
 

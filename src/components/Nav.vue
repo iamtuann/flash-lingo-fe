@@ -50,7 +50,7 @@ defineProps<NavProps>()
           :key="`2-${index}`"
           :to="link.to"
           :class="cn(buttonVariants({ variant: 'ghost' }), 'justify-start h-10')"
-          active-class="bg-primary shadow hover:bg-primary/90"
+          active-class="bg-primary shadow hover:bg-primary/90 text-primary-foreground hover:text-primary-foreground"
         >
           <component :is="link.icon" class="mr-2" />
           {{ link.title }}

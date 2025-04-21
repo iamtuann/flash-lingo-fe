@@ -9,7 +9,7 @@ import Separator from '@/components/ui/separator/Separator.vue';
 <template>
   <main class="px-2 flex flex-col gap-2">
     <Header />
-    <div class="container mt-4 space-y-6 pb-12">
+    <div class="container mt-4 space-y-6 pb-6">
       <h2 class="text-2xl font-bold tracking-tight">
         Settings
       </h2>

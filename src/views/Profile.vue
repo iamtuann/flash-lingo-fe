@@ -9,7 +9,7 @@
         <div class="user-banner p-4 md:p-6 min-h-40 flex items-center gap-4 md:gap-6 bg-secondary rounded-lg">
           <template v-if="user">
             <AvatarUser :user="user" :size="20" text-size="text-xl" />
-            <div class="space-y-1 text-secondary-foreground *:text-shadow-md">
+            <div class="space-y-1 text-white *:text-shadow-md">
               <h3 class="text-xl font-semibold">{{ user.firstName + ' ' + user.lastName }}</h3>
               <p>{{ user.email }}</p>
               <p>Join at: {{ formatDate('dd/MM/yyyy', new Date(user.createdAt)) }}</p>

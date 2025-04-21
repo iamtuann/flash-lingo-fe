@@ -37,6 +37,12 @@ export const useAuthStore = defineStore('auth', {
       }
       return res.data;
     },
+    async changePassword(currentPassword: string, newPassword: string): Promise<string> {
+      const res = await ApiService.post('/auth/change-password', {
+        currentPassword, newPassword
+      })
+      return res.data;
+    },
     async register(email: string, password: string, firstName: string, lastName: string) {
       const res = await ApiService.post('/auth/register', {
         email,
@@ -52,9 +58,10 @@ export const useAuthStore = defineStore('auth', {
         password
       })
       if (res.status == 200) {
+        this.user = null
         const {token, ...user} = res.data;
         this.setToken(token);
-        localStorage.setItem("user", JSON.stringify(user))
+        // localStorage.setItem("user", JSON.stringify(user))
         this.getProfile()
         useSessionTracker().initSessionTracking()
       }
@@ -67,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
       if (res.status == 200) {
         const {token, ...user} = res.data;
         this.setToken(token);
-        localStorage.setItem("user", JSON.stringify(user))
+        // localStorage.setItem("user", JSON.stringify(user))
         useSessionTracker().initSessionTracking()
       }
       return res.data;

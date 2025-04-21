@@ -40,8 +40,6 @@ const color = (d: any) => {
 
 watch(() => props.userId, () => getData())
 
-getData()
-
 function generateData(start: Date, end: Date, studyTime: StudyTime[]) {
   data.value = []
   let i = 0;
@@ -49,7 +47,7 @@ function generateData(start: Date, end: Date, studyTime: StudyTime[]) {
     const isoStringDate = formatDate('yyyy-MM-dd', d)
     const statDate = formatDate('dd/MM', d)
     let newData: chartData
-    if (isoStringDate == studyTime[i].statDate) {
+    if (isoStringDate == studyTime[i]?.statDate) {
       newData = {
         date: statDate,
         time: studyTime[i].totalDurationSeconds
@@ -75,6 +73,7 @@ async function getData() {
     console.error(e)
   }
 }
+getData()
 </script>
 
 <style scoped>

@@ -10,15 +10,11 @@ const sidebarNavItems = [
   },
   {
     title: 'Account',
-    link: {name: 'Home'},
+    link: {name: 'SettingAccount'},
   },
   {
     title: 'Appearance',
-    link: {name: 'Home'},
-  },
-  {
-    title: 'Notifications',
-    link: {name: 'Home'},
+    link: {name: 'SettingAppearance'},
   },
 ]
 </script>
@@ -32,7 +28,7 @@ const sidebarNavItems = [
       :to="item.link"
       variant="ghost"
       class="w-full text-left justify-start"
-      active-class="bg-muted hover:bg-muted"
+      exact-active-class="bg-muted hover:bg-muted"
     >
       {{ item.title }}
     </Button>

@@ -26,7 +26,7 @@
       </template>
       <DropdownMenu v-else>
         <DropdownMenuTrigger as-child>
-          <Button size="icon" class="mr-1">
+          <Button size="icon" class="mr-1 rounded-full">
             <Plus class="!size-5" />
           </Button>
         </DropdownMenuTrigger>
@@ -45,10 +45,10 @@
 
       <DropdownMenu v-if="user">
         <DropdownMenuTrigger as-child>
-          <Avatar class="size-9 md:size-10 inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer">
+          <Avatar class="border size-9 md:size-10 inline-flex select-none items-center justify-center overflow-hidden rounded-full align-middle cursor-pointer">
             <AvatarImage :src="user?.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
             <AvatarFallback
-              class="text-primary flex h-full w-full items-center justify-center bg-white font-bold" :delay-ms="600"
+              class="text-primary flex h-full w-full items-center justify-center dark:bg-white font-bold" :delay-ms="600"
             >
               {{ user.firstName[0] + user.lastName[0] }}
             </AvatarFallback>

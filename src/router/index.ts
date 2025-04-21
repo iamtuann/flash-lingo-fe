@@ -161,6 +161,16 @@ const routes = [
         name: 'SettingProfile',
         component: () => import('@/views/setting/Profile.vue')
       },
+      {
+        path: "account",
+        name: 'SettingAccount',
+        component: () => import('@/views/setting/Account.vue')
+      },
+      {
+        path: "appearance",
+        name: 'SettingAppearance',
+        component: () => import('@/views/setting/Appearance.vue')
+      },
     ]
   },
   {

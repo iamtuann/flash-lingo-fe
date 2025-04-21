@@ -7,7 +7,7 @@
           <p class="text-sm text-muted-foreground">Keep going and reach your goals.</p>
         </div>
         <div class="flex-1 text-lg text-green-400">
-          Today: {{ formatTime(todayStudyTime?.totalDurationSeconds) }}
+          Today: {{ formatTime(todayStudyTime?.totalDurationSeconds) || '0m' }}
         </div>
         <RouterLink :to="{name: 'UserProfile', params: {id: authStore.user?.id}}" class="flex items-center hover:text-amber-400">
           View process <ChevronRight />
@@ -17,19 +17,19 @@
     <div class="hidden sm:block col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 rounded-xl">
       <Carousel v-bind="carouselConfig">
         <Slide class="aspect-[4/5] max-h-60 md:max-h-[250px] h-full">
-          <img class="h-full object-cover object-top rounded-xl" src="@/assets/images/flashcard.png" alt="flashcards">
+          <img class="h-full object-cover object-top rounded-xl border" src="@/assets/images/flashcard.png" alt="flashcards">
         </Slide>
         <Slide class="aspect-[4/5] max-h-60 md:max-h-[250px] h-full">
-          <img class="h-full object-cover object-top rounded-xl" src="@/assets/images/quiz.png" alt="quizs" />
+          <img class="h-full object-cover object-top rounded-xl border" src="@/assets/images/quiz.png" alt="quizs" />
         </Slide>
         <Slide class="aspect-[4/5] max-h-60 md:max-h-[250px] h-full">
-          <img class="h-full object-cover object-top rounded-xl" src="@/assets/images/tests.png" alt="tests" />
+          <img class="h-full object-cover object-top rounded-xl border" src="@/assets/images/tests.png" alt="tests" />
         </Slide>
         <Slide class="aspect-[4/5] max-h-60 md:max-h-[250px] h-full">
-          <img class="h-full object-cover object-top rounded-xl" src="@/assets/images/games.png" alt="tests" />
+          <img class="h-full object-cover object-top rounded-xl border" src="@/assets/images/games.png" alt="tests" />
         </Slide>
         <Slide class="aspect-[4/5] max-h-60 md:max-h-[250px] h-full">
-          <img class="h-full object-cover object-top rounded-xl" src="@/assets/images/ai.png" alt="tests" />
+          <img class="h-full object-cover object-top rounded-xl border" src="@/assets/images/ai.png" alt="tests" />
         </Slide>
       </Carousel>
     </div>
