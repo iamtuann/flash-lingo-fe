@@ -151,6 +151,12 @@ const routes = [
     meta: { layout: DefaultLayout },
   },
   {
+    path: "/ai-supporter",
+    name: "AISupporter",
+    component: () => import('@/views/AI-supporter/Index.vue'),
+    meta: { layout: DefaultLayout },
+  },
+  {
     path: "/settings",
     component: {render: () => h(RouterView)},
     meta: { layout: SettingLayout },

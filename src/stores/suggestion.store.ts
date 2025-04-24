@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
-import type { Page, Photo, Suggestion, Word } from "@/types";
+import type { GenerateTopicRequest, GenerateTopicResponse, Page, Photo, Suggestion, Word } from "@/types";
 
 
 export const useSuggestionStore = defineStore('suggestionStore', {
@@ -53,6 +53,10 @@ export const useSuggestionStore = defineStore('suggestionStore', {
           query
         }
       })
+      return res.data
+    },
+    async generateTopic(request: GenerateTopicRequest): Promise<GenerateTopicResponse> {
+      const res = await ApiService.post('/suggestions/topic/generate', request)
       return res.data
     },
   }

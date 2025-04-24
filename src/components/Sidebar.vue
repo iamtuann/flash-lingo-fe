@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { Home, LibraryBig, Menu } from "lucide-vue-next";
+import { BotIcon, Home, LibraryBig, Menu } from "lucide-vue-next";
 import Nav, { type LinkProp } from './Nav.vue';
 import TooltipProvider from "./ui/tooltip/TooltipProvider.vue";
 
@@ -30,7 +30,7 @@ defineEmits<SidebarEmits>()
 const links: LinkProp[] = [
   {title: 'Home', icon: Home, to: {name: 'Home'}},
   {title: 'Your Library', icon: LibraryBig, to: {name: 'LibraryFlashcards'}},
-  {title: 'Login', icon: Home, to: {name: 'Login'}},
+  {title: 'AI Supporter', icon: BotIcon, to: {name: 'AISupporter'}},
 ]
 </script>
 

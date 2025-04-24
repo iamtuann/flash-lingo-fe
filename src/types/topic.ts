@@ -1,5 +1,6 @@
 import type { User } from "./auth";
 import type { EStatus } from "./common";
+import type { Term } from "./term";
 
 export interface TopicRequest {
   id?: number | string,
@@ -31,4 +32,18 @@ export interface Topic {
 export interface TopicLearning {
   topicId: string | number,
   termLearningIds: number[]
+}
+
+export interface GenerateTopicRequest {
+  name: string,
+  description?: string,
+  termCount: number,
+  level: 'Beginner' | 'Intermediate' | 'Advanced',
+}
+
+export interface GenerateTopicResponse {
+  name: string,
+  description?: string,
+  terms: Term[],
+  shortPassage: string,
 }
