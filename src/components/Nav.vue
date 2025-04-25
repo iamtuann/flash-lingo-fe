@@ -35,7 +35,7 @@ defineProps<NavProps>()
             <RouterLink
               :to="link.to"
               :class="cn(buttonVariants({ variant: 'ghost' }), 'size-10')"
-              active-class="bg-primary shadow hover:bg-primary/90"
+              active-class="bg-primary shadow hover:bg-primary/90 text-primary-foreground hover:text-primary-foreground"
             >
             <component :is="link.icon" class="!size-5" />
           </RouterLink>

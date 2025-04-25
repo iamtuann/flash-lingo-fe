@@ -3,7 +3,7 @@
     <h3 class="font-semibold text-lg mb-3">Most popular topic</h3>
     <TopicGroupSkeleton v-if="isLoading" />
     <div class="relative group" v-if="topics.length > 2">
-      <Carousel ref="carouselRef" v-model="currentSlide" class="mt-4" v-bind="carouselConfig">
+      <Carousel ref="carouselRef" v-model="currentSlide" v-bind="carouselConfig">
         <Slide v-for="(item, idx) in topics" :key="idx">
           <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid" class="block w-full"/>
         </Slide>
@@ -50,7 +50,7 @@ const topics = ref<Topic[]>([])
 const carouselConfig = {
   itemsToShow: 1.2,
   mouseDrag: false,
-  gap: 4,
+  gap: 6,
   breakpoints: {
     640: {
       itemsToShow: 2,
@@ -58,11 +58,11 @@ const carouselConfig = {
     },
     768: {
       itemsToShow: 2.1,
-      gap: 8
+      gap: 12
     },
     1280: {
       itemsToShow: 3,
-      gap: 8
+      gap: 16
     },
   }
 }

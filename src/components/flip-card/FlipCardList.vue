@@ -3,7 +3,7 @@
     @mousemove="handleDrag"
     @mouseup="endDrag"
     >
-    <div class="flex justify-between items-center mb-3 w-[600px]">
+    <div class="flex justify-between items-center mb-3 w-full max-w-[600px]">
       <div class="text-red-500 font-semibold">
         <span class="inline-block size-7 text-center rounded-full border border-red-500">
           {{ unknowTerms.length }}
@@ -23,14 +23,14 @@
         :style="{ transform: `translate(${cardState.offsetX}px) rotate(${rotate}deg)` }"
       >
         <FlipCard
-          class="w-[600px] h-[350px]"
+          class="w-80 h-[300px] sm:w-[420px] md:w-[580px] md:h-[350px] lg:w-[600px]"
           ref="flipCard"
           :border-opacity="borderOpacity"
           :border-color="borderColor"
           :term="props.terms[currentIndex]"
         />
       </div>
-      <div class="absolute w-[600px] h-[350px] bg-accent opacity-40 inset-0 z-0 rounded-xl border-2 border-gray-600">
+      <div class="absolute w-80 h-[300px] sm:w-[420px] md:w-[580px] md:h-[350px] lg:w-[600px] bg-accent opacity-40 inset-0 z-0 rounded-xl border-2 border-gray-600">
 
       </div>
     </div>

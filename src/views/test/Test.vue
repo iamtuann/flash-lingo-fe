@@ -11,9 +11,9 @@
             <Clock class="h-4 w-4" />
             <span>{{formatTime(elapsedTime)}}</span>
           </div>
-          <Button @click="saveTest" variant="outline" class="flex items-center gap-1">
+          <!-- <Button @click="saveTest" variant="outline" class="flex items-center gap-1">
             <Save class="h-4 w-4" /> Save Progress
-          </Button>
+          </Button> -->
           <Button
             variant="destructive"
             @click="showExitDialog = true"

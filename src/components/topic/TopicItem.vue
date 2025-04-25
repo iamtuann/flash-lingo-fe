@@ -1,5 +1,5 @@
 <template>
-  <Primitive :as="viewable ? as : 'div'" :as-child="asChild" class="relative bg-accent rounded-md" :class="cn({'opacity-60': !viewable}, props.class)">
+  <Primitive :as="viewable ? as : 'div'" :as-child="asChild" class="relative bg-accent rounded-md border" :class="cn({'opacity-60': !viewable}, props.class)">
     <div v-if="layout == 'list'">
       Topic
     </div>

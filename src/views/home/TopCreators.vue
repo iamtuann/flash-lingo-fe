@@ -1,9 +1,9 @@
 <template>
   <section>
-    <h3 class="font-semibold text-lg mb-2">Top Creators</h3>
+    <h3 class="font-semibold text-lg mb-3">Top Creators</h3>
     <TopicGroupSkeleton v-if="isLoading" />
     <div class="relative group" v-if="users.length > 2">
-      <Carousel ref="carouselRef" v-model="currentSlide" class="mt-4" v-bind="carouselConfig">
+      <Carousel ref="carouselRef" v-model="currentSlide" v-bind="carouselConfig">
         <Slide v-for="(item, idx) in users" :key="idx">
           <UserItem :user="item" layout="grid" class="block w-full"/>
         </Slide>
@@ -51,7 +51,7 @@ const users = ref<User[]>([])
 const carouselConfig = {
   itemsToShow: 1.2,
   mouseDrag: false,
-  gap: 4,
+  gap: 6,
   breakpoints: {
     640: {
       itemsToShow: 2,
@@ -59,11 +59,11 @@ const carouselConfig = {
     },
     768: {
       itemsToShow: 2.1,
-      gap: 8
+      gap: 12
     },
     1280: {
       itemsToShow: 3,
-      gap: 8
+      gap: 16
     },
   }
 }

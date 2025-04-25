@@ -5,37 +5,39 @@
       {{ (currentIndex + 1) + '/' + learningTerms.length }}
     </p>
   </div>
-  <div class="container h-full">
-    <FlipCardList 
-      v-if="!isLoading && currentIndex < learningTerms.length"
-      :terms="learningTerms" 
-      @update:current-index="onUpdateCurrentIndex"
-      @end="onEndList"
-      class="mt-14"
-    />
-    <div v-show="isLoading" class="h-full flex flex-col items-center justify-center mt-16">
-      <div class="flex justify-between w-[600px] mb-3">
-        <Skeleton class="w-20 h-7" />
-        <Skeleton class="w-20 h-7" />
+  <div class="overflow-hidden pb-10">
+    <div class="container h-full">
+      <FlipCardList 
+        v-if="!isLoading && currentIndex < learningTerms.length"
+        :terms="learningTerms" 
+        @update:current-index="onUpdateCurrentIndex"
+        @end="onEndList"
+        class="mt-14"
+      />
+      <div v-show="isLoading" class="h-full flex flex-col items-center justify-center mt-16">
+        <div class="flex justify-between w-[600px] mb-3">
+          <Skeleton class="w-20 h-7" />
+          <Skeleton class="w-20 h-7" />
+        </div>
+        <Skeleton class="w-80 h-[300px] sm:w-[420px] md:w-[580px] md:h-[350px] lg:w-[600px] rounded-xl" />
       </div>
-      <Skeleton class="w-[600px] h-[350px] rounded-lg" />
+      <TermStatistic 
+        v-show="!isLoading && currentIndex == learningTerms.length"
+        :total-term="terms.length"
+        :know-term="knowTermIds.length"
+        :unknow-term="unknowTermIds.length"
+      >
+        <div class="grid gap-4">
+          <h4 class="text-xl font-semibold">Continue options</h4>
+          <Button class="h-14 text-base" v-if="unknowTermIds.length != 0" @click="continueLearning">
+            Continue with {{ unknowTermIds.length }} still learning 
+          </Button>
+          <Button variant="outline" class="h-14 text-base" @click="restartLearning">
+            Restart Flashcards
+          </Button>
+        </div>
+      </TermStatistic>
     </div>
-    <TermStatistic 
-      v-show="!isLoading && currentIndex == learningTerms.length"
-      :total-term="terms.length"
-      :know-term="knowTermIds.length"
-      :unknow-term="unknowTermIds.length"
-    >
-      <div class="grid gap-4">
-        <h4 class="text-xl font-semibold">Continue options</h4>
-        <Button class="h-14 text-base" v-if="unknowTermIds.length != 0" @click="continueLearning">
-          Continue with {{ unknowTermIds.length }} still learning 
-        </Button>
-        <Button variant="outline" class="h-14 text-base" @click="restartLearning">
-          Restart Flashcards
-        </Button>
-      </div>
-    </TermStatistic>
   </div>
 </template>
 

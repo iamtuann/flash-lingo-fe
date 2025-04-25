@@ -33,11 +33,28 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-import { ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { cn } from '@/lib/utils';
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const panelRef = ref<InstanceType<typeof ResizablePanel>>()
 const isCollapsed = ref(false)
+
+window.addEventListener('resize', autoTogglePanel)
+
+function autoTogglePanel() {
+  if (!panelRef.value) return;
+  
+  const width = window.innerWidth;
+  if (width > Number(defaultTheme.screens.lg.split('px')[0])) {
+    isCollapsed.value = false;
+    panelRef.value.expand()
+  } else {
+    isCollapsed.value = true;
+    panelRef.value.collapse()
+  }
+}
+
 function onCollapse() {
   isCollapsed.value = true
 }
@@ -45,6 +62,11 @@ function onCollapse() {
 function onExpand() {
   isCollapsed.value = false
 }
+
+onMounted(async () => {
+  await nextTick()
+  autoTogglePanel();
+})
 
 </script>
 

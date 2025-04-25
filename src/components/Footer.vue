@@ -1,6 +1,6 @@
 <template>
   <div class="container !mt-12 mb-4">
-    <div class="max-w-4xl mx-auto flex justify-between">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between">
       <div class="flex items-center">
         <RouterLink :to="{name: 'Home'}">
           <img class="w-9 h-auto mr-2 opacity-90" src="@/assets/images/logo.png" alt="flashlingo">

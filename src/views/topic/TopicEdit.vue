@@ -79,6 +79,7 @@
                   <TableRow>
                     <TableHead>Term</TableHead>
                     <TableHead>Definition</TableHead>
+                    <TableHead>Image</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -89,6 +90,9 @@
                       <span v-if="term.pronunciation" class="text-muted-foreground text-sm">{{term.pronunciation}}</span>
                     </TableCell>
                     <TableCell class="w-full truncate">{{term.definition}}</TableCell>
+                    <TableCell class="min-w-20">
+                      <img v-if="term.imageUrl" width="50" :src="term.imageUrl" alt="">
+                    </TableCell>
                     <TableCell>
                       <div class="flex gap-2">
                         <Button

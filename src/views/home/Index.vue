@@ -1,10 +1,10 @@
 <template>
   <div class="container mt-4">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl mx-auto space-y-8">
       <TopBanner />
-      <RecentTopic class="mt-6" v-if="authStore.isAuthenticated" />
-      <PopularTopic class="mt-6" />
-      <TopCreators class="mt-6" />
+      <RecentTopic v-if="authStore.isAuthenticated" />
+      <PopularTopic />
+      <TopCreators />
     </div>
   </div>
 </template>
