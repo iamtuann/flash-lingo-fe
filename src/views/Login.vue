@@ -44,7 +44,7 @@
             Enter your email below to log in your account
           </p>
         </div>
-        <LoginForm />
+        <LoginForm @success="router.push({name: 'Home'})" />
         <p class="px-8 text-center text-sm text-muted-foreground">
           By clicking Log in, you agree to our
           <RouterLink
@@ -71,7 +71,9 @@
 import { cn } from '@/lib/utils'
 import { buttonVariants } from "@/components/ui/button";
 import LoginForm from '@/components/LoginForm.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 </script>
 
 <style scoped></style>

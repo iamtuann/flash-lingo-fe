@@ -1,6 +1,7 @@
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import LearnLayout from "@/layouts/LearnLayout.vue";
 import SettingLayout from "@/layouts/SettingLayout.vue";
+import { useAuthStore } from "@/stores";
 import { h } from "vue";
 import { createRouter, createWebHistory, RouterView } from "vue-router";
 
@@ -45,7 +46,7 @@ const routes = [
         path: "edit",
         name: 'TopicEdit',
         component: () => import('@/views/topic/TopicEdit.vue'),
-        meta: { layout: DefaultLayout }
+        meta: { layout: DefaultLayout, requiresAuth: true }
       },
       {
         path: "flashcards",
@@ -70,13 +71,13 @@ const routes = [
         path: "test",
         name: 'TopicTest',
         component: () => import('@/views/test/Test.vue'),
-        meta: { layout: LearnLayout }
+        meta: { layout: LearnLayout, requiresAuth: true }
       },
       {
         path: "test/result",
         name: 'TestResult',
         component: () => import('@/views/test/TestResult.vue'),
-        meta: { layout: LearnLayout }
+        meta: { layout: LearnLayout, requiresAuth: true }
       },
       {
         path: "games",
@@ -119,7 +120,7 @@ const routes = [
         component: () => import('@/views/library/LibraryFolders.vue')
       },
     ],
-    meta: { layout: DefaultLayout }
+    meta: { layout: DefaultLayout, requiresAuth: true }
   },
   {
     path: "/search",
@@ -154,12 +155,12 @@ const routes = [
     path: "/ai-supporter",
     name: "AISupporter",
     component: () => import('@/views/AI-supporter/Index.vue'),
-    meta: { layout: DefaultLayout },
+    meta: { layout: DefaultLayout, requiresAuth: true },
   },
   {
     path: "/settings",
     component: {render: () => h(RouterView)},
-    meta: { layout: SettingLayout },
+    meta: { layout: SettingLayout, requiresAuth: true },
     children: [
       {
         path: "",
@@ -185,11 +186,29 @@ const routes = [
     component: () => import('@/views/403Page.vue'),
     meta: { layout: DefaultLayout },
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import('@/views/404Page.vue'),
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const isRequireAuth = to.meta.requiresAuth
+  const { isAuthenticated } = useAuthStore()
+
+  if ((to.name == "Login" || to.name == "Signup") && isAuthenticated) {
+    next({ name: 'Home' })
+  }
+  if (!isAuthenticated && (to.name !== "Login" && to.name != "Signup") && isRequireAuth) {
+    return next({name: 'Login'})
+  }
+  next();
 })
 
 export default router;

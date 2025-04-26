@@ -28,9 +28,9 @@ defineProps<SidebarProps>()
 defineEmits<SidebarEmits>()
 
 const links: LinkProp[] = [
-  {title: 'Home', icon: Home, to: {name: 'Home'}},
-  {title: 'Your Library', icon: LibraryBig, to: {name: 'LibraryFlashcards'}},
-  {title: 'AI Supporter', icon: BotIcon, to: {name: 'AISupporter'}},
+  {title: 'Home', icon: Home, to: {name: 'Home'}, requredAuth: false},
+  {title: 'Your Library', icon: LibraryBig, to: {name: 'LibraryFlashcards'}, requredAuth: true},
+  {title: 'AI Supporter', icon: BotIcon, to: {name: 'AISupporter'}, requredAuth: true},
 ]
 </script>
 

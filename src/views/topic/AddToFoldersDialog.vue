@@ -39,7 +39,7 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useTopicStore, useUserStore } from '@/stores';
+import { useTopicStore, useUserStore, useAuthStore } from '@/stores';
 import type { Folder, Page } from '@/types';
 import { useInfiniteScroll } from '@vueuse/core';
 import { FolderIcon } from 'lucide-vue-next';
@@ -53,6 +53,7 @@ const emits = defineEmits<{
 
 const userStore = useUserStore()
 const topicStore = useTopicStore()
+const authStore = useAuthStore();
 const route = useRoute()
 const topicId = ref<string>(route.params.id as string)
 
@@ -134,7 +135,9 @@ async function getData() {
 }
 
 onMounted(() => {
-  getData()
+  if (authStore.isAuthenticated) {
+    getData()
+  }
 })
 </script>
 

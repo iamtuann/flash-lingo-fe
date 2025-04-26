@@ -27,7 +27,9 @@ instance.interceptors.response.use(
   (error) => {
     const status = error.response?.status || null
     if (status == 401) {
-      
+      router.replace({name: 'Login'})
+    } else if (status == 404) {
+      router.replace({name: 'NotFound'})
     } else if (status == 403) {
       router.replace({name: 'AccessDenied'})
     }

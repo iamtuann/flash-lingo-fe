@@ -25,23 +25,25 @@
             Log in
           </RouterLink>
         </template>
-        <DropdownMenu v-else>
-          <DropdownMenuTrigger as-child>
-            <Button size="icon" class="mr-1 rounded-full">
-              <Plus class="!size-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent class="w-48" :sideOffset="12" align="end">
-            <DropdownMenuItem @select="(e) => {e.preventDefault(); dialogTopicForm = true}" >
-              <Shapes class="mr-2 h-4 w-4" />
-              <span>Flashcard Topic</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem @select="(e) => {e.preventDefault(); dialogFolderForm = true}">
-              <FolderIcon class="mr-2 h-4 w-4" />
-              <span>Folder</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <template v-else>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button size="icon" class="mr-1 rounded-full">
+                <Plus class="!size-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent class="w-48" :sideOffset="12" align="end">
+              <DropdownMenuItem @select="(e) => {e.preventDefault(); dialogTopicForm = true}" >
+                <Shapes class="mr-2 h-4 w-4" />
+                <span>Flashcard Topic</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem @select="(e) => {e.preventDefault(); dialogFolderForm = true}">
+                <FolderIcon class="mr-2 h-4 w-4" />
+                <span>Folder</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </template v-else>
           
   
         <DropdownMenu v-if="user">
@@ -121,7 +123,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useRouter } from 'vue-router';
 import TopicForm from '@/components/topic/TopicForm.vue';
 import { FolderForm } from "@/components/folder";
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import type { Folder } from '@/types';
 import { useSessionTracker } from '@/composable';
 import { storeToRefs } from 'pinia';
@@ -145,7 +147,7 @@ function onCreateFolderSuccess(data: Folder) {
 
 function handleLogout() {
   endSession()
-  authStore.removeToken();
+  authStore.logout()
   router.push({name: 'Login'})
 }
 

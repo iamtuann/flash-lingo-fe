@@ -26,7 +26,7 @@
                   <Copy v-else class="mr-2 h-4 w-4" />
                   <span>Make a copy</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem class="cursor-pointer" @click="showAddDialog = true">
+                <DropdownMenuItem class="cursor-pointer" @click="handleShowAddDialog">
                   <FolderPlus class="mr-2 h-4 w-4" />
                   <span>Add to folder</span>
                 </DropdownMenuItem>
@@ -123,11 +123,13 @@ import HoverCard from "@/components/hover-card/HoverCard.vue";
 import TermItem from "@/components/term/TermItem.vue";
 import { editableTopic } from "@/utils";
 import AddToFoldersDialog from "./AddToFoldersDialog.vue";
+import { useAuthGuard } from "@/composable/use-auth-guard";
 
 const route = useRoute()
 const router = useRouter()
 const termStore = useTermStore()
 const topicStore = useTopicStore();
+const { requireAuth } = useAuthGuard()
 const isEditable = ref(false);
 
 const topicId = computed(() => route.params.id as string)
@@ -159,23 +161,31 @@ async function updateStatus(data: boolean) {
   }
 }
 
-async function handleCopyTopic() {
-  try {
-    isCoping.value = true
-    const topic = await topicStore.save({
-      name: topicStore.topic?.name ? topicStore.topic.name + " Copy" : "New Topic",
-      description: topicStore.topic?.description || ""
-    })
-    const newTerms = terms.value.map(term => {
-      return {...term, id: "", topicId: topic.id}
-    })
-    await termStore.saveList(newTerms);
-    isCoping.value = false
-    router.push({name: 'TopicEdit', params: {id: topic.id}})
-  } catch (e) {
-    console.error(e)
-    isCoping.value = false
-  }
+function handleCopyTopic() {
+  requireAuth(async () => {
+    try {
+      isCoping.value = true
+      const topic = await topicStore.save({
+        name: topicStore.topic?.name ? topicStore.topic.name + " Copy" : "New Topic",
+        description: topicStore.topic?.description || ""
+      })
+      const newTerms = terms.value.map(term => {
+        return {...term, id: "", topicId: topic.id}
+      })
+      await termStore.saveList(newTerms);
+      isCoping.value = false
+      router.push({name: 'TopicEdit', params: {id: topic.id}})
+    } catch (e) {
+      console.error(e)
+      isCoping.value = false
+    }
+  })
+}
+
+function handleShowAddDialog() {
+  requireAuth(() => {
+    showAddDialog.value = true
+  })
 }
 
 async function deleteTopic() {

@@ -79,6 +79,10 @@ export const useAuthStore = defineStore('auth', {
       }
       return res.data;
     },
+    async logout() {
+      this.removeToken()
+      this.user = null
+    },
     setToken(token: string) {
       try {
         this.token = token
@@ -92,6 +96,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     removeToken() {
+      this.isAuthenticated = false,
       this.token = '',
       this.email = '',
       Cookies.remove('token')

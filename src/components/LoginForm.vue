@@ -70,7 +70,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuthStore } from "@/stores";
-import { useRouter } from "vue-router";
 
 import { cn } from '@/lib/utils'
 import { LoaderCircle, Eye, EyeClosed } from 'lucide-vue-next';
@@ -80,7 +79,10 @@ import type { AxiosError } from 'axios';
 import type { ErrorResponse } from '@/types/error';
 import { hasValues } from '@/utils';
 
-const router = useRouter();
+const emits = defineEmits<{
+  'success': []
+}>()
+
 const isLoading = ref(false)
 const errMsg = ref("")
 const showPassword = ref(false);
@@ -94,7 +96,8 @@ const callback: CallbackTypes.CodeResponseCallback = async (response) => {
   try {
     const code = response.code;
     await useAuthStore().googleLogin(code)
-    router.push({name: 'Home'})
+    // router.push({name: 'Home'})
+    emits('success')
   } catch (e) {
     console.error(e);
   } finally {
@@ -113,7 +116,8 @@ async function onSubmit() {
     }
     const {email, password} = formData;
     await useAuthStore().login(email, password)
-    router.push({name: 'Home'})
+    // router.push({name: 'Home'})
+    emits('success')
   } catch (e) {
     console.error(e);
     const err = e as AxiosError<ErrorResponse>

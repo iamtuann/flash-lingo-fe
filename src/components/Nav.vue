@@ -5,14 +5,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useAuthGuard } from '@/composable/use-auth-guard'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores'
 import { type LucideIcon } from 'lucide-vue-next'
-import type { RouteLocationRaw } from 'vue-router'
+import { RouterLink, type RouteLocationRaw } from 'vue-router'
 
 export interface LinkProp {
   title: String
   icon: LucideIcon,
   to: RouteLocationRaw
+  requredAuth: boolean
 }
 interface NavProps {
   isCollapsed: boolean
@@ -20,6 +23,8 @@ interface NavProps {
 }
 
 defineProps<NavProps>()
+const { requireAuth } = useAuthGuard()
+const { isAuthenticated } = useAuthStore()
 
 </script>
 
@@ -32,29 +37,31 @@ defineProps<NavProps>()
       <template v-for="(link, index) of links">
         <Tooltip v-if="isCollapsed" :key="`1-${index}`" :delay-duration="0">
           <TooltipTrigger>
-            <RouterLink
+            <component :is="(link.requredAuth && !isAuthenticated) ? 'div' : RouterLink"
               :to="link.to"
-              :class="cn(buttonVariants({ variant: 'ghost' }), 'size-10')"
+              @click="(link.requredAuth && !isAuthenticated) ? requireAuth() : ''"
+              :class="cn(buttonVariants({ variant: 'ghost' }), 'size-10 cursor-pointer')"
               active-class="bg-primary shadow hover:bg-primary/90 text-primary-foreground hover:text-primary-foreground"
             >
-            <component :is="link.icon" class="!size-5" />
-          </RouterLink>
+              <component :is="link.icon" class="!size-5" />
+            </component>
           </TooltipTrigger>
           <TooltipContent side="right" class="flex items-center">
             {{ link.title }}
           </TooltipContent>
         </Tooltip>
 
-        <RouterLink
+        <component :is="(link.requredAuth && !isAuthenticated) ? 'div' : RouterLink"
           v-else
+          @click="(link.requredAuth && !isAuthenticated) ? requireAuth() : ''"
           :key="`2-${index}`"
           :to="link.to"
-          :class="cn(buttonVariants({ variant: 'ghost' }), 'justify-start h-10')"
+          :class="cn(buttonVariants({ variant: 'ghost' }), 'justify-start h-10 cursor-pointer')"
           active-class="bg-primary shadow hover:bg-primary/90 text-primary-foreground hover:text-primary-foreground"
         >
           <component :is="link.icon" class="mr-2" />
           {{ link.title }}
-        </RouterLink>
+      </component>
       </template>
     </nav>
   </div>
