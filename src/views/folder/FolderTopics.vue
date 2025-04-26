@@ -4,10 +4,10 @@
       <h2 class="text-2xl font-semibold tracking-tight py-2">{{ folder?.name }}</h2>
       <Badge variant="secondary" class="h-full">{{ folder?.status == 0 ? 'private' : 'public' }}</Badge>
       <div class="flex-1"></div>
-      <Button variant="outline" class="h-10 w-10" @click="showAddDialog = true">
+      <Button variant="outline" v-if="editableFolder(folder)" class="h-10 w-10" @click="showAddDialog = true">
         <PlusIcon />
       </Button>
-      <DropdownMenu>
+      <DropdownMenu v-if="editableFolder(folder)">
         <DropdownMenuTrigger as-child>
           <Button variant="secondary" class="h-10 w-10">
             <EllipsisVertical />
@@ -59,7 +59,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
         <template v-for="item in pageTopic.content" :key="item.id">
           <TopicItem :to="{name: 'TopicHome', params: {id: item.id, slug: item.slug}}" :topic="item" layout="grid">
-            <template #append>
+            <template #append v-if="editableFolder(folder)">
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                   <Button variant="secondary" size="icon">
@@ -126,6 +126,7 @@ import {
   PaginationPrev,
 } from '@/components/ui/pagination'
 import AddTopicsDialog from './AddTopicsDialog.vue';
+import { editableFolder } from '@/utils';
 
 const folderStore = useFolderStore()
 const route = useRoute()

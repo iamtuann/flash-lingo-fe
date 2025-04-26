@@ -95,7 +95,8 @@
         </DialogContent>
       </Dialog>
     </header>
-    <div class="flex justify-center px-3 -mt-1 sm:hidden">
+    <div class="flex justify-center px-3 -mt-1 sm:hidden gap-2">
+      <slot name="prepend-mobile" />
       <Search />
     </div>
   </div>

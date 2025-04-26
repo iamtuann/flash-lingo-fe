@@ -32,8 +32,24 @@ export const useUserStore = defineStore('userStore', {
       })
       return res.data
     },
+    async getUserTopics(userId: string|number, name: string, pageIndex: number, pageSize: number, key?: string, orderBy?: string): Promise<Page<Topic>> {
+      const res = await ApiService.get(`/users/${userId}/topics`, {
+        params: {
+          name, pageIndex, pageSize, key, orderBy
+        }
+      })
+      return res.data
+    },
     async getAuthFolders(name: string, pageIndex: number, pageSize: number, key?: string, orderBy?: string): Promise<Page<Folder>> {
       const res = await ApiService.get('/users/folders', {
+        params: {
+          name, pageIndex, pageSize, key, orderBy
+        }
+      })
+      return res.data
+    },
+    async getUserFolders(userId: string|number, name: string, pageIndex: number, pageSize: number, key?: string, orderBy?: string): Promise<Page<Folder>> {
+      const res = await ApiService.get(`/users/${userId}/folders`, {
         params: {
           name, pageIndex, pageSize, key, orderBy
         }

@@ -15,8 +15,24 @@ const routes = [
   },
   {
     path: "/profile/:id",
-    name: 'UserProfile',
-    component: () => import('@/views/Profile.vue'),
+    component: () => import('@/views/profile/Profile.vue'),
+    children: [
+      {
+        path: "",
+        name: "UserProfile",
+        component: () => import('@/views/profile/ProfileOverview.vue'),
+      },
+      {
+        path: "topics",
+        name: "UserTopics",
+        component: () => import('@/views/profile/ProfileTopics.vue'),
+      },
+      {
+        path: "folder",
+        name: "UserFolders",
+        component: () => import('@/views/profile/ProfileFolders.vue'),
+      },
+    ],
     meta: { layout: DefaultLayout }
   },
   {

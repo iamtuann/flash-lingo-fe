@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center flex-wrap gap-x-3">
       <h2 class="text-2xl font-semibold tracking-tight py-3">Your Library</h2>
       <ul class="flex gap-3">
         <li>

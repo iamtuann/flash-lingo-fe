@@ -4,7 +4,7 @@
       <h2 class="text-2xl font-semibold tracking-tight py-3">Generate a Topic by AI</h2>
       <p class="text-sm text-muted-foreground"></p>
       <form class="space-y-3" @submit="onSubmit">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField v-slot="{ componentField }" name="name">
             <FormItem>
               <FormLabel required>Title</FormLabel>

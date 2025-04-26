@@ -1,7 +1,7 @@
 <template>
   <BarChart
     type="stacked"
-    :column-width="40"
+    :column-width="32"
     :data="data"
     :categories="['time']"
     :index="'date'"
