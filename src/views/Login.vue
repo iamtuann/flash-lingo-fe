@@ -14,27 +14,27 @@
       Sign up
     </RouterLink>
     <div
-      class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex"
+      class="left-side relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex"
     >
-      <div class="absolute inset-0 bg-zinc-900" />
-      <div class="relative z-20 flex items-center text-lg font-medium">
-        <img class="block h-10" src="@/assets/images/logo.png" alt="logo">
-        <RouterLink class="font-bold" :to="{name: 'Home'}">Flash Lingo</RouterLink>
-      </div>
+
       <div class="relative z-20 mt-auto">
-        <blockquote class="space-y-2">
+        <!-- <blockquote class="space-y-2">
           <p class="text-lg">
             &ldquo;This library has saved me countless hours of work and helped
             me deliver stunning designs to my clients faster than ever
             before.&rdquo;
           </p>
           <footer class="text-sm">Sofia Davis</footer>
-        </blockquote>
+        </blockquote> -->
       </div>
     </div>
-    <div class="lg:p-8">
+    <div class="px-0 py-8 lg:p-8 h-full">
+      <div class="flex items-center text-lg font-medium">
+        <img class="block h-10" src="@/assets/images/logo.png" alt="logo">
+        <RouterLink class="font-bold" :to="{name: 'Home'}">Flash Lingo</RouterLink>
+      </div>
       <div
-        class="mx-auto flex py-12 w-full flex-col justify-center space-y-6 sm:w-[360px]"
+        class="mx-auto flex py-12 w-full flex-col justify-center space-y-6 sm:w-[400px]"
       >
         <div class="flex flex-col space-y-2 text-center">
           <h1 class="text-2xl font-semibold tracking-tight">
@@ -76,4 +76,11 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 </script>
 
-<style scoped></style>
+<style scoped>
+.left-side {
+  background-image: url('@/assets/images/banner.png');
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+</style>

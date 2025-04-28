@@ -79,7 +79,7 @@
         </HoverCard>
       </div>
       <div class="mt-5 flex items-center gap-3 flex-wrap">
-        <div class="flex items-center space-x-2" v-if="topicStore.topic?.status != 2">
+        <div class="flex items-center space-x-2" v-if="topicStore.topic?.status != 2 && isEditable">
           <Switch :model-value="!!topicStore.topic?.status" @update:model-value="updateStatus" />
           <Label>Public mode</Label>
         </div>

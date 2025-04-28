@@ -74,7 +74,17 @@ export const useAuthStore = defineStore('auth', {
       if (res.status == 200) {
         const {token, ...user} = res.data;
         this.setToken(token);
-        // localStorage.setItem("user", JSON.stringify(user))
+        useSessionTracker().initSessionTracking()
+      }
+      return res.data;
+    },
+    async googleRegister(code: string) {
+      const res: AxiosResponse<AuthResponse> = await ApiService.post('/oauth2/google-register', {
+        code
+      })
+      if (res.status == 200) {
+        const {token, ...user} = res.data;
+        this.setToken(token);
         useSessionTracker().initSessionTracking()
       }
       return res.data;
@@ -87,7 +97,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         this.token = token
         Cookies.remove('token')
-        Cookies.set('token', token, {secure: true, sameSite: 'strict', expires: 30})
+        Cookies.set('token', token, {path: '/', secure: false, sameSite: 'lax', expires: 30})
         const payload = JSON.parse(atob(token.split('.')[1]))
         this.email = payload.sub
         this.isAuthenticated = true;

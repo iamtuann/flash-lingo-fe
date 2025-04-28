@@ -2,19 +2,19 @@
   <div>
     <header class="px-2 py-3 -mx-2 h-16 sm:h-[72px] bg-transparent relative flex items-center justify-between gap-2">
       <div class="relative z-[1]">
-        <RouterLink :to="{name: 'Home'}" class="flex items-center gap-1 text-xl font-bold px-2 py-1">
-          <img class="block h-10 sm:h-14" src="@/assets/images/logo.png" alt="logo">
+        <RouterLink :to="{name: 'Home'}" class="flex items-center gap-1 text-xl font-bold sm:px-2 py-1">
+          <img class="block h-9 sm:h-14" src="@/assets/images/logo.png" alt="logo">
           Flash Lingo
         </RouterLink>
       </div>
       <div class="hidden sm:flex flex-1 md:absolute inset-x-0 items-center justify-center">
         <Search />
       </div>
-      <div class="relative z-[1] flex items-center gap-3 px-3">
+      <div class="relative z-[1] flex items-center gap-3 px-0 sm:px-3">
         <template v-if="!authStore.isAuthenticated">
           <RouterLink
             :to="{name: 'Signup'}"
-            :class="cn(buttonVariants({variant: 'secondary'}), 'px-5 text-white rounded-full')"
+            :class="cn(buttonVariants({variant: 'secondary'}), 'px-5 rounded-full')"
           >
             Sign up
           </RouterLink>
@@ -124,7 +124,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useRouter } from 'vue-router';
 import TopicForm from '@/components/topic/TopicForm.vue';
 import { FolderForm } from "@/components/folder";
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import type { Folder } from '@/types';
 import { useSessionTracker } from '@/composable';
 import { storeToRefs } from 'pinia';

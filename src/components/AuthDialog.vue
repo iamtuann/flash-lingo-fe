@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="showLoginDialog" @update:open="closeLoginDialog">
-    <DialogContent>
+    <DialogContent @interactOutside="(e) => {e.preventDefault()}">
       <DialogHeader class="mb-4">
         <DialogTitle class="text-2xl font-semibold tracking-tight text-center">Login to continue studying</DialogTitle>
         <p class="text-sm text-muted-foreground text-center">

@@ -14,19 +14,19 @@
     @play-again="handleRestartGame"
   />
 
-  <div v-else class="px-3 max-w-4xl mx-auto md:px-2">
-    <div class="flex justify-between items-center my-6 p-4 bg-card rounded-lg">
-      <span>{{ stopwatch.timeFormatted }}</span>
+  <div v-else class="px-3 max-w-3xl mx-auto md:px-4">
+    <div class="flex justify-between items-center my-6 bg-card rounded-lg">
+      <span>{{ stopwatch.timeFormatted }} s</span>
       <div class="flex items-center gap-2">
         <span class="text-muted-foreground">Progress:</span>
-        <Progress :model-value="(currentIndex / TERM_COUNT) * 100" class="w-[200px]" />
+        <Progress :model-value="(currentIndex / TERM_COUNT) * 100" class="w-40 sm:w-52" />
         <span class="text-sm font-medium">
           {{ currentIndex }} / {{TERM_COUNT}}
         </span>
       </div>
     </div>
 
-    <Card class="mb-6">
+    <Card class="mb-6 mt-10">
       <CardHeader>
         <div class="flex justify-between items-center">
           <CardTitle>Unscramble the Word</CardTitle>

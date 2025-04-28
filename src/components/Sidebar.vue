@@ -11,7 +11,7 @@
           <XIcon />
         </div>
       </div>
-      <Nav :links="links" :is-collapsed="isCollapsed" />
+      <Nav :links="links" :is-collapsed="isCollapsed" @change-nav="$emit('click:close')" />
     </TooltipProvider>
   </div>
 </template>

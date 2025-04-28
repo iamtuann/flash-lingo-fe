@@ -2,39 +2,43 @@
   <div class="relative h-full flex flex-col items-center justify-center"
     @mousemove="handleDrag"
     @mouseup="endDrag"
-    >
+    @touchmove="handleDrag"
+    @touchend="endDrag"
+  >
     <div class="flex justify-between items-center mb-3 w-full max-w-[600px]">
       <div class="text-red-500 font-semibold">
         <span class="inline-block size-7 text-center rounded-full border border-red-500">
           {{ unknowTerms.length }}
         </span>
-        <span class="ml-2">Still lerning</span>
+        <span class="ml-2">Still lerning </span>
+        <span class="text-muted-foreground" v-if="cardState.isReject"> +1 </span>
       </div>
       <div class="text-green-500 font-semibold">
-        <span class="mr-2">Know</span>
+        <span class="text-muted-foreground" v-if="cardState.isResolve"> +1 </span>
+        <span class="mr-2"> Know</span>
         <span class="inline-block size-7 text-center rounded-full border border-green-500">
           {{ knowTerms.length }}
         </span>
       </div>
     </div>
-    <div class="relative" @mousedown.prevent="startDrag" >
+    <div class="relative" @mousedown="startDrag" @touchstart="startDrag">
       <div
         class="origin-bottom relative z-10"
         :style="{ transform: `translate(${cardState.offsetX}px) rotate(${rotate}deg)` }"
       >
         <FlipCard
-          class="w-80 h-[300px] sm:w-[420px] md:w-[580px] md:h-[350px] lg:w-[600px]"
+          class="w-80 h-[480px] sm:w-[420px] md:w-[580px] md:h-[380px] lg:w-[600px]"
           ref="flipCard"
           :border-opacity="borderOpacity"
           :border-color="borderColor"
           :term="props.terms[currentIndex]"
         />
       </div>
-      <div class="absolute w-80 h-[300px] sm:w-[420px] md:w-[580px] md:h-[350px] lg:w-[600px] bg-accent opacity-40 inset-0 z-0 rounded-xl border-2 border-gray-600">
+      <div class="absolute w-80 h-[480px] sm:w-[420px] md:w-[580px] md:h-[380px] lg:w-[600px] bg-accent opacity-40 inset-0 z-0 rounded-xl border-2 border-gray-600">
 
       </div>
     </div>
-    <div class="flex items-center justify-center gap-10 mt-10">
+    <div class="hidden md:flex items-center justify-center gap-10 mt-10">
       <Button
         @click="handleRejectTerm"
         variant="outline"
@@ -94,9 +98,9 @@ const borderOpacity = computed(() => {
   return Math.min(1, Math.abs(cardState.offsetX) / threshold);
 })
 const borderColor = computed(() => {
-  if (cardState.offsetX > 20 || cardState.isResolve) {
+  if (cardState.offsetX > threshold || cardState.isResolve) {
     return 'border-green-600'
-  } else if (cardState.offsetX < -20 || cardState.isReject) {
+  } else if (cardState.offsetX < -threshold || cardState.isReject) {
     return 'border-red-600'
   } else {
     return 'border-gray-600'
@@ -133,15 +137,24 @@ function nextTerm() {
   }
 }
 
-function startDrag(event: MouseEvent) {
+function startDrag(event: MouseEvent | TouchEvent) {
   event.stopPropagation()
+  if (event instanceof TouchEvent) {
+    cardState.startX = event.touches[0].clientX
+  } else {
+    cardState.startX = event.clientX
+  }
   cardState.isDragging = true;
-  cardState.startX = event.clientX;
 }
 
-function handleDrag(event: MouseEvent) {
+function handleDrag(event: MouseEvent | TouchEvent) {
   if (cardState.isDragging) {
-    let deltaX = event.clientX - cardState.startX;
+    let deltaX = 0;
+    if (event instanceof TouchEvent) {
+      deltaX = event.touches[0].clientX - cardState.startX;
+    } else {
+      deltaX = event.clientX - cardState.startX
+    }
     if (deltaX < maxOffset && deltaX > -maxOffset) {
       cardState.offsetX = deltaX
     }
@@ -157,11 +170,14 @@ function handleDrag(event: MouseEvent) {
   }
 }
 
-function endDrag(event: MouseEvent) {
+function endDrag(event: MouseEvent | TouchEvent) {
   if (cardState.isDragging) {
-    
-    const deltaX = event.clientX - cardState.startX; 
-
+    let deltaX = 0;
+    if (event instanceof TouchEvent) {
+      deltaX = event.changedTouches[0].clientX - cardState.startX;
+    } else {
+      deltaX = event.clientX - cardState.startX
+    }
     if (deltaX > threshold) {
       handleResolveTerm()
     } else if (deltaX < -threshold) {

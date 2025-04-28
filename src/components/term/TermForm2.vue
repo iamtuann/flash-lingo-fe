@@ -168,7 +168,7 @@
 <script setup lang="ts">
 import type { Word, Term, Photo } from '@/types';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { onUnmounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { ChevronLeft, ChevronRight, LoaderCircle, Trash } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { useTermStore, useSuggestionStore } from '@/stores';

@@ -1,27 +1,41 @@
 <template>
   <div :class="cn('grid gap-6', $attrs.class ?? '')">
-    <form @submit.prevent="onSubmit">
-      <div class="grid gap-4">
-        <div class="grid gap-2">
+    <form @submit="onSubmit">
+      <div class="grid gap-3">
+        <!-- <div class="grid gap-2">
           <Label required for="email"> Email </Label>
           <Input id="email" v-model="formData.email" placeholder="name@example.com" type="email"
             :disabled="isLoading" />
-        </div>
-        <div class="grid gap-2">
-          <Label required for="password">Password</Label>
-          <div class="relative w-full">
-            <Input id="password" class="pr-10" v-model="formData.password" placeholder="••••••••"
-              :type="showPassword ? 'text' : 'password'" :disabled="isLoading" />
-            <span class="absolute end-0 inset-y-0 flex items-center px-3 cursor-pointer"
-              @click="showPassword = !showPassword"
-            >
-              <Eye v-show="!showPassword" class="size-4" />
-              <EyeClosed v-show="showPassword" class="size-4" />
-            </span>
-          </div>
-        </div>
+        </div> -->
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel required>Email</FormLabel>
+            <FormControl>
+              <Input :disabled="isLoading" type="email" placeholder="name@example.com" v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ componentField }" name="password">
+          <FormItem>
+            <FormLabel required>Password</FormLabel>
+            <FormControl>
+              <div class="relative w-full">
+                <Input class="pr-10" placeholder="••••••••" v-bind="componentField"
+                  :type="showPassword ? 'text' : 'password'" :disabled="isLoading" />
+                <span class="absolute end-0 inset-y-0 flex items-center px-3 cursor-pointer"
+                  @click="showPassword = !showPassword"
+                >
+                  <Eye v-show="!showPassword" class="size-4" />
+                  <EyeClosed v-show="showPassword" class="size-4" />
+                </span>
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
         <p v-show="errMsg" role="alert" class="error-msg -mt-2">{{ errMsg }}</p>
-        <Button :disabled="isLoading">
+        <Button type="submit" :disabled="isLoading">
           <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
           Log in
         </Button>
@@ -68,16 +82,17 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useAuthStore } from "@/stores";
-
+import { toTypedSchema } from '@vee-validate/zod'
 import { cn } from '@/lib/utils'
 import { LoaderCircle, Eye, EyeClosed } from 'lucide-vue-next';
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import type { CallbackTypes } from 'vue3-google-login';
 import type { AxiosError } from 'axios';
 import type { ErrorResponse } from '@/types/error';
-import { hasValues } from '@/utils';
+import { z } from 'zod';
+import { useForm } from 'vee-validate';
 
 const emits = defineEmits<{
   'success': []
@@ -86,9 +101,14 @@ const emits = defineEmits<{
 const isLoading = ref(false)
 const errMsg = ref("")
 const showPassword = ref(false);
-const formData = reactive({
-  email: "",
-  password: "",
+
+const formSchema = toTypedSchema(z.object({
+  email: z.string({ message: 'Please, enter your email'}).nonempty().email({ message: 'Invalid email address' }),
+  password: z.string({ message: 'Please, enter your password'}).nonempty().min(6, { message: 'Password must be at least 6 characters long' }),
+}))
+
+const { handleSubmit } = useForm({
+  validationSchema: formSchema
 })
 
 const callback: CallbackTypes.CodeResponseCallback = async (response) => {
@@ -96,26 +116,6 @@ const callback: CallbackTypes.CodeResponseCallback = async (response) => {
   try {
     const code = response.code;
     await useAuthStore().googleLogin(code)
-    // router.push({name: 'Home'})
-    emits('success')
-  } catch (e) {
-    console.error(e);
-  } finally {
-    isLoading.value = false
-  }
-};
-
-async function onSubmit() {
-  errMsg.value = ""
-  isLoading.value = true
-  try {
-    const valid = hasValues(formData)
-    if (!valid) {
-      errMsg.value = "Email or password cannot be blank."
-      return;
-    }
-    const {email, password} = formData;
-    await useAuthStore().login(email, password)
     // router.push({name: 'Home'})
     emits('success')
   } catch (e) {
@@ -129,5 +129,24 @@ async function onSubmit() {
   } finally {
     isLoading.value = false
   }
-}
+};
+
+const onSubmit = handleSubmit(async (values) => {
+  errMsg.value = ""
+  isLoading.value = true
+  try {
+    await useAuthStore().login(values.email, values.password)
+    emits('success')
+  } catch (e) {
+    console.error(e);
+    const err = e as AxiosError<ErrorResponse>
+    if (err.status == 500) {
+      errMsg.value = "Oops, something went wrong 😅, please try later!"
+    } else {
+      errMsg.value = err.response?.data.message || "Oops, something went wrong 😅, please try later!";
+    }
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>

@@ -9,7 +9,7 @@ import { useAuthGuard } from '@/composable/use-auth-guard'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores'
 import { type LucideIcon } from 'lucide-vue-next'
-import { RouterLink, type RouteLocationRaw } from 'vue-router'
+import { RouterLink, useRoute, type RouteLocationRaw, type RouterLinkProps } from 'vue-router'
 
 export interface LinkProp {
   title: String
@@ -21,10 +21,25 @@ interface NavProps {
   isCollapsed: boolean
   links: LinkProp[]
 }
+export interface NavEmits {
+  'change-nav': [payload: LinkProp]
+}
 
 defineProps<NavProps>()
+const emits = defineEmits<NavEmits>()
+
+const route = useRoute()
 const { requireAuth } = useAuthGuard()
 const { isAuthenticated } = useAuthStore()
+
+function onClickNav(link: LinkProp) {
+  if (link.requredAuth && !isAuthenticated) {
+    requireAuth()
+  }
+  if (typeof link.to === 'object' && 'name' in link.to && route.name !== link.to?.name) {
+    emits('change-nav', link)
+  }
+}
 
 </script>
 
@@ -39,7 +54,7 @@ const { isAuthenticated } = useAuthStore()
           <TooltipTrigger>
             <component :is="(link.requredAuth && !isAuthenticated) ? 'div' : RouterLink"
               :to="link.to"
-              @click="(link.requredAuth && !isAuthenticated) ? requireAuth() : ''"
+              @click="onClickNav(link)"
               :class="cn(buttonVariants({ variant: 'ghost' }), 'size-10 cursor-pointer')"
               active-class="bg-primary shadow hover:bg-primary/90 text-primary-foreground hover:text-primary-foreground"
             >
@@ -53,7 +68,7 @@ const { isAuthenticated } = useAuthStore()
 
         <component :is="(link.requredAuth && !isAuthenticated) ? 'div' : RouterLink"
           v-else
-          @click="(link.requredAuth && !isAuthenticated) ? requireAuth() : ''"
+          @click="onClickNav(link)"
           :key="`2-${index}`"
           :to="link.to"
           :class="cn(buttonVariants({ variant: 'ghost' }), 'justify-start h-10 cursor-pointer')"

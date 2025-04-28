@@ -14,7 +14,9 @@
         </RouterLink>
       </div>
     </div>
-    <div class="hidden sm:block col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 rounded-xl">
+    <div class="sm:block col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3 rounded-xl"
+      :class="{'hidden': authStore.isAuthenticated }"
+    >
       <Carousel v-bind="carouselConfig">
         <Slide class="aspect-[4/5] max-h-60 md:max-h-[250px] h-full">
           <img class="h-full object-cover object-top rounded-xl border" src="@/assets/images/flashcard.png" alt="flashcards">

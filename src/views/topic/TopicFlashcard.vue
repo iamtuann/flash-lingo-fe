@@ -6,13 +6,12 @@
     </p>
   </div>
   <div class="overflow-hidden pb-10">
-    <div class="container h-full">
+    <div class="container h-full mt-9 md:mt-14">
       <FlipCardList 
         v-if="!isLoading && currentIndex < learningTerms.length"
         :terms="learningTerms" 
         @update:current-index="onUpdateCurrentIndex"
         @end="onEndList"
-        class="mt-14"
       />
       <div v-show="isLoading" class="h-full flex flex-col items-center justify-center mt-16">
         <div class="flex justify-between w-[600px] mb-3">

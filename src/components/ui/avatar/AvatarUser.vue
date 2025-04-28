@@ -6,7 +6,7 @@
     <AvatarImage :src="user.avatarUrl || ''" :alt="user.firstName+' '+user.lastName" />
     <AvatarFallback
       class="text-primary flex h-full w-full items-center justify-center bg-white font-bold" :delay-ms="600"
-      :class="textSize || ''"
+      :class="cn(textSize || '')"
     >
       {{ user.firstName[0] + user.lastName[0] }}
     </AvatarFallback>
@@ -18,6 +18,7 @@ import type { User } from '@/types';
 import Avatar from './Avatar.vue';
 import AvatarFallback from './AvatarFallback.vue';
 import AvatarImage from './AvatarImage.vue';
+import { cn } from '@/lib/utils';
 
 defineProps<{
   user: User,
