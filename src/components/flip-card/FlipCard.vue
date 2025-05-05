@@ -1,16 +1,16 @@
 <template>
-  <div class="flip-card text-3xl select-none" @touchstart="handlePointerDown" @touchend="handlePointerUp">
+  <div class="flip-card text-3xl select-none" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
     <div class="flip-card-inner" :class="{ flipped: isFlipped, 'no-transition': isResetting }">
       <div class="flip-card-face" :class="`!border-opacity-[${borderOpacity}] ${borderColor}`">
         <div></div>
-        <TTSButton class="absolute top-2 right-2" :text="term.term" />
+        <TTSButton class="absolute z-10 top-2 right-2" :text="term.term" />
         <div class="flex-1 flex flex-col items-center justify-center">
           <h3>{{ term.term }}</h3>
           <span v-if="term.pronunciation" class="block text-base text-muted-foreground mt-2">
             {{ term.pronunciation }}
           </span>
         </div>
-        <Button variant="ghost" class="w-full h-7 hover:bg-secondary" @mouseup.prevent="toggleFlipCard">
+        <Button variant="ghost" class="w-full h-7 hover:bg-secondary" @mousedown="handleClickFlipButton">
           <span class="mr-auto text-xs font-normal">Still learn <span class="tracking-widest opacity-60">	&#8592; </span></span>
           <Repeat />
           <span class="ml-auto text-xs font-normal"><span class="tracking-widest opacity-60">	&#8594; </span> Know</span>
@@ -18,7 +18,7 @@
       </div>
       <div class="flip-card-face back" :class="`!border-opacity-[${borderOpacity}] ${borderColor}`">
         <div></div>
-        <TTSButton class="absolute top-2 right-2" :text="term.term" />
+        <TTSButton class="absolute z-10 top-2 right-2" :text="term.term" />
         <div class="flex-1 flex flex-col items-center justify-center gap-3">
           <p>{{ term.definition }}</p>
           <img v-if="term.imageUrl" :src="term.imageUrl" class="w-32 h-32 object-cover rounded-md" :alt="term.term">
@@ -26,8 +26,8 @@
             &ldquo; {{ term.example }} &rdquo;
           </span>
         </div>
-        <Button id="flip-btn" variant="ghost" class="w-full h-7 hover:bg-secondary font-normal text-xs" @mouseup.prevent="toggleFlipCard">
-          <p>Press <span class="text-xs tracking-widest opacity-60">space</span> to flip</p>
+        <Button id="flip-btn" variant="ghost" class="z-20 w-full h-7 hover:bg-secondary font-normal text-xs" @mousedown="handleClickFlipButton">
+          Press <span class="text-xs tracking-widest opacity-60 pointer-events-none">space</span> to flip
         </Button>
       </div>
     </div>
@@ -74,10 +74,19 @@ const handlePressSpace = (e: KeyboardEvent) => {
   }
 }
 
-const handlePointerDown = (e: TouchEvent) => {
+const handleClickFlipButton = (e: MouseEvent) => {
+  if (e instanceof MouseEvent) {
+    toggleFlipCard()
+  }
+}
+
+const handleTouchStart = (e: TouchEvent) => {
+  if ((e as any).target.id == 'tts-button') {
+    return ; 
+  }
   startX.value = e.touches[0].clientX;
 }
-const handlePointerUp = (e: TouchEvent) => {
+const handleTouchEnd = (e: TouchEvent) => {
   const endX = e.changedTouches[0].clientX;
   if (startX.value - endX == 0) {
     toggleFlipCard()
@@ -104,6 +113,7 @@ function toggleFlipCard() {
   transition: transform 0.5s;
   transform-style: preserve-3d;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
 .flip-card-inner.no-transition {

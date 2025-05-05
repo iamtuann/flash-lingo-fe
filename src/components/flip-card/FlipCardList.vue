@@ -138,7 +138,6 @@ function nextTerm() {
 }
 
 function startDrag(event: MouseEvent | TouchEvent) {
-  event.stopPropagation()
   if (event instanceof TouchEvent) {
     cardState.startX = event.touches[0].clientX
   } else {

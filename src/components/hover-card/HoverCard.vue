@@ -1,11 +1,17 @@
 <template>
   <Primitive :as="as">
-    <div class="card education group py-5 px-3 gap-4 bg-accent rounded-md overflow-hidden flex flex-col justify-center items-center">
+    <div class="card hidden sm:flex flex-col justify-center items-center group py-5 px-3 gap-4 bg-accent rounded-md overflow-hidden">
       <div class="circle relative z-[2] w-20 h-20 rounded-full bg-white after:w-[68px] after:h-[68px]">
         <div class="overlay w-[68px] h-[68px] rounded-full absolute"></div>
         <div class="z-10">
           <slot name="icon"></slot>
         </div>
+      </div>
+      <p class="text-lg font-semibold group-hover:text-gray-800 z-10 duration-300">{{ title }}</p>
+    </div>
+    <div class="sm:hidden flex items-center bg-accent px-4 py-2 rounded-md gap-4">
+      <div class="p-2 rounded-full circle-mobile">
+        <slot name="icon"></slot>
       </div>
       <p class="text-lg font-semibold group-hover:text-gray-800 z-10 duration-300">{{ title }}</p>
     </div>
@@ -74,5 +80,9 @@ defineProps<{
   left: 50%;
   transform: translate(-50%, -50%);
   transition: opacity 0.3s ease-out;
+}
+
+.circle-mobile {
+  background-color: v-bind(color);
 }
 </style>

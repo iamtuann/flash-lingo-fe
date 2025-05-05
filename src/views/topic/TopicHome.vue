@@ -1,9 +1,9 @@
 <template>
   <div v-show="isCoping" class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"></div>
-  <div class="container py-8">
+  <div class="container py-2 md:py-8">
     <div class="max-w-3xl mx-auto">
-      <div class="flex items-center py-2 gap-3">
-        <h2 class="text-3xl font-semibold">{{ topicStore.topic?.name }}</h2>
+      <div class="flex items-start py-2 gap-3">
+        <h2 class="text-2xl md:text-3xl font-semibold">{{ topicStore.topic?.name }}</h2>
         <Badge v-show="topicStore.topic?.status == EStatus.PRIVATE" variant="secondary" class="h-full">private</Badge>
         <Badge v-show="topicStore.topic?.status == EStatus.PUBLIC" variant="secondary" class="h-full">public</Badge>
         <Badge v-show="topicStore.topic?.status == EStatus.DRAFT" variant="secondary" class="h-full">draft</Badge>
@@ -59,22 +59,22 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mt-5">
         <HoverCard :as="RouterLink" :to="{name: 'TopicFlashcards', params: {id: topicId}}" title="Flashcards" color="#ffd861">
           <template v-slot:icon>
-            <Layers color="#4C5656" :stroke-width="1.5" class="w-10 h-10" />
+            <Layers color="#4C5656" :stroke-width="1.5" class="w-6 h-6 sm:w-10 sm:h-10" />
           </template>
         </HoverCard>
-        <HoverCard :as="RouterLink" :to="{name: 'QuizConfig', params: {id: topicId}}" title="Quiz" color="#CEB2FC">
+        <HoverCard :as="RouterLink" :to="{name: 'QuizConfig', params: {id: topicId}}" title="Quiz" color="#ceb2fc">
           <template v-slot:icon>
-            <GraduationCap color="#4C5656" :stroke-width="1.5" class="w-10 h-10" />
+            <GraduationCap color="#4C5656" :stroke-width="1.5" class="w-6 h-6 sm:w-10 sm:h-10" />
           </template>
         </HoverCard>
-        <HoverCard :as="RouterLink" :to="{name: 'TopicTest', params: {id: topicId}}" title="Test" color="#DCE9FF">
+        <HoverCard :as="RouterLink" :to="{name: 'TopicTest', params: {id: topicId}}" title="Test" color="#dce9ff">
           <template v-slot:icon>
-            <FileText color="#4C5656" :stroke-width="1.5" class="w-10 h-10" />
+            <FileText color="#4C5656" :stroke-width="1.5" class="w-6 h-6 sm:w-10 sm:h-10" />
           </template>
         </HoverCard>
         <HoverCard :as="RouterLink" :to="{name: 'GameBar', params: {id: topicId}}" title="Games" color="#ff705f">
           <template v-slot:icon>
-            <Gamepad color="#4C5656" :stroke-width="1.5" class="w-10 h-10" />
+            <Gamepad color="#4C5656" :stroke-width="1.5" class="w-6 h-6 sm:w-10 sm:h-10" />
           </template>
         </HoverCard>
       </div>

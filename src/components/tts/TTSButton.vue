@@ -1,9 +1,10 @@
 <template>
   <div :class="cn(props.class)">
     <Button
+      id="tts-button"
       variant="ghost" size="icon"
       class="hover:bg-secondary rounded-full"
-      @click="playAudio"
+      @pointerdown.stop="playAudio"
     >
       <Volume2 class="h-4 w-4" />
     </Button>

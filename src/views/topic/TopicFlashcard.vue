@@ -106,13 +106,19 @@ function filterTerm(terms: Term[], learningIds: number[] | null): Term[] {
 async function getData() {
   try {
     isLoading.value = true
-    const res = await Promise.all([
+    const res = await Promise.allSettled([
       termStore.getAllByTopicId(topicId.value),
       topicLearningStore.getTopicLearning(topicId.value)
     ])
-    terms.value = res[0];
-    const termLearningIds = res[1] ? res[1].termLearningIds : null
-    learningTerms.value = filterTerm(terms.value, termLearningIds)
+    if (res[0].status === 'fulfilled') {
+      terms.value = res[0].value
+    }
+    if (res[1].status === 'fulfilled') {
+      const termLearningIds = res[1].value.termLearningIds?.length > 0 ? res[1].value.termLearningIds : null
+      learningTerms.value = filterTerm(terms.value, termLearningIds)
+    } else {
+      learningTerms.value = [...terms.value]
+    }
   } catch (e) {
     console.error(e);
   } finally {

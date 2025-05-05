@@ -8,7 +8,13 @@ export const useTopicLearningStore = defineStore('topicLearning', {
     
   }),
   actions: {
-    async getTopicLearning(topicId: string | number):Promise<TopicLearning> {
+    async getTopicLearning(topicId: string | number, isAuthenticated?: boolean):Promise<TopicLearning> {
+      if (!isAuthenticated) {
+        return {
+          topicId: topicId,
+          termLearningIds: []
+        }
+      }
       const res = await ApiService.get('/learning/flashcard', {
         params: {
           topicId: topicId
