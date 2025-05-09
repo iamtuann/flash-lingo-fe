@@ -51,7 +51,7 @@ const onSubmit = handleSubmit(async (values) => {
   } catch (e: unknown) {
     console.error(e)
     if (axios.isAxiosError(e)) {
-      if (e.status == 401) {
+      if (e.status == 400) {
         toast({
           title: 'Change password not success!',
           description: 'The password is incorrect',

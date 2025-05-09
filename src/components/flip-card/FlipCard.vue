@@ -1,6 +1,6 @@
 <template>
-  <div class="flip-card text-3xl select-none" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
-    <div class="flip-card-inner" :class="{ flipped: isFlipped, 'no-transition': isResetting }">
+  <div class="flip-card text-3xl select-none " @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+    <div class="flip-card-inner rounded-xl" :class="{ flipped: isFlipped, 'no-transition': isResetting }">
       <div class="flip-card-face" :class="`!border-opacity-[${borderOpacity}] ${borderColor}`">
         <div></div>
         <TTSButton class="absolute z-10 top-2 right-2" :text="term.term" />
@@ -21,7 +21,7 @@
         <TTSButton class="absolute z-10 top-2 right-2" :text="term.term" />
         <div class="flex-1 flex flex-col items-center justify-center gap-3">
           <p>{{ term.definition }}</p>
-          <img v-if="term.imageUrl" :src="term.imageUrl" class="w-32 h-32 object-cover rounded-md" :alt="term.term">
+          <img v-if="term.imageUrl" :src="term.imageUrl" draggable="false" class="w-32 h-32 object-cover rounded-md" :alt="term.term">
           <span v-if="term.example" class="block text-base text-muted-foreground italic">
             &ldquo; {{ term.example }} &rdquo;
           </span>

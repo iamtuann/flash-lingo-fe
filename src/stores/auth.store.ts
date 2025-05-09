@@ -72,8 +72,10 @@ export const useAuthStore = defineStore('auth', {
         code
       })
       if (res.status == 200) {
+        this.user = null
         const {token, ...user} = res.data;
         this.setToken(token);
+        this.getProfile()
         useSessionTracker().initSessionTracking()
       }
       return res.data;

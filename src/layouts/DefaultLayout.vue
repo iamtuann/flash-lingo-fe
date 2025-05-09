@@ -95,13 +95,16 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.main-panel {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
 .main-panel::-webkit-scrollbar {
   background-color: transparent;
   width: 4px;
 }
 
 .main-panel::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 99px;
 }
 </style>
