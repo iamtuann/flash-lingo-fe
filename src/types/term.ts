@@ -18,17 +18,7 @@ export interface Term {
   imageUrl?: string,
   rank: number,
   topicId: string | number,
+  synonyms?: string[],
+  antonyms?: string[],
   modifiedAt?: string,
-}
-
-export interface Suggestion<T> {
-  word: string;
-  prefix: string;
-  suggestions: T[];
-}
-
-export interface Word {
-  id: number,
-  word: string,
-  pronunciation: string
 }

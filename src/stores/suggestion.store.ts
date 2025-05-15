@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
 import ApiService from '@/plugins/axios';
-import type { GenerateTopicRequest, GenerateTopicResponse, Page, Photo, Suggestion, Word } from "@/types";
+import type { GenerateTopicRequest, GenerateTopicResponse, Page, Photo, Suggestion, Thesaurus, Word } from "@/types";
 
 
 export const useSuggestionStore = defineStore('suggestionStore', {
   state: () => ({
-
+    generatedTopic: null
+  } as {
+    generatedTopic: GenerateTopicResponse | null
   }),
   actions: {
     async getSuggestWords(prefix: string, limit?: number): Promise<Suggestion<Word>> {
@@ -57,7 +59,18 @@ export const useSuggestionStore = defineStore('suggestionStore', {
     },
     async generateTopic(request: GenerateTopicRequest): Promise<GenerateTopicResponse> {
       const res = await ApiService.post('/suggestions/topic/generate', request)
+      if (res.status === 200) {
+        this.generatedTopic = res.data
+      }
       return res.data
     },
+    async getThesaurus(word: string): Promise<Thesaurus> {
+      const res = await ApiService.get('/suggestions/thesaurus', {
+        params: {
+          word
+        }
+      })
+      return res.data
+    }
   }
 })

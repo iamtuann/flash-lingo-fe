@@ -97,9 +97,18 @@
                 </div>
               </DialogContent>
             </Dialog>
-            
           </div>
   
+          <div>
+            <div>
+              <Label>Synonyms: </Label>
+              <span class="text-sm text-muted-foreground capitalize" v-if="values.synonyms">{{ values.synonyms.join(', ') }}</span>
+            </div>
+            <div>
+              <Label>Antonyms: </Label>
+              <span class="text-sm text-muted-foreground capitalize" v-if="values.antonyms">{{ values.antonyms.join(', ') }}</span>
+            </div>
+          </div>
 
           <FormField v-slot="{ componentField }" name="example">
             <FormItem>
@@ -181,6 +190,7 @@ import { useForm } from 'vee-validate';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Label } from '@/components/ui/label';
 
 type TermFormEmits = {
   'update': [payload: Term],
@@ -217,6 +227,8 @@ const formSchema = toTypedSchema<any, Term, Term>(z.object({
   level: z.string().or(z.null()).optional(),
   imageUrl: z.string().or(z.null()).optional(),
   rank: z.number().optional(),
+  synonyms: z.array(z.string()).optional(),
+  antonyms: z.array(z.string()).optional(),
 }))
 const {resetForm, handleSubmit, setValues, values} = useForm({
   validationSchema: formSchema,
@@ -261,8 +273,25 @@ const onSubmit = handleSubmit(async (values) => {
 const getSuggestWords = useDebounceFn(async () => {
   try {
     if (values.term) {
-      const res = await suggestionStore.getSuggestWords(values.term)
-      wordSuggestions.value = res.suggestions
+      const res = await Promise.allSettled([
+        suggestionStore.getSuggestWords(values.term),
+        suggestionStore.getThesaurus(values.term)
+      ])
+      if (res[0].status === 'fulfilled') {
+        wordSuggestions.value = res[0].value.suggestions
+      } else {
+        wordSuggestions.value = []
+      }
+
+      if (res[1].status === 'fulfilled') {
+        const thesaurus = res[1].value
+        if (thesaurus.synonyms && (!values.synonyms || values.synonyms.length == 0)) {
+          setValues({ synonyms: thesaurus.synonyms.slice(0, 3) })
+        }
+        if (thesaurus.antonyms && (!values.antonyms || values.antonyms.length == 0)) {
+          setValues({ antonyms: thesaurus.antonyms.slice(0, 3) })
+        }
+      }
     } else {
       wordSuggestions.value = []
     }

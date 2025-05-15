@@ -100,7 +100,7 @@ import type { GenerateTopicRequest, GenerateTopicResponse } from '@/types';
 import { toTypedSchema } from '@vee-validate/zod';
 import { LoaderCircle } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
@@ -129,6 +129,12 @@ const { handleSubmit } = useForm({
 const isLoading = ref(false)
 const isSaving = ref(false)
 const generatedTopic = ref<GenerateTopicResponse | null>(null)
+
+onMounted(() => {
+  if (suggestionStore.generatedTopic) {
+    generatedTopic.value = suggestionStore.generatedTopic
+  }
+})
 
 const onSubmit = handleSubmit(async (values) => {
   isLoading.value = true

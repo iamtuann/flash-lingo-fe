@@ -25,6 +25,9 @@
           <span v-if="term.example" class="block text-base text-muted-foreground italic">
             &ldquo; {{ term.example }} &rdquo;
           </span>
+          <div v-if="term.synonyms && term.synonyms.length > 0" class="text-sm capitalize">
+            Synonyms: <span class="text-teal-600 dark:text-teal-400">{{ term.synonyms.join(', ') }}</span>
+          </div>
         </div>
         <Button id="flip-btn" variant="ghost" class="z-20 w-full h-7 hover:bg-secondary font-normal text-xs" @mousedown="handleClickFlipButton">
           Press <span class="text-xs tracking-widest opacity-60 pointer-events-none">space</span> to flip
