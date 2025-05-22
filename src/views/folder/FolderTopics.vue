@@ -77,7 +77,7 @@
         </template>
       </div>
       <div class="mt-7">
-        <Pagination v-slot="{ page }" :items-per-page="pageParams.pageSize" :total="pageTopic.totalElements" :sibling-count="1" show-edges :default-page="1">
+        <Pagination v-slot="{ page }" v-model:page="pageParams.pageIndex" :items-per-page="pageParams.pageSize" :total="pageTopic.totalElements" :sibling-count="1" show-edges :default-page="1">
           <PaginationList v-slot="{ items }" class="flex items-center gap-1 justify-center">
             <PaginationFirst />
             <PaginationPrev />
@@ -154,6 +154,10 @@ const showAddDialog = ref(false)
 
 watch(() => folderStore.folder, (newData) => {
   folder.value = newData
+})
+
+watch(pageParams, () => {
+  getData()
 })
 
 function onUpdateFolderSuccess() {

@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores';
 import { EStatus, type Page, type Topic } from '@/types';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import {
   Button,
 } from '@/components/ui/button'
@@ -68,6 +68,10 @@ const pageTopic = reactive<Page<Topic>>({
   content: [],
   totalPages: 1,
   totalElements: 0
+})
+
+watch(pageParams, () => {
+  getData()
 })
 
 async function getData() {

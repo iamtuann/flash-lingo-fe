@@ -46,7 +46,7 @@ import {
   PaginationNext,
   PaginationPrev,
 } from '@/components/ui/pagination'
-import { TopicGroupSkeleton, TopicItem } from '@/components/topic';
+import { TopicGroupSkeleton } from '@/components/topic';
 import UserItem from '@/components/user/UserItem.vue';
 
 const { query } = useSearch()
@@ -67,7 +67,7 @@ const pageUser = reactive<Page<User>>({
 
 getData()
 
-watch(query, () => {
+watch([query, pageParams], () => {
   getData()
 })
 
