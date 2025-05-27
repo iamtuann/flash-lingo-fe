@@ -8,7 +8,7 @@
       <template v-else-if="user">
         <div class="user-banner relative p-4 md:p-6 min-h-40 flex items-center gap-4 md:gap-6 bg-secondary rounded-lg">
           <AvatarUser
-            class="absolute border-4 border-foreground top-24 sm:top-28"
+            class="absolute border-4 border-foreground top-24 sm:top-28 h-28"
             :user="user"
             :size="28"
             text-size="text-xl"

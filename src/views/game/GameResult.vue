@@ -1,6 +1,6 @@
 <template>
   <div class="px-3 max-w-4xl mx-auto md:px-2">
-    <div class="p-8 text-center mb-8">
+    <div class="md:p-8 mt-8 text-center mb-8">
       <div class="flex justify-center mb-4">
         <TrophyIcon class="h-16 w-16 text-yellow-500" />
       </div>

@@ -19,11 +19,11 @@
       <div class="grid grid-cols-3 md:grid-cols-4 gap-2 mt-4">
         <div
           v-for="card in cards" :key="card.content"
-          class="aspect-[3/2] md:aspect-[4/3] cursor-pointer"
+          class="aspect-[4/5] md:aspect-[4/3] cursor-pointer"
           @click="handleSelectCard(card)"
         >
           <Card 
-            class="bg-accent flex items-center justify-center h-full text-accent-foreground select-none transition-colors"
+            class="bg-accent px-1 flex items-center justify-center text-center h-full text-accent-foreground select-none transition-colors"
             :class="{'bg-primary text-primary-foreground': card.isSelected, 'hidden': card.isMatched}"
           >
             {{ card.content }}
