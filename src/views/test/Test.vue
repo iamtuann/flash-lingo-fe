@@ -120,7 +120,7 @@
 import { QuestionRenderer } from '@/components/question';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -129,7 +129,7 @@ import { QuestionService } from '@/services/question-service';
 import { useTermStore, useTestStore, useTopicStore } from '@/stores';
 import type { TestState, Question, Term, QuestionType, TestResult } from '@/types';
 import { formatTime } from '@/utils';
-import { Clock, Flag, LoaderCircle, Save, TriangleAlert } from 'lucide-vue-next';
+import { Clock, Flag, LoaderCircle, TriangleAlert } from 'lucide-vue-next';
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

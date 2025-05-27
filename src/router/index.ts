@@ -142,12 +142,12 @@ const routes = [
     path: "/search",
     component: () => import('@/views/search/Index.vue'),
     children: [
-      {
-        path: "",
-        alias: "all",
-        name: 'SearchAll',
-        component: () => import('@/views/search/SearchAll.vue')
-      },
+      // {
+      //   path: "",
+      //   alias: "all",
+      //   name: 'SearchAll',
+      //   component: () => import('@/views/search/SearchAll.vue')
+      // },
       {
         path: "topics",
         name: 'SearchTopic',
@@ -214,7 +214,7 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const isRequireAuth = to.meta.requiresAuth
   const { isAuthenticated } = useAuthStore()
 

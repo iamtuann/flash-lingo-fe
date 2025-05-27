@@ -190,7 +190,7 @@ async function getData() {
   isLoading.value = true;
   try {
     const {name, pageIndex, pageSize, key, orderBy} = pageParams
-    const [folderRes, topicRes] = await Promise.allSettled([
+    const [_folderRes, topicRes] = await Promise.allSettled([
       folderStore.getById(folderId.value),
       folderStore.getTopics(folderId.value, name, pageIndex, pageSize, key, orderBy)
     ])

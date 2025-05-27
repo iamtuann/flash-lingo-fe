@@ -40,7 +40,7 @@ export class MultipleChoiceGenerator extends BaseQuestionGenerator {
   generate(terms: Term[], count: number): Question[] {
     const questions: Question[] = []
     const subset = this.getTermsSubset(terms, count)
-    subset.forEach((term, index) => {
+    subset.forEach((term) => {
       const question = this.generateQuestion(terms, term)
       questions.push(question)
     })
@@ -94,7 +94,7 @@ export class TrueFalseGenerator extends BaseQuestionGenerator {
  * Generator for term input questions
  */
 export class TermInputGenerator extends BaseQuestionGenerator {
-  generateQuestion(terms: Term[], targetTerm: Term): Question {
+  generateQuestion(_terms: Term[], targetTerm: Term): Question {
     return {
       id: this.generateId("termInput"),
       type: "termInput",
@@ -106,7 +106,7 @@ export class TermInputGenerator extends BaseQuestionGenerator {
   generate(terms: Term[], count: number): Question[] {
     const questions: Question[] = []
     const subset = this.getTermsSubset(terms, count)
-    subset.forEach((term, index) => {
+    subset.forEach((term) => {
       const question = this.generateQuestion(terms, term);
       questions.push(question)
     })

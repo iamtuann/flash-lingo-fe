@@ -59,7 +59,7 @@ export const useAuthStore = defineStore('auth', {
       })
       if (res.status == 200) {
         this.user = null
-        const {token, ...user} = res.data;
+        const {token} = res.data;
         this.setToken(token);
         // localStorage.setItem("user", JSON.stringify(user))
         this.getProfile()
@@ -73,7 +73,7 @@ export const useAuthStore = defineStore('auth', {
       })
       if (res.status == 200) {
         this.user = null
-        const {token, ...user} = res.data;
+        const {token} = res.data;
         this.setToken(token);
         this.getProfile()
         useSessionTracker().initSessionTracking()
@@ -85,7 +85,7 @@ export const useAuthStore = defineStore('auth', {
         code
       })
       if (res.status == 200) {
-        const {token, ...user} = res.data;
+        const {token} = res.data;
         this.setToken(token);
         useSessionTracker().initSessionTracking()
       }

@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import ApiService from '@/plugins/axios';
 import type {Question, TestResult, TestState} from '@/types';
 
 export interface testStore {

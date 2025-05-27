@@ -33,7 +33,7 @@ const emits = defineEmits<{
   'select': [answer: T];
   'focus-input': [];
 }>()
-const props = defineProps<{
+defineProps<{
   items: T[],
   placeholder?: string,
 }>()

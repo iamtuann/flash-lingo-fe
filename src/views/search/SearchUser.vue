@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
 import { useSearch } from '@/composable';
-import { useTopicStore, useUserStore } from '@/stores';
-import { EStatus, type Page, type Topic, type User } from '@/types';
+import { useUserStore } from '@/stores';
+import { type Page, type User } from '@/types';
 import { reactive, ref, watch } from 'vue';
 import { Button } from '@/components/ui/button'
 import {

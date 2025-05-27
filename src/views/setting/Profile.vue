@@ -48,7 +48,7 @@ watch(user, () => {
 const onSubmit = handleSubmit(async (values) => {
   isLoading.value=true
   try {
-    const res = await authStore.updateProfile(values);
+    await authStore.updateProfile(values);
     toast({
       title: 'Update profile successfully!',
       variant: 'success',

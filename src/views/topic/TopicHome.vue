@@ -97,7 +97,7 @@
         <Skeleton v-for="i in 3" :key="i" class="h-16 rounded-lg bg-accent" />
       </div>
       <div v-else class="mt-6 flex flex-col gap-4">
-        <template v-for="(term, idx) in terms" :key="term.id" >
+        <template v-for="(term) in terms" :key="term.id" >
           <TermItem :term="term" :hide-term="hideTerm" :hide-definition="hideDefinition" />
         </template>
       </div>

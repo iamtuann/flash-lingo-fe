@@ -1,8 +1,5 @@
 import type { GameType, Score } from "@/types";
 import { defineStore } from "pinia";
-import { useAuthStore } from "./auth.store";
-import { ref } from "vue";
-import ApiService  from "@/plugins/axios";
 
 export type gameStore = {
   savedScore: Score | null

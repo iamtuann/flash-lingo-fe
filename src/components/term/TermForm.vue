@@ -77,7 +77,7 @@ let defaultData = rest as Term
 const formData = ref<Term>({...defaultData})
 
 const isFocused = ref(false);
-let focusOutTimeout:number | null = null;
+let focusOutTimeout:NodeJS.Timeout | null = null;
 const errMsg = ref("")
 const isSaving = ref(false)
 

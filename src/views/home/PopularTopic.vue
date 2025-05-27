@@ -37,7 +37,7 @@
 import { TopicGroupSkeleton, TopicItem } from '@/components/topic';
 import { useTopicStore } from '@/stores';
 import type { Topic } from '@/types';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
 import { Button } from '@/components/ui/button';

@@ -9,7 +9,7 @@ import { useAuthGuard } from '@/composable/use-auth-guard'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores'
 import { type LucideIcon } from 'lucide-vue-next'
-import { RouterLink, useRoute, type RouteLocationRaw, type RouterLinkProps } from 'vue-router'
+import { RouterLink, useRoute, type RouteLocationRaw } from 'vue-router'
 
 export interface LinkProp {
   title: String
