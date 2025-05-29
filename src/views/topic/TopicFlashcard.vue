@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useTermStore } from "@/stores";
+import { useAuthStore, useTermStore } from "@/stores";
 import { useRoute } from "vue-router";
 import FlipCardList from "@/components/flip-card/FlipCardList.vue";
 import type { Term } from "@/types";
@@ -54,6 +54,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const route = useRoute()
 const termStore = useTermStore()
 const topicLearningStore = useTopicLearningStore()
+const authStore = useAuthStore();
 const topicId = ref(route.params.id as string)
 const terms = ref<Term[]>([])
 const learningTerms = ref<Term[]>([])
@@ -77,10 +78,12 @@ function onUpdateCurrentIndex(idx: number) {
 function onEndList(knowTerms: number[], unknowTerms: number[]) {
   knowTermIds.value = knowTerms;
   unknowTermIds.value = unknowTerms;
-  topicLearningStore.saveTopicLearning({
-    topicId: topicId.value,
-    termLearningIds: unknowTermIds.value
-  })
+  if (authStore.isAuthenticated) {
+    topicLearningStore.saveTopicLearning({
+      topicId: topicId.value,
+      termLearningIds: unknowTermIds.value
+    })
+  }
 }
 
 function continueLearning() {
@@ -108,7 +111,7 @@ async function getData() {
     isLoading.value = true
     const res = await Promise.allSettled([
       termStore.getAllByTopicId(topicId.value),
-      topicLearningStore.getTopicLearning(topicId.value)
+      topicLearningStore.getTopicLearning(topicId.value, authStore.isAuthenticated)
     ])
     if (res[0].status === 'fulfilled') {
       terms.value = res[0].value

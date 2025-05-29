@@ -4,28 +4,34 @@
         <DialogHeader class="p-6 pb-0">
           <DialogTitle>Add to folders</DialogTitle>
         </DialogHeader>
+        
         <div ref="el" class="flex flex-col gap-1 overflow-y-auto px-4 pb-4">
-          <div v-for="folder in folders" :key="folder.id" class="flex gap-3 py-4 px-3 items-center rounded-lg hover:bg-secondary transition-all">
-            <div class="h-10 w-10 flex items-center justify-center rounded-md bg-secondary">
-              <FolderIcon />
-            </div>
-            <div>
-              <p>{{ folder.name }}</p>
-              <p class="text-xs">
-                <span>{{ folder.topicIds.length }} topics</span> -
-                <span>by you</span>
-              </p>
-            </div>
-            <div class="flex-1"></div>
-            <div>
-              <Checkbox
-                :disabled="folder.topicIds.includes(Number(topicId))"
-                :model-value="isChecked(folder)"
-                @update:model-value="(v: boolean | 'indeterminate') => handleChange(v as boolean, folder.id as number)"
-              />
-            </div>
+          <div v-if="!isLoading && folders.length == 0" class="py-3 px-3 mt-2 rounded-md bg-secondary text-center">
+            You have not created any folders yet.
           </div>
-          <div v-show="isLoading" class="py-3 px-3 mt-2 rounded-md bg-secondary text-center">Loading...</div>
+          <template v-if="!isLoading || folders.length > 0">
+            <div v-for="folder in folders" :key="folder.id" class="flex gap-3 py-4 px-3 items-center rounded-lg hover:bg-secondary transition-all">
+              <div class="h-10 w-10 flex items-center justify-center rounded-md bg-secondary">
+                <FolderIcon />
+              </div>
+              <div>
+                <p>{{ folder.name }}</p>
+                <p class="text-xs">
+                  <span>{{ folder.topicIds.length }} topics</span> -
+                  <span>by you</span>
+                </p>
+              </div>
+              <div class="flex-1"></div>
+              <div>
+                <Checkbox
+                  :disabled="folder.topicIds.includes(Number(topicId))"
+                  :model-value="isChecked(folder)"
+                  @update:model-value="(v: boolean | 'indeterminate') => handleChange(v as boolean, folder.id as number)"
+                />
+              </div>
+            </div>
+            <div v-show="isLoading" class="py-3 px-3 mt-2 rounded-md bg-secondary text-center">Loading...</div>
+          </template>
         </div>
         <DialogFooter class="px-6 pb-4 ml-auto">
           <Button :disabled="folderIds.length == 0" @click="addToFolder">Done</Button>
