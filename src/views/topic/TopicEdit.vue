@@ -275,11 +275,9 @@ function onUpdateTerm(data: Term) {
 }
 
 function onDeleteTerm(id: number | string, index?: number) {
-  console.log(id, index);
-  
   try {
     termStore.delete(topicId.value, id)
-    if (index && index >= 0) {
+    if (index != undefined && index >= 0) {
       terms.value.splice(index, 1)
     }
   } catch (e) {
