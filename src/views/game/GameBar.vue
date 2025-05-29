@@ -54,6 +54,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import { useRoute, useRouter } from 'vue-router';
 import { useTopicStore } from '@/stores';
 import type { Topic } from '@/types';
+import MatchCardImg from '@/assets/images/match-card.jpg'
+import WordScrambleImg from '@/assets/images/word-scramble.jpg'
 
 const route = useRoute()
 const router = useRouter()
@@ -98,7 +100,7 @@ const listGame = [
   {
     title: 'Match Cards',
     icon: '',
-    backgroundImage: '/src/assets/images/match-card.jpg',
+    backgroundImage: MatchCardImg,
     to: {name: 'MatchCards', params: {id: topicId.value}},
     descriptions: ['Flip cards and match terms with their definitions. Test your memory and vocabulary knowledge.', 'Ready to play! This game uses your vocabulary terms to create a personalized experience.'],
     active: true,
@@ -107,7 +109,7 @@ const listGame = [
   {
     title: 'Word Scramble',
     icon: '',
-    backgroundImage: '/src/assets/images/word-scramble.jpg',
+    backgroundImage: WordScrambleImg,
     to: {name: 'WordScramble', params: {id: topicId.value}},
     descriptions: ['Catch falling words that match the given definition before they hit the ground.', 'You need at least 5 vocabulary terms to play this game.'],
     active: true,
